@@ -1,0 +1,34 @@
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of ActiveNode to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# Note that this schema.yml definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using neo4j:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# you'll amass, the slower it'll run and the greater likelihood for issues).
+#
+# It's strongly recommended that you check this file into your version control system.
+
+---
+:constraints:
+- CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
+  ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
+- CONSTRAINT ON ( country:Country ) ASSERT country.uuid IS UNIQUE
+- CONSTRAINT ON ( product:Product ) ASSERT product.uuid IS UNIQUE
+- CONSTRAINT ON ( purchase:Purchase ) ASSERT purchase.uuid IS UNIQUE
+- CONSTRAINT ON ( receipt:Receipt ) ASSERT receipt.uuid IS UNIQUE
+- CONSTRAINT ON ( source:Source ) ASSERT source.uuid IS UNIQUE
+- CONSTRAINT ON ( user:User ) ASSERT user.uuid IS UNIQUE
+:indexes:
+- INDEX ON :User(email)
+- INDEX ON :User(remember_token)
+- INDEX ON :User(reset_password_token)
+:versions:
+- '20190727183706'
+- '20190728100241'
+- '20190728100428'
+- '20190729193511'
+- '20190730130720'
+- '20190730130808'
+- '20190730131552'

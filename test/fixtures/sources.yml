@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  url: MyString
+  country_origin_id: 
+  country_consumption_id: 
+  co2_emission: 1.5
+  ch4_emission: 1.5
+  n2o_emission: 1.5
+  co2_equiv: 1.5
+  notes: MyString
+  weight: 
+
+two:
+  name: MyString
+  url: MyString
+  country_origin_id: 
+  country_consumption_id: 
+  co2_emission: 1.5
+  ch4_emission: 1.5
+  n2o_emission: 1.5
+  co2_equiv: 1.5
+  notes: MyString
+  weight: 

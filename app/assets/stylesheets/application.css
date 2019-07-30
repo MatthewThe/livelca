@@ -1,0 +1,84 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ *= require jquery-ui
+ */
+
+div#container{width:100%;}
+div#header{width:96%;padding-left:4%;height:80px;padding-top:10px;}
+div#content{width:calc(100% - 20px);margin-left:0%;padding:10px;}
+div#leftnav{position:relative;width:100%;top:0px;}
+
+@media (max-width: 410px) {
+  h1 { font-size: calc(48vw / 4.1); }
+  div#header{ height: calc(80vw / 4.1); }
+}
+
+@media (min-width: 800px) {
+  div#header{height:100px;padding-top:40px;}
+  div#leftnav {position:absolute;width:160px;padding-left:20px;top:150px;}
+  #leftnav a { width:100%;}
+  div#content{width:calc(95% - 200px);min-height:550px;margin-left:calc(20px + 160px);padding:20px}
+}
+
+html {min-height:100%; margin-bottom:1px;}
+
+body {
+	font-family:Verdana,Arial,Helvetica,sans-serif; 
+	font-size:14px; 
+	background-color:#111; 
+	color:#BBB; 
+	/*background-image:url('<%= asset_path("background_compressed.jpg") %>');*/
+	/*background-attachment:fixed; */
+	background-repeat:no-repeat; 
+	background-position:center top; 
+	margin-top:0px;
+}
+
+#container {
+	text-align:left;
+	margin: 0 auto 0 auto;
+}
+
+#header {
+	text-align:left;
+	color:#333;
+	border-radius: 25px;
+}
+#header a		{font-size:14px; color:#DDD; text-decoration: none;}
+
+#content 		{
+  text-align:justify; 
+  color: #ddd;
+  border:1px solid #000;
+  border-radius: 25px;
+  background: rgb(197, 172, 216); 
+  background: rgba(82, 82, 82, 0.9); 
+}
+#content a, #content a:visited {color:#eee;}
+input[type=submit] {color:#333;cursor:pointer;}
+
+#leftnav {
+  color:#FFF; 
+}
+#leftnav a, #leftnav a:visited {color:#fff; text-decoration: none; position:relative;display:inline-block;}
+
+.hidden 	{display:none;}
+.center		{text-align:center;}
+.clear		{clear:both;}
+.space_4 	{height:4px;}
+.space_8 	{height:8px;}
+.space_16	{height:16px;}
+.relative {position:relative;}
+.float    {display:block; float:left;}

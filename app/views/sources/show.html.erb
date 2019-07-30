@@ -1,0 +1,59 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Product:</strong>
+  <%= link_to @product_name, @source.product %>
+</p>
+
+<p>
+  <strong>Source name:</strong>
+  <%= @source.name %>
+</p>
+
+<p>
+  <strong>Source url:</strong>
+  <%= @source.url %>
+</p>
+
+<p>
+  <strong>Country origin:</strong>
+  <%= link_to @country_origin_name, @source.country_origin %>
+</p>
+
+<p>
+  <strong>Country consumption:</strong>
+  <%= link_to @country_consumption_name, @source.country_consumption %>
+</p>
+
+<p>
+  <strong>Co2 emission:</strong>
+  <%= @source.co2_emission %>
+</p>
+
+<p>
+  <strong>Ch4 emission:</strong>
+  <%= @source.ch4_emission %>
+</p>
+
+<p>
+  <strong>N2o emission:</strong>
+  <%= @source.n2o_emission %>
+</p>
+
+<p>
+  <strong>Co2 equiv:</strong>
+  <%= @source.co2_equiv %>
+</p>
+
+<p>
+  <strong>Notes:</strong>
+  <%= @source.notes %>
+</p>
+
+<p>
+  <strong>Weight:</strong>
+  <%= @source.weight %>
+</p>
+
+<%= link_to 'Edit', edit_source_path(@source) %> |
+<%= link_to 'Back', sources_path %>

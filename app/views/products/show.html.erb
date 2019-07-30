@@ -1,0 +1,75 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <%= link_to 'Edit article', edit_product_path(@product) %>
+</p>
+
+<h1>
+  <%= @product.name %>
+</h1>
+
+<p>
+  Category: <%= link_to @category_name, @product.category %>
+</p>
+
+<% if @product.proxy and @product.studies.count == 0 %>
+<p>
+  Proxy: <%= link_to @proxy_name, @product.proxy %>
+</p>
+<% end %>
+
+<p>
+  <%= @wiki.html_safe %>
+</p>
+
+<h2>Studies</h2>
+
+<% if @product.studies.count > 0 %>
+
+CO2 equivalent emission per kg (weighted average): <%= @product.co2_equiv %>
+
+<div class="space_16"></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Url</th>
+      <th>Country origin</th>
+      <th>Country consumption</th>
+      <th>CO2 emission</th>
+      <th>CH4 emission</th>
+      <th>N2O emission</th>
+      <th>CO2 equiv</th>
+      <th>Notes</th>
+      <th>Weight</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @product.studies.each_with_index do |source, i| %>
+      <tr>
+        <td><%= source.name %></td>
+        <td><%= source.url %></td>
+        <td><%= link_to source.country_origin.name, source.country_origin %></td>
+        <td><%= link_to source.country_consumption.name, source.country_consumption %></td>
+        <td><%= source.co2_emission %></td>
+        <td><%= source.ch4_emission %></td>
+        <td><%= source.n2o_emission %></td>
+        <td><%= source.co2_equiv %></td>
+        <td><%= source.notes %></td>
+        <td><%= source.weight %></td>
+        <td><%= link_to 'Edit', edit_source_path(source) %></td>
+        <td><%= link_to 'Delete', source, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% else %>
+<p>
+  No studies available yet.
+</p>
+<% end %>
+
+<%= link_to "Add study", new_source_path(:product_id => @product) %>

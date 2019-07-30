@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<%= link_to 'Edit details', edit_receipt_path(@receipt) %> | 
+<%= link_to 'Delete', @receipt, method: :delete, data: { confirm: 'Are you sure?' } %>
+
+<h1><%= @receipt.store %> (<%= @receipt.date.strftime("%F") %>)</h1>
+
+Total emission CO2 equivalent ("CO2e"): <%= @receipt.co2_equiv %> kg
+
+<div class="space_16"></div>
+
+<%= form_for(@purchase) do |f| %>
+  <%= f.hidden_field :receipt, value: @receipt.uuid %>
+
+<table>
+  <thead>
+    <tr>
+      <th>CO2e (kg)</th>
+      <th>Product</th>
+      <th>Amount (kg)</th>
+      <th></th>
+    </tr>
+  </thead>
+  
+  <tbody>
+  <tr>
+    <td></td>
+    <td><%= f.text_field :product, autofocus: true, :value => @product_name, id: 'product-autocomplete' %></td>
+    <td><%= f.number_field :weight, step: 0.001  %></td>
+    <td><%= f.submit %></td>
+  </tr>
+  <tbody>
+    <% @receipt.purchases.each_with_index do |purchase, i| %>
+      <tr>
+        <td><%= (purchase.weight * purchase.product.co2_equiv).round(3) %></td>
+        <td><%= link_to purchase.product.name, purchase.product %></td>
+        <td><%= purchase.weight %></td>
+        <td><%= link_to 'Remove', purchase, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% end %>
