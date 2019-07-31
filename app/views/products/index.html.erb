@@ -1,13 +1,16 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Products</h1>
+<h1>Products</h1>
 
+<%= link_to 'Add Product', new_product_path %>
+
+<div class="space_16"></div>
 <table>
   <thead>
     <tr>
       <th>Product</th>
-      <th>CO2 equiv per kg</th>
-      <th colspan="3"></th>
+      <th colspan="2">CO2e per kg</th>
+      <th>Studies</th>
     </tr>
   </thead>
 
@@ -15,12 +18,23 @@
     <% @products.each do |product| %>
       <tr>
         <td><%= link_to product.name, product %></td>
-        <td><%= product.co2_equiv %></td>
+        <td style="background-color:<%= product.co2_equiv_color %>">&nbsp;
+        </td>
+        <td>
+          <%= product.co2_equiv %>
+        </td>
+        <td>
+          <% if product.studies.count > 0 %>
+            <%= product.studies.count %>
+          <% else %>
+            N/A
+            <% if product.proxy %>
+              (Proxy: <%= link_to product.proxy.name, product.proxy %>)
+            <% end %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Product', new_product_path %>

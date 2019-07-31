@@ -13,5 +13,4 @@ class Source
   has_one :out, :country_consumption, type: :CONSUMED_IN, model_class: :Country
   has_one :out, :product, type: :STUDY_FOR, model_class: :Product
 
-
 end

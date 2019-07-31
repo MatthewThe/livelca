@@ -15,6 +15,7 @@ class ProductsController < ApplicationController
   # GET /products/1
   # GET /products/1.json
   def show
+    @supercategories = @product.get_super_categories
     renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
     markdown = Redcarpet::Markdown.new(renderer, extensions = {})
     @wiki = markdown.render(@product.wiki)
@@ -88,6 +89,8 @@ class ProductsController < ApplicationController
           product.save
         end
         @product.category = product
+      else
+        @product.category = nil
       end
       
       if product_name_params[:proxy_name].length > 0
@@ -97,6 +100,8 @@ class ProductsController < ApplicationController
           product.save
         end
         @product.proxy = product
+      else
+        @product.proxy = nil
       end
     end
 

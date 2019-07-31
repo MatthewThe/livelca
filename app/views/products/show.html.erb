@@ -8,9 +8,15 @@
   <%= @product.name %>
 </h1>
 
+<% if @supercategories.count > 0 %>
 <p>
-  Category: <%= link_to @category_name, @product.category %>
+  Categories:
+  <% for supercategory in @supercategories do %>
+    <%= link_to supercategory.name, supercategory %>
+    <% if @supercategories.last != supercategory %>|<% end %>
+  <% end %>
 </p>
+<% end %>
 
 <% if @product.proxy and @product.studies.count == 0 %>
 <p>
@@ -22,25 +28,34 @@
   <%= @wiki.html_safe %>
 </p>
 
+<% if @product.subcategories.count > 0 %>
+<p>
+  Subcategories:
+  <% for subcategory in @product.subcategories do %>
+    <%= link_to subcategory.name, subcategory %>
+    <% if @product.subcategories.last != subcategory %>|<% end %>
+  <% end %>
+</p>
+<% end %>
+
 <h2>Studies</h2>
 
 <% if @product.studies.count > 0 %>
 
-CO2 equivalent emission per kg (weighted average): <%= @product.co2_equiv %>
+CO2e per kg (weighted average): <%= @product.co2_equiv %>
 
 <div class="space_16"></div>
 
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Url</th>
+      <th>Source</th>
       <th>Country origin</th>
       <th>Country consumption</th>
       <th>CO2 emission</th>
       <th>CH4 emission</th>
       <th>N2O emission</th>
-      <th>CO2 equiv</th>
+      <th>CO2e</th>
       <th>Notes</th>
       <th>Weight</th>
       <th colspan="2"></th>
@@ -50,8 +65,7 @@ CO2 equivalent emission per kg (weighted average): <%= @product.co2_equiv %>
   <tbody>
     <% @product.studies.each_with_index do |source, i| %>
       <tr>
-        <td><%= source.name %></td>
-        <td><%= source.url %></td>
+        <td><%= link_to source.name, source.url %></td>
         <td><%= link_to source.country_origin.name, source.country_origin %></td>
         <td><%= link_to source.country_consumption.name, source.country_consumption %></td>
         <td><%= source.co2_emission %></td>

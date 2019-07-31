@@ -26,10 +26,25 @@ div#leftnav{position:relative;width:100%;top:0px;}
 }
 
 @media (min-width: 800px) {
-  div#header{height:100px;padding-top:40px;}
-  div#leftnav {position:absolute;width:160px;padding-left:20px;top:150px;}
-  #leftnav a { width:100%;}
-  div#content{width:calc(95% - 200px);min-height:550px;margin-left:calc(20px + 160px);padding:20px}
+  div#header{
+    height:100px;
+    padding-top:40px;
+  }
+  div#leftnav {
+    position:absolute;
+    width:160px;
+    padding-left:20px;
+    top:150px;
+  }
+  #leftnav a { 
+    width:calc(100% - 6px);
+  }
+  div#content{
+    width:calc(95% - 200px);
+    min-height:550px;
+    margin-left:calc(20px + 160px);
+    padding:10px 20px;
+  }
 }
 
 html {min-height:100%; margin-bottom:1px;}
@@ -37,7 +52,7 @@ html {min-height:100%; margin-bottom:1px;}
 body {
 	font-family:Verdana,Arial,Helvetica,sans-serif; 
 	font-size:14px; 
-	background-color:#111; 
+	background-color:#F0F2DD; 
 	color:#BBB; 
 	/*background-image:url('<%= asset_path("background_compressed.jpg") %>');*/
 	/*background-attachment:fixed; */
@@ -56,23 +71,52 @@ body {
 	color:#333;
 	border-radius: 25px;
 }
-#header a		{font-size:14px; color:#DDD; text-decoration: none;}
+#header a		{
+  font-size:14px; 
+  color:#666; 
+  text-decoration: none;
+}
 
 #content 		{
   text-align:justify; 
-  color: #ddd;
-  border:1px solid #000;
-  border-radius: 25px;
-  background: rgb(197, 172, 216); 
-  background: rgba(82, 82, 82, 0.9); 
+  color: #666;
+  border:1px solid #9ED54C;
+  border-radius: 10px;
 }
-#content a, #content a:visited {color:#eee;}
-input[type=submit] {color:#333;cursor:pointer;}
+#content a, #content a:visited {
+  color:#999;
+}
+#content a:hover {
+  color:#666;
+  background-color: #F0F2DD;
+}
 
-#leftnav {
-  color:#FFF; 
+input[type=submit] {
+  color:#333;
+  cursor:pointer;
 }
-#leftnav a, #leftnav a:visited {color:#fff; text-decoration: none; position:relative;display:inline-block;}
+
+#leftnav a, #leftnav a:visited {
+  color:#666;
+  text-decoration: none; 
+  position:relative;
+  display:inline-block;
+  padding: 3px;
+}
+#leftnav a:hover {
+  color:#333;
+  background-color: #9ED54C;
+}
+
+.reliable {
+  background-color: #AFCC17;
+}
+.proxy {
+  background-color: #F2CE3B;
+}
+.unreliable {
+  background-color: #F06533;
+}
 
 .hidden 	{display:none;}
 .center		{text-align:center;}
