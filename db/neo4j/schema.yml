@@ -16,6 +16,7 @@
   ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( country:Country ) ASSERT country.uuid IS UNIQUE
 - CONSTRAINT ON ( product:Product ) ASSERT product.uuid IS UNIQUE
+- CONSTRAINT ON ( productalias:ProductAlias ) ASSERT productalias.uuid IS UNIQUE
 - CONSTRAINT ON ( purchase:Purchase ) ASSERT purchase.uuid IS UNIQUE
 - CONSTRAINT ON ( receipt:Receipt ) ASSERT receipt.uuid IS UNIQUE
 - CONSTRAINT ON ( source:Source ) ASSERT source.uuid IS UNIQUE
@@ -24,6 +25,7 @@
 - INDEX ON :User(email)
 - INDEX ON :User(remember_token)
 - INDEX ON :User(reset_password_token)
+- INDEX ON NODE:Product, ProductAlias(name)
 :versions:
 - '20190727183706'
 - '20190728100241'
@@ -32,3 +34,5 @@
 - '20190730130720'
 - '20190730130808'
 - '20190730131552'
+- '20190810140315'
+- '20190810143645'

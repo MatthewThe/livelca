@@ -9,6 +9,7 @@ Total emission CO2 equivalent ("CO2e"): <%= @receipts.map{|r| r.co2_equiv}.sum.r
 <table>
   <thead>
     <tr>
+      <th>Date</th>
       <th>Receipt</th>
       <th>CO2e (kg)</th>
     </tr>
@@ -17,7 +18,8 @@ Total emission CO2 equivalent ("CO2e"): <%= @receipts.map{|r| r.co2_equiv}.sum.r
   <tbody>
     <% @receipts.each do |receipt| %>
       <tr>
-        <td><%= link_to receipt.store, receipt %> (<%= receipt.date.strftime("%F") %>)</td>
+        <td><%= receipt.date.strftime("%F") %></td>
+        <td><%= link_to receipt.store, receipt %></td>
         <td><%= receipt.co2_equiv %></td>
       </tr>
     <% end %>

@@ -13,7 +13,7 @@
 
   <div class="field">
     <%= f.label :product_id %><br>
-    <%= f.text_field :product_name, :value => @product_name, id: 'product-autocomplete' %>
+    <%= f.text_field :product_name, id: 'product-autocomplete' %>
   </div>
   <div class="field">
     <%= f.label :name %><br>
@@ -25,11 +25,11 @@
   </div>  
   <div class="field">
     <%= f.label :country_origin_id %><br>
-    <%= f.text_field :country_origin_name, :value => @country_origin_name, id: 'country-origin-autocomplete' %>
+    <%= f.text_field :country_origin_name, id: 'country-origin-autocomplete' %>
   </div>
   <div class="field">
     <%= f.label :country_consumption_id %><br>
-    <%= f.text_field :country_consumption_name, :value => @country_consumption_name, id: 'country-consumption-autocomplete' %>
+    <%= f.text_field :country_consumption_name, id: 'country-consumption-autocomplete' %>
   </div>
   <div class="field">
     <%= f.label :co2_emission %><br>

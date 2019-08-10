@@ -5,6 +5,7 @@ class Receipt
 
   has_many :out, :purchases, type: :IS_PURCHASE, model_class: :Purchase, dependent: :destroy
   has_one :out, :user, type: :IS_OWNED, model_class: :User
+  has_one :out, :country_consumption, type: :PURCHASED_IN, model_class: :Country
   
   def co2_equiv
     co2_sum = 0.0

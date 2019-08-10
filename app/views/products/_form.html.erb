@@ -13,15 +13,15 @@
 
   <div class="field">
     <%= f.label :name %><br>
-    <%= f.text_field :name %>
+    <%= f.text_field :name, :required => true %>
   </div>
   <div class="field">
     <%= f.label :category %><br>
-    <%= f.text_field :category_name, :value => @category_name, id: 'product-autocomplete' %>
+    <%= f.text_field :category_name, id: 'product-autocomplete', :required => true %>
   </div>
   <div class="field">
     <%= f.label :proxy %><br>
-    <%= f.text_field :proxy_name, :value => @proxy_name, id: 'product-autocomplete-2' %>
+    <%= f.text_field :proxy_name, id: 'product-autocomplete-2' %>
   </div>
   <div class="field">
     <%= f.label :wiki %><br>

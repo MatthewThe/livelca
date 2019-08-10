@@ -53,3 +53,6 @@ gem 'jquery-ui-rails'
 
 # Markdown
 gem 'redcarpet'
+
+# HTTP Post
+gem 'rest-client'

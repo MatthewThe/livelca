@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :product_aliases
   root to: 'products#index'
   
   resources :products
@@ -13,8 +14,8 @@ Rails.application.routes.draw do
     registrations: 'user/registrations'
   }
   
-  get '/country_autocomplete' => 'countries#autocomplete', as: 'country_autocomplete'
-  get '/product_autocomplete' => 'products#autocomplete', as: 'product_autocomplete'
+  get '/country_autocomplete' => 'countries#autocomplete'
+  get '/product_autocomplete' => 'products#autocomplete'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

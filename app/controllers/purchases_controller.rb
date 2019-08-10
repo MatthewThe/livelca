@@ -26,10 +26,7 @@ class PurchasesController < ApplicationController
   def create
     @purchase = Purchase.new(purchase_params)
     @purchase.receipt = Receipt.find(purchase_params[:receipt])
-    @purchase.product = Product.find_by(name: purchase_params[:product])
-    if !@purchase.product
-      @purchase.product = Product.new(name: purchase_params[:product])
-    end
+    save_relations
     
     respond_to do |format|
       if @purchase.save
@@ -45,6 +42,7 @@ class PurchasesController < ApplicationController
   # PATCH/PUT /purchases/1
   # PATCH/PUT /purchases/1.json
   def update
+    save_relations
     respond_to do |format|
       if @purchase.update(purchase_params)
         format.html { redirect_to @purchase, notice: 'Purchase was successfully updated.' }
@@ -72,10 +70,19 @@ class PurchasesController < ApplicationController
     def set_purchase
       @purchase = Purchase.find(params[:id])
     end
-
+    
+    def save_relations
+      @purchase.product = Product.find_or_create(purchase_name_params[:product_name])
+      @purchase.country_origin = Country.find_or_create(purchase_name_params[:country_origin_name])
+    end
+    
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_params
-      params.require(:purchase).permit(:product, :weight, :receipt)
+      params.require(:purchase).permit(:weight, :receipt)
+    end
+    
+    def purchase_name_params
+      params.require(:purchase).permit(:product_name, :country_origin_name)
     end
     
 end

@@ -20,7 +20,7 @@
 
 <% if @product.proxy and @product.studies.count == 0 %>
 <p>
-  Proxy: <%= link_to @proxy_name, @product.proxy %>
+  Proxy: <%= link_to @product.proxy.name, @product.proxy %>
 </p>
 <% end %>
 

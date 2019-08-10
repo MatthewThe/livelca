@@ -62,13 +62,34 @@ class Product
     where(name: /#{term}.*/i)
   end
   
-  def self.get_name(product_id)
+  def self.find_or_create(product_name)
+    if product_name.length > 0
+      product = find_by(name: product_name)
+      if !product
+        product = new(name: product_name)
+        product.save
+      end
+      product
+    else
+      nil
+    end
+  end
+  
+  def self.name_from_id(product_id)
     product_name = ""
     product = find_by(id: product_id)
     if product
       product_name = product.name
     end
     product_name
+  end
+  
+  def proxy_name
+    proxy ? proxy.name : ""
+  end
+  
+  def category_name
+    category ? category.name : ""
   end
 
 end

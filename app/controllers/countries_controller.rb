@@ -15,6 +15,9 @@ class CountriesController < ApplicationController
   # GET /countries/1
   # GET /countries/1.json
   def show
+    renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
+    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
+    @wiki = markdown.render(@country.wiki)
   end
 
   # GET /countries/new
@@ -74,6 +77,6 @@ class CountriesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def country_params
-      params.require(:country).permit(:name)
+      params.require(:country).permit(:name, :wiki)
     end
 end

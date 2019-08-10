@@ -77,32 +77,11 @@ class ProductsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_product
       @product = Product.find(params[:id])
-      @category_name = Product.get_name(@product.category)
-      @proxy_name = Product.get_name(@product.proxy)
     end
     
     def save_relations
-      if product_name_params[:category_name].length > 0
-        product = Product.find_by(name: product_name_params[:category_name])
-        if !product
-          product = Product.new(name: product_name_params[:category_name])
-          product.save
-        end
-        @product.category = product
-      else
-        @product.category = nil
-      end
-      
-      if product_name_params[:proxy_name].length > 0
-        product = Product.find_by(name: product_name_params[:proxy_name])
-        if !product
-          product = Product.new(name: product_name_params[:proxy_name])
-          product.save
-        end
-        @product.proxy = product
-      else
-        @product.proxy = nil
-      end
+      @product.category = Product.find_or_create(product_name_params[:category_name])
+      @product.proxy = Product.find_or_create(product_name_params[:proxy_name])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
