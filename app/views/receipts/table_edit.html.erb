@@ -1,0 +1,24 @@
+<h1>Editing CSV receipt</h1>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Product</th>
+      <th>Amount (kg)</th>
+      <th>Country produced</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+<% @csv_table.each do |row| %> 
+    <tr>
+      <td><%= text_field :purchase, :item_name, :value => row.fetch(:item_name) %></td>
+      <td><%= text_field :purchase, :product_name, :value => row.fetch(:product_name) %></td>
+      <td><%= number_field :purchase, :weight, step: 0.001, value: row.fetch(:weight) %></td>
+      <td><%= text_field :purchase, :country_origin, value: row.fetch(:country_name) %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

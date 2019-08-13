@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    RubyInline (3.12.4)
+      ZenTest (~> 4.3)
+    ZenTest (4.11.2)
     actionmailer (4.2.11.1)
       actionpack (= 4.2.11.1)
       actionview (= 4.2.11.1)
@@ -77,6 +80,10 @@ GEM
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
+    fastimage (2.1.5)
+    fastimage_resize (2.0.3)
+      RubyInline (>= 3.8.2)
+      fastimage (>= 1.2.9)
     ffi (1.11.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -222,9 +229,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RubyInline
   byebug
   coffee-rails (~> 4.1.0)
   devise-neo4j
+  fastimage
+  fastimage_resize
   jbuilder (~> 2.0)
   jquery-rails
   jquery-ui-rails

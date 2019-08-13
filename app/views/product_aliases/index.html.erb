@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Product Aliases</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Country</th>
+      <th>Product</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @product_aliases.each do |product_alias| %>
+      <tr>
+        <td><%= product_alias.name %></td>
+        <td><%= product_alias.country_name %></td>
+        <td><%= product_alias.product_name %></td>
+        <td><%= link_to 'Show', product_alias %></td>
+        <td><%= link_to 'Edit', edit_product_alias_path(product_alias) %></td>
+        <td><%= link_to 'Destroy', product_alias, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Product alias', new_product_alias_path %>

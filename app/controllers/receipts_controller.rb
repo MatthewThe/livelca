@@ -28,19 +28,27 @@ class ReceiptsController < ApplicationController
   def upload
     require 'rest-client'  
     require 'tempfile'
-    uploaded_io = receipt_params[:receipt]
+    uploaded_io = receipt_name_params[:receipt]
     ext = File.extname(uploaded_io.original_filename).downcase
     
     file = Tempfile.new(['receipt', ext])
     File.open(file, 'wb') do |file|
       file.write(uploaded_io.read)
     end
-    @file = file
     
     purchase_table = []
+    queries = []
     if [".png", ".jpg", ".jpeg", ".gif", ".tif", ".tiff", ".bmp"].include? ext 
       # uploaded_io.original_filename
       # Supported image file formats are png, jpg (jpeg), gif, tif (tiff) and bmp.
+      file_size = File.size(file)
+      if file_size > 1e6
+        width, height = FastImage.size(file)
+        ratio = Math.sqrt(file_size / 9e5)
+        new_width, new_height = [(width / ratio).round, (height / ratio).round]
+        require 'fastimage_resize'
+        file = FastImage.resize(file, new_width, new_height)
+      end
       data = RestClient.post('https://api.ocr.space/parse/image',
                                       { apikey: "f6a89dcb5688957",
                                         language: "swe",
@@ -50,13 +58,24 @@ class ReceiptsController < ApplicationController
       require 'json'
       require 'csv'
       output = JSON.parse(data.body)
-      parsedText = output["ParsedResults"][0]["ParsedText"]
-      CSV.parse(parsedText, :col_sep => '\t', :quote_char => "Ƃ") do |row|
-        row = row.shift.split("\t") unless row.blank?
-        purchase_table.push({ item_name: row[0], product_name: row[0], weight: 1.0, country_name: "Unknown" })
+      if output["OCRExitCode"] != 1
+        @receipt = Receipt.new(receipt_params)
+        @receipt.errors[:receipt] = "Error processing file: #{output['ErrorMessage']}"
+        @country_consumption_name = receipt_name_params[:country_consumption_name]
+        return nil
+      else
+        parsedText = output["ParsedResults"][0]["ParsedText"]
+        
+        CSV.parse(parsedText, :col_sep => '\t', :quote_char => "Ƃ") do |row|
+          row = row.shift.split("\t") unless row.blank?
+          item = row[0]
+          purchase_table.push({ item_name: item, weight: 1.0, country_name: "Unknown" })
+          add_product_query(item, queries)
+        end
       end
     elsif [".csv", ".tsv"].include? ext
       require 'csv'
+      queries = []
       CSV.foreach(file) do |row|
         weight = 1.0
         country = "Unknown"
@@ -66,31 +85,52 @@ class ReceiptsController < ApplicationController
             country = row[2]
           end
         end
-        purchase_table.push({ item_name: row[0], product_name: get_product_name(row[0]), weight: weight, country_name: country })
+        purchase_table.push({ item_name: row[0], weight: weight, country_name: country })
+        add_product_query(row[0], queries)
       end
+    end
+    
+    results = run_products_query(queries)
+    purchase_table.zip(results).each_with_index do |z, i|
+      row, result = z
+      product_name = ""
+      if result.count > 0
+        product_name = result.first['node.name']
+      end
+      purchase_table[i][:product_name] = product_name
     end
     purchase_table
   end
   
-  def get_product_name(item)
-    results = Neo4j::ActiveBase.current_session.query("CALL db.index.fulltext.queryNodes('productNames', {item})
-      YIELD node
-      RETURN node.name
-      LIMIT {limit}", item: item + "~", limit: 1)
-    if results.count > 0
-      results.first["node.name"]
-    else
-      ""
+  def add_product_query(item, queries)
+    search_term = item.strip().gsub(/[^0-9A-Za-z ]/, '').gsub(/\s+/, '~ ') + "~"
+    queries.append search_term
+  end
+  
+  def run_products_query(queries)
+    results = Neo4j::ActiveBase.current_session.queries do
+      queries.each do |query|
+        append "CALL db.index.fulltext.queryNodes('productNames', {item})
+          YIELD node
+          RETURN node.name
+          LIMIT {limit}", item: query, limit: 1
+      end
     end
   end
 
   # POST /receipts
   # POST /receipts.json
   def create
-    if receipt_params[:receipt]
+    if receipt_name_params[:receipt]
       @csv_table = upload
-      respond_to do |format|
-        format.html { render :table_edit }
+      if @csv_table
+        respond_to do |format|
+          format.html { render :table_edit }
+        end
+      else
+        respond_to do |format|
+          format.html { render :new }
+        end
       end
     else
       @receipt = Receipt.new(receipt_params)
@@ -144,10 +184,10 @@ class ReceiptsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:date, :store, :receipt)
+      params.require(:receipt).permit(:date, :store)
     end
     
     def receipt_name_params
-      params.require(:receipt).permit(:country_consumption_name)
+      params.require(:receipt).permit(:country_consumption_name, :receipt)
     end
 end

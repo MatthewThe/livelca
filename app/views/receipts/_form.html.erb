@@ -25,7 +25,7 @@
   </div>
   <div class="field">
     <%= f.label "Upload receipt (scan or CSV)" %><br>
-    <%= f.file_field :receipt %>
+    <%= f.file_field :receipt, :accept => 'image/*,.csv,.tsv' %>
   </div>
   <div class="actions">
     <%= f.submit %>
