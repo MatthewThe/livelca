@@ -8,24 +8,32 @@ class Product
   has_many :in, :subcategories, type: :IS_SUBCATEGORY_OF, model_class: :Product
   has_one :out, :proxy, type: :USE_AS_PROXY, model_class: :Product
   
+  def study_count
+    count = 0
+    studies.each do |s|
+      count += 1
+    end
+    count
+  end
+  
   def co2_equiv
-    if self.studies.count > 0
+    if study_count > 0
       weightSum = 0
       weightedSum = 0.0
-      for s in self.studies do
+      studies.each do |s|
         weightedSum += s.co2_equiv * s.weight
         weightSum += s.weight
       end
       (weightedSum / weightSum).round(3)
-    elsif self.proxy
-      self.proxy.co2_equiv
+    elsif proxy
+      proxy.co2_equiv
     else
       1.0
     end
   end
   
   def co2_equiv_color
-    co2_equiv_scaled = [0, [self.co2_equiv / 5, 1].min].max
+    co2_equiv_scaled = [0, [co2_equiv / 5, 1].min].max
     green = [0,142,9]
     yellow = [255,191,0]
     red = [255,3,3]
@@ -38,9 +46,9 @@ class Product
   end
   
   def reliability_class
-    if self.studies.count > 0
+    if study_count > 0
       'reliable'
-    elsif self.proxy
+    elsif proxy
       'proxy'
     else
       'unreliable'
@@ -49,7 +57,7 @@ class Product
       
     
   def get_super_categories
-    self.query_as(:leaf)
+    query_as(:leaf)
         .match('path = (leaf:Product)-[:IS_SUBCATEGORY_OF*]->(root:Product)')
         .where('NOT (root)-[:IS_SUBCATEGORY_OF]->()')
         .with('nodes(path) AS supercategory_list')

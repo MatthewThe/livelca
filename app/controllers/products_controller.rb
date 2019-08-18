@@ -83,7 +83,7 @@ class ProductsController < ApplicationController
       @product.category = Product.find_or_create(product_name_params[:category_name])
       @product.proxy = Product.find_or_create(product_name_params[:proxy_name])
     end
-
+    
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
       params.require(:product).permit(:name, :wiki)

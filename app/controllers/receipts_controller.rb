@@ -95,7 +95,7 @@ class ReceiptsController < ApplicationController
       row, result = z
       product_name = ""
       if result.count > 0
-        product_name = result.first['node.name']
+        product_name = result.first['p.name']
       end
       purchase_table[i][:product_name] = product_name
     end
@@ -111,8 +111,10 @@ class ReceiptsController < ApplicationController
     results = Neo4j::ActiveBase.current_session.queries do
       queries.each do |query|
         append "CALL db.index.fulltext.queryNodes('productNames', {item})
-          YIELD node
-          RETURN node.name
+          YIELD node AS productAlias
+          MATCH (p)
+          WHERE (productAlias)-[:IS_ALIAS]->(p:Product)
+          RETURN p.name
           LIMIT {limit}", item: query, limit: 1
       end
     end
@@ -123,6 +125,8 @@ class ReceiptsController < ApplicationController
   def create
     if receipt_name_params[:receipt]
       @csv_table = upload
+      @receipt = Receipt.new(receipt_params)
+      @country_consumption_name = receipt_name_params[:country_consumption_name]
       if @csv_table
         respond_to do |format|
           format.html { render :table_edit }
@@ -139,6 +143,37 @@ class ReceiptsController < ApplicationController
 
       respond_to do |format|
         if @receipt.save
+          if purchase_params[:product_name]
+            purchases = purchase_params.values.transpose.map { |s| Hash[purchase_params.keys.zip(s)] }
+            purchases.each do |purchase|
+              if purchase["product_name"].length > 0 and not purchase["product_name"] == "None"
+                @purchase = Purchase.new({:weight => purchase["weight"]})
+                @purchase.receipt = @receipt
+                @purchase.product = Product.find_or_create(purchase["product_name"])
+                @purchase.country_origin = Country.find_or_create(purchase["country_origin_name"])
+                if not @purchase.save
+                  render :html => "Could not save purchase"
+                  return
+                end
+                
+                @product_alias = ProductAlias.find_or_create(purchase["item_name"])
+                @product_alias.country = @receipt.country_consumption
+                @product_alias.product = @purchase.product
+                if not @product_alias.save
+                  render :html => "Could not save product alias"
+                  return
+                end
+              else
+                @product_alias = ProductAlias.find_or_create(purchase["item_name"])
+                @product_alias.country = @receipt.country_consumption
+                @product_alias.product = @purchase.find_by(name: "None")
+                if not @product_alias.save
+                  render :html => "Could not save product alias"
+                  return
+                end
+              end
+            end
+          end
           format.html { redirect_to @receipt, notice: 'Receipt was successfully created.' }
           format.json { render :show, status: :created, location: @receipt }
         else
@@ -189,5 +224,9 @@ class ReceiptsController < ApplicationController
     
     def receipt_name_params
       params.require(:receipt).permit(:country_consumption_name, :receipt)
+    end
+    
+    def purchase_params
+      params.require(:receipt).permit(:item_name => [], :product_name => [], :weight => [], :country_origin_name => [])
     end
 end

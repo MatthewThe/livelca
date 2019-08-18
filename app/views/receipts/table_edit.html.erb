@@ -1,6 +1,32 @@
 <h1>Editing CSV receipt</h1>
 
+<%= form_for(@receipt) do |f| %>
 
+  <% if @receipt.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@receipt.errors.count, "error") %> prohibited this receipt from being saved:</h2>
+
+      <ul>
+      <% @receipt.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="field">
+    <%= f.label :date %><br>
+    <%= f.date_field :date, :required => true %>
+  </div>
+  <div class="field">
+    <%= f.label :store %><br>
+    <%= f.text_field :store, :required => true %>
+  </div>
+  <div class="field">
+    <%= f.label :country_consumption %><br>
+    <%= f.text_field :country_consumption_name, :value => @country_consumption_name, id: 'country-consumption-autocomplete', :required => true %>
+  </div>
+  
 <table>
   <thead>
     <tr>
@@ -14,11 +40,17 @@
   <tbody>
 <% @csv_table.each do |row| %> 
     <tr>
-      <td><%= text_field :purchase, :item_name, :value => row.fetch(:item_name) %></td>
-      <td><%= text_field :purchase, :product_name, :value => row.fetch(:product_name) %></td>
-      <td><%= number_field :purchase, :weight, step: 0.001, value: row.fetch(:weight) %></td>
-      <td><%= text_field :purchase, :country_origin, value: row.fetch(:country_name) %></td>
+      <td><%= f.text_field :item_name, :value => row.fetch(:item_name), :multiple => true %></td>
+      <td><%= f.text_field :product_name, :value => row.fetch(:product_name), :multiple => true %></td>
+      <td><%= f.number_field :weight, step: 0.001, value: row.fetch(:weight), :multiple => true %></td>
+      <td><%= f.text_field :country_origin_name, value: row.fetch(:country_name), :multiple => true %></td>
     </tr>
 <% end %>
   </tbody>
 </table>
+
+<div class="actions">
+  <%= f.submit %>
+</div>
+
+<% end %>

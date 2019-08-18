@@ -15,7 +15,7 @@
   </thead>
 
   <tbody>
-    <% @products.each do |product| %>
+    <% @products.with_associations(:studies, :proxy).each do |product| %>
       <tr>
         <td><%= link_to product.name, product %></td>
         <td style="background-color:<%= product.co2_equiv_color %>">&nbsp;
@@ -24,13 +24,10 @@
           <%= product.co2_equiv %>
         </td>
         <td>
-          <% if product.studies.count > 0 %>
-            <%= product.studies.count %>
+          <% if product.study_count > 0 %>
+            <%= product.study_count %>
           <% else %>
             N/A
-            <% if product.proxy %>
-              (Proxy: <%= link_to product.proxy.name, product.proxy %>)
-            <% end %>
           <% end %>
         </td>
       </tr>
