@@ -18,6 +18,13 @@ class SourcesController < ApplicationController
     if params[:product_id]
       @source.product = Product.find_by(id: params[:product_id])
     end
+    
+    if params[:resource_id].present?
+      @source.resource = Resource.find_by(id: params[:resource_id])
+      @source.weight = @source.resource.default_weight
+    else
+      @source.resource = Resource.new
+    end
   end
 
   # GET /sources/1/edit
@@ -74,6 +81,7 @@ class SourcesController < ApplicationController
     end
     
     def save_relations
+      @source.resource = Resource.find_or_create(resource_params[:name], resource_params[:url], params[:weight])
       @source.product = Product.find_or_create(source_name_params[:product_name])
       @source.country_origin_id = Country.find_or_create(source_name_params[:country_origin_name])
       @source.country_consumption_id = Country.find_or_create(source_name_params[:country_consumption_name])
@@ -81,10 +89,14 @@ class SourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def source_params
-      params.require(:source).permit(:name, :url, :co2_emission, :ch4_emission, :n2o_emission, :co2_equiv, :notes, :weight)
+      params.require(:source).permit(:co2_emission, :ch4_emission, :n2o_emission, :co2_equiv, :notes, :weight)
     end
     
     def source_name_params
       params.require(:source).permit(:product_name, :country_origin_name, :country_consumption_name)
+    end
+    
+    def resource_params
+      params.require(:resource).permit(:name, :url)
     end
 end

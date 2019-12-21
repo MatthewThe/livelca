@@ -33,17 +33,22 @@
       <td></td>
       <td><%= f.text_field :product_name, autofocus: true, id: 'product-autocomplete', :required => true %></td>
       <td><%= f.number_field :weight, step: 0.001, :required => true %></td>
-      <td><%= f.text_field :country_origin_name, id: 'country-origin-autocomplete', :required => true %></td>
+      <td><%= f.text_field :country_origin_name, id: 'country-autocomplete-origin', :required => true %></td>
       <td><%= f.submit %></td>
     </tr>
   <% @receipt.purchases.each_with_index do |purchase, i| %>
+    <% if purchase != @purchase %>
     <tr>
       <td><%= (purchase.weight * purchase.product.co2_equiv).round(3) %></td>
       <td><%= link_to purchase.product.name, purchase.product %></td>
       <td><%= purchase.weight %></td>
       <td><%= link_to purchase.country_origin_name, purchase.country_origin %></td>
-      <td><%= link_to 'Remove', purchase, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      <td>
+        <%= link_to 'Remove', purchase, method: :delete, data: { confirm: 'Are you sure?' } %>
+        <%= link_to 'Edit', params.merge(edit_purchase: purchase) %>
+      </td>
     </tr>
+    <% end %>
   <% end %>
   </tbody>
 </table>

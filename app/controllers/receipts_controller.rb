@@ -11,7 +11,11 @@ class ReceiptsController < ApplicationController
   # GET /receipts/1
   # GET /receipts/1.json
   def show
-    @purchase = Purchase.new
+    if params[:edit_purchase]
+      @purchase = Purchase.find(params[:edit_purchase])
+    else
+      @purchase = Purchase.new
+    end
   end
 
   # GET /receipts/new
@@ -70,7 +74,7 @@ class ReceiptsController < ApplicationController
           row = row.shift.split("\t") unless row.blank?
           item = row[0]
           purchase_table.push({ item_name: item, weight: 1.0, country_name: "Unknown" })
-          add_product_query(item, queries)
+          Product.add_product_query(item, queries)
         end
       end
     elsif [".csv", ".tsv"].include? ext
@@ -86,11 +90,11 @@ class ReceiptsController < ApplicationController
           end
         end
         purchase_table.push({ item_name: row[0], weight: weight, country_name: country })
-        add_product_query(row[0], queries)
+        Product.add_product_query(row[0], queries)
       end
     end
     
-    results = run_products_query(queries)
+    results = Product.run_products_query(queries)
     purchase_table.zip(results).each_with_index do |z, i|
       row, result = z
       product_name = ""
@@ -100,24 +104,6 @@ class ReceiptsController < ApplicationController
       purchase_table[i][:product_name] = product_name
     end
     purchase_table
-  end
-  
-  def add_product_query(item, queries)
-    search_term = item.strip().gsub(/[^0-9A-Za-z ]/, '').gsub(/\s+/, '~ ') + "~"
-    queries.append search_term
-  end
-  
-  def run_products_query(queries)
-    results = Neo4j::ActiveBase.current_session.queries do
-      queries.each do |query|
-        append "CALL db.index.fulltext.queryNodes('productNames', {item})
-          YIELD node AS productAlias
-          MATCH (p)
-          WHERE (productAlias)-[:IS_ALIAS]->(p:Product)
-          RETURN p.name
-          LIMIT {limit}", item: query, limit: 1
-      end
-    end
   end
 
   # POST /receipts
@@ -163,10 +149,10 @@ class ReceiptsController < ApplicationController
                   render :html => "Could not save product alias"
                   return
                 end
-              else
+              elsif purchase["item_name"].length > 0
                 @product_alias = ProductAlias.find_or_create(purchase["item_name"])
                 @product_alias.country = @receipt.country_consumption
-                @product_alias.product = @purchase.find_by(name: "None")
+                @product_alias.product = Product.find_by(name: "None")
                 if not @product_alias.save
                   render :html => "Could not save product alias"
                   return

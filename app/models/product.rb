@@ -92,6 +92,24 @@ class Product
     product_name
   end
   
+  def self.add_product_query(item, queries)
+    search_term = item.strip().gsub(/[^0-9A-Za-z ]/, '').gsub(/\s+/, '~ ') + "~"
+    queries.append search_term
+  end
+  
+  def self.run_products_query(queries)
+    results = Neo4j::ActiveBase.current_session.queries do
+      queries.each do |query|
+        append "CALL db.index.fulltext.queryNodes('productNames', {item})
+          YIELD node AS productAlias
+          MATCH (p)
+          WHERE (productAlias)-[:IS_ALIAS]->(p:Product)
+          RETURN p.name
+          LIMIT {limit}", item: query, limit: 1
+      end
+    end
+  end
+  
   def proxy_name
     proxy ? proxy.name : ""
   end

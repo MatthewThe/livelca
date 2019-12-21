@@ -13,11 +13,13 @@
     </div>
     <div id="leftnav">
       <%= link_to "Products", products_path %>
+      <%= link_to "Resources", resources_path %>
       
       <div class="space_8"></div>
       
       <% if user_signed_in? %>
         <%= link_to 'My Receipts', receipts_path %>
+        <%= link_to 'My Recipes', recipes_path %>
         <%= link_to 'Edit profile', edit_user_registration_path %>
         <%= link_to 'Logout', destroy_user_session_path, method: :delete %>        
       <% else %>

@@ -52,9 +52,6 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
       <th>Source</th>
       <th>Country origin</th>
       <th>Country consumption</th>
-      <th>CO2 emission</th>
-      <th>CH4 emission</th>
-      <th>N2O emission</th>
       <th>CO2e</th>
       <th>Notes</th>
       <th>Weight</th>
@@ -65,12 +62,9 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
   <tbody>
     <% @product.studies.each_with_index do |source, i| %>
       <tr>
-        <td><%= link_to source.name, source.url %></td>
+        <td><%= link_to source.resource.name, source.resource %></td>
         <td><%= link_to source.country_origin.name, source.country_origin %></td>
         <td><%= link_to source.country_consumption.name, source.country_consumption %></td>
-        <td><%= source.co2_emission %></td>
-        <td><%= source.ch4_emission %></td>
-        <td><%= source.n2o_emission %></td>
         <td><%= source.co2_equiv %></td>
         <td><%= source.notes %></td>
         <td><%= source.weight %></td>

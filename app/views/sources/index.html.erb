@@ -7,7 +7,6 @@
     <tr>
       <th>Product</th>
       <th>Name</th>
-      <th>Url</th>
       <th>Country origin</th>
       <th>Country consumption</th>
       <th>Co2 equiv</th>
@@ -20,8 +19,7 @@
     <% @sources.each do |source| %>
       <tr>
         <td><%= link_to source.product_name, source.product %></td>
-        <td><%= source.name %></td>
-        <td><%= source.url %></td>
+        <td><%= link_to source.resource.name, source.resource %></td>
         <td><%= link_to source.country_origin_name, source.country_origin %></td>
         <td><%= link_to source.country_consumption_name, source.country_consumption %></td>
         <td><%= source.co2_equiv %></td>

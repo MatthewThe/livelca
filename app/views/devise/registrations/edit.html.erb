@@ -15,7 +15,7 @@
   
   <div class="field">
     <%= f.label :country %><br />
-    <%= f.text_field :country_name, :value => @country_name, id: 'country-origin-autocomplete' %>
+    <%= f.text_field :country_name, :value => @country_name, id: 'country-autocomplete-origin' %>
   </div>
 
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>

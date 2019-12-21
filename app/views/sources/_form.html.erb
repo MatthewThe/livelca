@@ -1,61 +1,63 @@
 <%= form_for(@source) do |f| %>
-  <% if @source.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@source.errors.count, "error") %> prohibited this source from being saved:</h2>
+  <%= fields_for @source.resource do |r| %>
+    <% if @source.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@source.errors.count, "error") %> prohibited this source from being saved:</h2>
 
-      <ul>
-      <% @source.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+        <ul>
+        <% @source.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+    
+    <div class="field">
+    	<%= r.label :name %><br />
+      <%= r.text_field :name %>
+    </div>
+    <div class="field">
+    	<%= r.label :url %><br />
+      <%= r.url_field :url %>
+    </div>
+    <div class="field">
+      <%= f.label :weight %><br>
+      <%= f.number_field :weight, step: 1 %>
+    </div>
+    <div class="field">
+      <%= f.label :product_id %><br>
+      <%= f.text_field :product_name, id: 'product-autocomplete' %>
+    </div>
+    <div class="field">
+      <%= f.label :country_origin_id %><br>
+      <%= f.text_field :country_origin_name, id: 'country-autocomplete-origin' %>
+    </div>
+    <div class="field">
+      <%= f.label :country_consumption_id %><br>
+      <%= f.text_field :country_consumption_name, id: 'country-autocomplete-consumption' %>
+    </div>
+    <div class="field">
+      <%= f.label :co2_emission %><br>
+      <%= f.number_field :co2_emission, step: 0.001 %>
+    </div>
+    <div class="field">
+      <%= f.label :ch4_emission %><br>
+      <%= f.number_field :ch4_emission, step: 0.001 %>
+    </div>
+    <div class="field">
+      <%= f.label :n2o_emission %><br>
+      <%= f.number_field :n2o_emission, step: 0.001 %>
+    </div>
+    <div class="field">
+      <%= f.label :co2_equiv %><br>
+      <%= f.number_field :co2_equiv, step: 0.001 %>
+    </div>
+    <div class="field">
+      <%= f.label :notes %><br>
+      <%= f.text_area :notes, cols: "80", rows: "20" %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= f.label :product_id %><br>
-    <%= f.text_field :product_name, id: 'product-autocomplete' %>
-  </div>
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :url %><br>
-    <%= f.text_field :url %>
-  </div>  
-  <div class="field">
-    <%= f.label :country_origin_id %><br>
-    <%= f.text_field :country_origin_name, id: 'country-origin-autocomplete' %>
-  </div>
-  <div class="field">
-    <%= f.label :country_consumption_id %><br>
-    <%= f.text_field :country_consumption_name, id: 'country-consumption-autocomplete' %>
-  </div>
-  <div class="field">
-    <%= f.label :co2_emission %><br>
-    <%= f.number_field :co2_emission, step: 0.001 %>
-  </div>
-  <div class="field">
-    <%= f.label :ch4_emission %><br>
-    <%= f.number_field :ch4_emission, step: 0.001 %>
-  </div>
-  <div class="field">
-    <%= f.label :n2o_emission %><br>
-    <%= f.number_field :n2o_emission, step: 0.001 %>
-  </div>
-  <div class="field">
-    <%= f.label :co2_equiv %><br>
-    <%= f.number_field :co2_equiv, step: 0.001 %>
-  </div>
-  <div class="field">
-    <%= f.label :notes %><br>
-    <%= f.text_field :notes %>
-  </div>
-  <div class="field">
-    <%= f.label :weight %><br>
-    <%= f.number_field :weight, step: 1 %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
 <% end %>

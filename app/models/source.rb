@@ -12,6 +12,7 @@ class Source
   has_one :out, :country_origin, type: :PRODUCED_IN, model_class: :Country
   has_one :out, :country_consumption, type: :CONSUMED_IN, model_class: :Country
   has_one :out, :product, type: :STUDY_FOR, model_class: :Product
+  has_one :in, :resource, type: :IS_RESOURCE, model_class: :Resource
   
   def product_name
     product ? product.name : ""

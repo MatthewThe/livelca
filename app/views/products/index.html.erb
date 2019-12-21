@@ -1,9 +1,18 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Products</h1>
+<h2>Products</h2>
 
 <%= link_to 'Add Product', new_product_path %>
 
+<div class="space_16"></div>
+
+<div class="search_box">
+  <%= form_tag products_path, :method => 'get' do %>  
+    <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-autocomplete', :placeholder => "Search" %>
+    <%= submit_tag "Find product", :name => nil, class: "search_submit" %>
+  <% end %>
+</div>
+      
 <div class="space_16"></div>
 <table>
   <thead>
@@ -28,6 +37,9 @@
             <%= product.study_count %>
           <% else %>
             N/A
+            <% if product.proxy %>
+              (proxy: <%= link_to product.proxy.name, product.proxy %>)
+            <% end %>
           <% end %>
         </td>
       </tr>

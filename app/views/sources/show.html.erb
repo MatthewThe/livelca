@@ -7,12 +7,7 @@
 
 <p>
   <strong>Source name:</strong>
-  <%= @source.name %>
-</p>
-
-<p>
-  <strong>Source url:</strong>
-  <%= @source.url %>
+  <%= link_to @source.resource.name, @source.resource %> <%= link_to '[Link]', @source.resource.url %>
 </p>
 
 <p>
