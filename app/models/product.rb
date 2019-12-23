@@ -16,6 +16,14 @@ class Product
     count
   end
   
+  def subcategories_count
+    count = 0
+    subcategories.each do |s|
+      count += 1
+    end
+    count
+  end
+  
   def co2_equiv
     if study_count > 0
       weightSum = 0

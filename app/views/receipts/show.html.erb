@@ -40,7 +40,7 @@
     <% if purchase != @purchase %>
     <tr>
       <td><%= (purchase.weight * purchase.product.co2_equiv).round(3) %></td>
-      <td><%= link_to purchase.product.name, purchase.product %></td>
+      <td><%= link_to purchase.product.name, purchase.product, class: purchase.product.reliability_class %></td>
       <td><%= purchase.weight %></td>
       <td><%= link_to purchase.country_origin_name, purchase.country_origin %></td>
       <td>

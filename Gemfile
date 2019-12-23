@@ -44,7 +44,7 @@ group :development do
 end
 
 
-gem 'neo4j', '~> 9.2.0'
+gem 'neo4j', '~> 9.6.0'
 gem "devise-neo4j"
 
 gem 'neo4j-rake_tasks'

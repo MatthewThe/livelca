@@ -1,0 +1,62 @@
+<p id="notice"><%= notice %></p>
+
+<%= link_to 'Edit details', edit_recipe_path(@recipe) %> | 
+<%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' } %>
+
+<h1><%= @recipe.name %></h1>
+
+<p>
+  Servings: <%= @recipe.servings %>
+</p>
+
+<p>
+  Country of purchase: <%= @recipe.country_consumption.name %>
+</p>
+
+<p>
+  Total emission CO2 equivalent ("CO2e"): <%= @recipe.co2_equiv %> kg<br />
+  Total emission CO2 equivalent ("CO2e") per serving: <%= @recipe.co2_equiv_per_serving %> kg
+</p>
+
+<div class="space_16"></div>
+
+<%= form_for(@ingredient) do |f| %>
+  <%= f.hidden_field :recipe, value: @recipe.uuid %>
+
+<table>
+  <thead>
+    <tr>
+      <th>CO2e (kg)</th>
+      <th>Product</th>
+      <th>Amount (kg)</th>
+      <th>Country produced</th>
+      <th></th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr>
+      <td></td>
+      <td><%= f.text_field :product_name, autofocus: true, id: 'product-autocomplete', :required => true %></td>
+      <td><%= f.number_field :weight, step: 0.001, :required => true %></td>
+      <td><%= f.text_field :country_origin_name, id: 'country-autocomplete-origin', :required => true %></td>
+      <td><%= f.submit %></td>
+    </tr>
+  <% @recipe.ingredients.each_with_index do |ingredient, i| %>
+    <% if @ingredient != ingredient %> 
+    <tr>
+      <td><%= (ingredient.weight * ingredient.product.co2_equiv).round(3) %></td>
+      <td><%= link_to ingredient.product.name, ingredient.product, class: ingredient.product.reliability_class %></td>
+      <td><%= ingredient.weight %></td>
+      <td><%= link_to ingredient.country_origin_name, ingredient.country_origin %></td>
+      <td>
+        <%= link_to 'Remove', ingredient, method: :delete, data: { confirm: 'Are you sure?' } %>
+        <%= link_to 'Edit', params.merge(edit_ingredient: ingredient) %>
+      </td>
+    </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>
+
+<% end %>

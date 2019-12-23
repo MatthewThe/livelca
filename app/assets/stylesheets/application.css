@@ -103,19 +103,16 @@ input[type=submit] {
   display:inline-block;
   padding: 3px;
 }
-#leftnav a:hover {
+#leftnav a:hover, .current a, .current a:visited {
   color:#333;
   background-color: #9ED54C;
 }
 
-.reliable {
-  background-color: #AFCC17;
+#content a.proxy {
+  color: #F39C12;
 }
-.proxy {
-  background-color: #F2CE3B;
-}
-.unreliable {
-  background-color: #F06533;
+#content a.unreliable {
+  color: #F06533;
 }
 
 .hidden 	{display:none;}

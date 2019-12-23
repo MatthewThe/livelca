@@ -9,7 +9,7 @@ class Receipt
   
   def co2_equiv
     co2_sum = 0.0
-    for p in self.purchases
+    for p in self.purchases.with_associations(:product => [:studies, :proxy => [:studies]])
       co2_sum += p.weight * p.product.co2_equiv
     end
     co2_sum.round(3)

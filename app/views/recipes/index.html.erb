@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Recipes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Servings</th>
+      <th>CO2e (kg)</th>
+      <th>CO2e (kg) per serving</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @recipes.each do |recipe| %>
+      <% emission = recipe.co2_equiv %>
+      <tr>
+        <td><%= link_to recipe.name, recipe %></td>
+        <td><%= recipe.servings %></td>
+        <td><%= emission %></td>
+        <td><%= (emission / recipe.servings).round(3) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Recipe', new_recipe_path %>

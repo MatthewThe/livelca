@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Weight:</strong>
+  <%= @ingredient.weight %>
+</p>
+
+<p>
+  <strong>Product:</strong>
+  <%= @ingredient.product %>
+</p>
+
+<p>
+  <strong>Recipe:</strong>
+  <%= @ingredient.recipe %>
+</p>
+
+<p>
+  <strong>Country origin:</strong>
+  <%= @ingredient.country_origin %>
+</p>
+
+<%= link_to 'Edit', edit_ingredient_path(@ingredient) %> |
+<%= link_to 'Back', ingredients_path %>

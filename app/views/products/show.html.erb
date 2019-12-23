@@ -28,19 +28,19 @@
   <%= @wiki.html_safe %>
 </p>
 
-<% if @product.subcategories.count > 0 %>
+<% if @product.subcategories_count > 0 %>
 <p>
   Subcategories:
-  <% for subcategory in @product.subcategories do %>
+  <% @product.subcategories.each_with_index do |subcategory, i| %>
     <%= link_to subcategory.name, subcategory %>
-    <% if @product.subcategories.last != subcategory %>|<% end %>
+    <% if i != @product.subcategories_count - 1 %>|<% end %>
   <% end %>
 </p>
 <% end %>
 
 <h2>Studies</h2>
 
-<% if @product.studies.count > 0 %>
+<% if @product.study_count > 0 %>
 
 CO2e per kg (weighted average): <%= @product.co2_equiv %>
 
@@ -60,7 +60,7 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
   </thead>
 
   <tbody>
-    <% @product.studies.each_with_index do |source, i| %>
+    <% @product.studies.with_associations(:country_origin, :country_consumption, :product, :resource).each_with_index do |source, i| %>
       <tr>
         <td><%= link_to source.resource.name, source.resource %></td>
         <td><%= link_to source.country_origin.name, source.country_origin %></td>

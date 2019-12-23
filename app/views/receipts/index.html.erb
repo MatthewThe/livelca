@@ -2,9 +2,9 @@
 
 <h1>Listing Receipts</h1>
 
-Total emission CO2 equivalent ("CO2e"): <%= @receipts.map{|r| r.co2_equiv}.sum.round(3) %> kg
-
 <div class="space_16"></div>
+
+<% total_sum = 0.0 %>
 
 <table>
   <thead>
@@ -16,16 +16,22 @@ Total emission CO2 equivalent ("CO2e"): <%= @receipts.map{|r| r.co2_equiv}.sum.r
   </thead>
 
   <tbody>
-    <% @receipts.each do |receipt| %>
+    <% @receipts.with_associations(:purchases).each do |receipt| %>
+      <% @emission = receipt.co2_equiv
+         total_sum += @emission %>
       <tr>
         <td><%= receipt.date.strftime("%F") %></td>
         <td><%= link_to receipt.store, receipt %></td>
-        <td><%= receipt.co2_equiv %></td>
+        <td><%= @emission %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
+<div class="space_16"></div>
+
+Total emission CO2 equivalent ("CO2e"): <%= total_sum.round(3) %> kg
+
+<div class="space_16"></div>
 
 <%= link_to 'New Receipt', new_receipt_path %>
