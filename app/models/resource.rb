@@ -5,7 +5,7 @@ class Resource
   property :notes, type: String
   property :default_weight, type: Integer
   
-  has_many :out, :sources, type: :IS_RESOURCE, model_class: :Source
+  has_many :out, :sources, type: :IS_RESOURCE, model_class: :Source, dependent: :destroy
   
   def self.find_or_create(resource_name, resource_url, resource_default_weight)
     if resource_name.length > 0
