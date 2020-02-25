@@ -8,6 +8,7 @@ class ProductsController < ApplicationController
       @products = Product.search(params[:search])
     else
       @products = Product.all
+      @product_tree = Product.get_product_tree
     end
   end
   

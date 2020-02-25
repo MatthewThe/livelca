@@ -118,6 +118,14 @@ class Product
     end
   end
   
+  def self.get_product_tree
+    results = self.all.with_associations(:proxy, :subcategories)
+  end
+  
+  def as_json(options = {})
+     {:product => attributes.merge({:subcategories => subcategories})}
+  end
+  
   def proxy_name
     proxy ? proxy.name : ""
   end

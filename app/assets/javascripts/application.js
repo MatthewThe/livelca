@@ -13,5 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require d3
+//= require lodash
 //= require_tree .
 //= require jquery-ui/widgets/autocomplete

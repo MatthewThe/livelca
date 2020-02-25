@@ -61,3 +61,5 @@ gem 'rest-client'
 gem 'RubyInline'
 gem 'fastimage'
 gem 'fastimage_resize'
+
+gem 'lodash-rails'
