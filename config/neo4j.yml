@@ -2,10 +2,10 @@ development:
 #  type: http
 #  url: http://localhost:7474
   type: http
-  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@35.196.194.251:7474
+  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@34.74.3.253:7474
 test:
   type: http
   url: http://localhost:7575
 production:
   type: http
-  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@35.196.194.251:7474
+  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@34.74.3.253:7474
