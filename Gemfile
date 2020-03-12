@@ -58,8 +58,8 @@ gem 'redcarpet'
 gem 'rest-client'
 
 # Image resizing
-gem 'RubyInline'
-gem 'fastimage'
-gem 'fastimage_resize'
+#gem 'RubyInline'
+#gem 'fastimage'
+#gem 'fastimage_resize'
 
 gem 'lodash-rails'

@@ -123,7 +123,7 @@ class Product
   end
   
   def as_json(options = {})
-     {:product => attributes.merge({:subcategories => subcategories})}
+     {:product => attributes.merge({:subcategories => subcategories, :co2_equiv => co2_equiv_color})}
   end
   
   def proxy_name
