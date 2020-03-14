@@ -10,19 +10,20 @@
 <%= render 'graph' %>
 <% end %>
 
-<div class="search_box">
+<!---<div class="search_box">
   <%= form_tag products_path, :method => 'get' do %>  
     <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-autocomplete', :placeholder => "Search" %>
     <%= submit_tag "Find product", :name => nil, class: "search_submit" %>
   <% end %>
-</div>
+</div>--->
       
 <div class="space_16"></div>
-<table>
+<table id="products_table">
   <thead>
     <tr>
       <th>Product</th>
-      <th colspan="2">CO2e per kg</th>
+      <th>&nbsp;</th>
+      <th>CO2e per kg</th>
       <th>Studies</th>
     </tr>
   </thead>
@@ -31,7 +32,7 @@
     <% @products.with_associations(:studies, :proxy).each do |product| %>
       <tr>
         <td><%= link_to product.name, product, class: product.reliability_class %></td>
-        <td style="background-color:<%= product.co2_equiv_color %>">&nbsp;
+        <td style="width:20px; background-color:<%= product.co2_equiv_color %>">&nbsp;
         </td>
         <td>
           <%= product.co2_equiv %>

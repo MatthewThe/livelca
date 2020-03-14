@@ -118,6 +118,13 @@ class Product
     end
   end
   
+  def merge_with(other_product_name)
+    Neo4j::ActiveBase.current_session.query("MATCH (p1:Product), (p2:Product)
+      WHERE p1.name = {p1_name} AND p2.name = {p2_name}
+      call apoc.refactor.mergeNodes([p2,p1]) YIELD node
+      RETURN node", p1_name: name, p2_name: other_product_name)
+  end
+  
   def self.get_product_tree
     results = self.all.with_associations(:proxy, :subcategories)
   end
@@ -133,5 +140,7 @@ class Product
   def category_name
     category ? category.name : ""
   end
+  
+  attr_accessor :merge_product_name
 
 end

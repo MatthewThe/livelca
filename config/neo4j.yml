@@ -1,8 +1,6 @@
 development:
-#  type: http
-#  url: http://localhost:7474
   type: http
-  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@35.196.194.251:7474
+  url: http://localhost:7474
 test:
   type: http
   url: http://localhost:7575

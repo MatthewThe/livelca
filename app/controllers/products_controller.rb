@@ -1,11 +1,14 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :edit, :update, :destroy]
+  before_action :set_product, only: [:show, :edit, :merge, :update, :destroy]
 
   # GET /products
   # GET /products.json
   def index
     if params[:search]
       @products = Product.search(params[:search])
+      if @products.count == 1
+        redirect_to @products[0]
+      end
     else
       @products = Product.all
       @product_tree = Product.get_product_tree
@@ -34,6 +37,10 @@ class ProductsController < ApplicationController
   # GET /products/1/edit
   def edit
   end
+  
+  # GET /products/1/edit
+  def merge
+  end
 
   # POST /products
   # POST /products.json
@@ -55,15 +62,29 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1
   # PATCH/PUT /products/1.json
   def update
-    save_relations
-    
-    respond_to do |format|
-      if @product.update(product_params)
-        format.html { redirect_to @product, notice: 'Product was successfully updated.' }
-        format.json { render :show, status: :ok, location: @product }
-      else
-        format.html { render :edit }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
+    if product_merge_params[:merge_product_name]
+      
+      respond_to do |format|
+        if @product.merge_with(product_merge_params[:merge_product_name])
+          format.html { redirect_to @product, notice: 'Product was successfully merged.' }
+          format.json { render :show, status: :ok, location: @product }
+        else
+          format.html { render :edit }
+          format.json { render json: @product.errors, status: :unprocessable_entity }
+        end
+      end
+      
+    else
+      save_relations
+      
+      respond_to do |format|
+        if @product.update(product_params)
+          format.html { redirect_to @product, notice: 'Product was successfully updated.' }
+          format.json { render :show, status: :ok, location: @product }
+        else
+          format.html { render :edit }
+          format.json { render json: @product.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -96,5 +117,9 @@ class ProductsController < ApplicationController
     
     def product_name_params
       params.require(:product).permit(:category_name, :proxy_name)
+    end
+    
+    def product_merge_params
+      params.require(:product).permit(:merge_product_name)
     end
 end

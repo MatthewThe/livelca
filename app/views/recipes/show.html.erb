@@ -51,7 +51,7 @@
       <td><%= link_to ingredient.country_origin_name, ingredient.country_origin %></td>
       <td>
         <%= link_to 'Remove', ingredient, method: :delete, data: { confirm: 'Are you sure?' } %>
-        <%= link_to 'Edit', params.merge(edit_ingredient: ingredient) %>
+        <%= link_to 'Edit', params.permit(:edit_ingredient).merge(edit_ingredient: ingredient) %>
       </td>
     </tr>
     <% end %>

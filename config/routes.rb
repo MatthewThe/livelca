@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   
   patch 'sources' => 'sources#duplicate'
   
+  get 'products/:id/merge' => 'products#merge', as: :merge_product
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

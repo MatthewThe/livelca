@@ -17,3 +17,4 @@
 //= require lodash
 //= require_tree .
 //= require jquery-ui/widgets/autocomplete
+//= require jquery.dataTables.min
