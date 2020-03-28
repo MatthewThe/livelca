@@ -6,10 +6,6 @@
 
 <div class="space_16"></div>
 
-<% if false %>
-<%= render 'graph' %>
-<% end %>
-
 <!---<div class="search_box">
   <%= form_tag products_path, :method => 'get' do %>  
     <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-autocomplete', :placeholder => "Search" %>
@@ -29,7 +25,7 @@
   </thead>
 
   <tbody>
-    <% @products.with_associations(:studies, :proxy).each do |product| %>
+    <% @products_plus.each do |product| %>
       <tr>
         <td><%= link_to product.name, product, class: product.reliability_class %></td>
         <td style="width:20px; background-color:<%= product.co2_equiv_color %>">&nbsp;
@@ -51,4 +47,6 @@
     <% end %>
   </tbody>
 </table>
+
+<%= render 'graph' %>
 

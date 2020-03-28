@@ -39,7 +39,7 @@ class SourcesController < ApplicationController
     
     respond_to do |format|
       if @source.save
-        format.html { redirect_to @source, notice: 'Source was successfully created.' }
+        format.html { redirect_to @source.resource, notice: 'Source was successfully created.' }
         format.json { render :show, status: :created, location: @source }
       else
         format.html { render :new }
@@ -55,7 +55,7 @@ class SourcesController < ApplicationController
     
     respond_to do |format|
       if @source.update(source_params)
-        format.html { redirect_to @source, notice: 'Source was successfully updated.' }
+        format.html { redirect_to @source.resource, notice: 'Source was successfully updated.' }
         format.json { render :show, status: :ok, location: @source }
       else
         format.html { render :edit }

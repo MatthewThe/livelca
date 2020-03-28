@@ -11,6 +11,8 @@ class ProductsController < ApplicationController
       end
     else
       @products = Product.all
+      @products_plus = @products.with_associations(:studies, :proxy)
+      @products_plus2 = @products_plus.to_json(:methods => :co2_equiv_color)
       @product_tree = Product.get_product_tree
     end
   end
@@ -27,6 +29,21 @@ class ProductsController < ApplicationController
     renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
     markdown = Redcarpet::Markdown.new(renderer, extensions = {})
     @wiki = markdown.render(@product.wiki)
+    
+    @products_plus = (@product.subcategories + @supercategories + [@product]).map{|sc| {:product => sc.attributes.merge(:co2_equiv_color => sc.co2_equiv_color)}}
+    
+    @product_tree = []
+    @supercategories.each_with_index do |sc, i|
+      if i == 0
+        @product_tree.push({:product => sc.attributes.merge(:subcategories => [@product.attributes])})
+      else
+        @product_tree.push({:product => sc.attributes.merge(:subcategories => [@supercategories[i-1].attributes])})
+      end
+    end
+    @product_tree.push({:product => @product.attributes.merge(:subcategories => @product.subcategories.map{|p| p.attributes})})
+    
+    @products_plus2 = @products_plus.to_json()
+    @product_tree = @product_tree.to_json()
   end
 
   # GET /products/new
