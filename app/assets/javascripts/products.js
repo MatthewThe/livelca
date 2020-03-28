@@ -6,9 +6,9 @@ document.addEventListener("turbolinks:load", function() {
       "stateSave": true
     });
   }
-});
+})
 
-document.addEventListener('turbolinks:before-cache', function() {
+document.addEventListener('turbolinks:before-cache', () => {
   // Manually tear down bootstrap modals before caching. If turbolinks
   // caches the modal then tries to restore it, it breaks bootstrap's JS.
   // We can't just use bootstrap's `modal('close')` method because it is async.
@@ -18,18 +18,18 @@ document.addEventListener('turbolinks:before-cache', function() {
 
 function displayProductGraph(tree, products) {
   var nodes = [], rels = [], names = [];
-  products.forEach(function(res) {
+  products.forEach(res => {
     var pr = {id: res.product.name, label: 'product', size: 10, co2_equiv: res.product.co2_equiv_color};
     var target = _.findIndex(names, {id: res.product.name});
     nodes.push(pr);
     names.push({id: res.product.name});
   });
 
-  tree.forEach(function(res) {
+  tree.forEach(res => {
     var target = _.findIndex(names, {id: res.product.name});
     target = nodes[target];
 
-    res.product.subcategories.forEach(function(subcategory) {
+    res.product.subcategories.forEach(subcategory => {
       var source = _.findIndex(names, {id: subcategory.name});
       source = nodes[source];
       
@@ -80,17 +80,17 @@ function displayProductGraph(tree, products) {
   }
 
   const dragDrop = d3.drag()
-    .on('start', function(node) {
+    .on('start', node => {
       node.fx = node.x
       node.fy = node.y
     })
-    .on('drag', function(node) {
+    .on('drag', node => {
       labelLayout.alphaTarget(0.7).restart()
       simulation.alphaTarget(0.7).restart()
       node.fx = d3.event.x
       node.fy = d3.event.y
     })
-    .on('end', function(node) {
+    .on('end', node => {
       if (!d3.event.active) {
         labelLayout.alphaTarget(0)
         simulation.alphaTarget(0)
