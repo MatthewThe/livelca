@@ -18,18 +18,18 @@ document.addEventListener('turbolinks:before-cache', function() {
 
 function displayProductGraph(tree, products) {
   var nodes = [], rels = [], names = [];
-  products.forEach(res => {
+  products.forEach(function(res) {
     var pr = {id: res.product.name, label: 'product', size: 10, co2_equiv: res.product.co2_equiv_color};
     var target = _.findIndex(names, {id: res.product.name});
     nodes.push(pr);
     names.push({id: res.product.name});
   });
 
-  tree.forEach(res => {
+  tree.forEach(function(res) {
     var target = _.findIndex(names, {id: res.product.name});
     target = nodes[target];
 
-    res.product.subcategories.forEach(subcategory => {
+    res.product.subcategories.forEach(function(subcategory) {
       var source = _.findIndex(names, {id: subcategory.name});
       source = nodes[source];
       
@@ -80,17 +80,17 @@ function displayProductGraph(tree, products) {
   }
 
   const dragDrop = d3.drag()
-    .on('start', node => {
+    .on('start', function(node) {
       node.fx = node.x
       node.fy = node.y
     })
-    .on('drag', node => {
+    .on('drag', function(node) {
       labelLayout.alphaTarget(0.7).restart()
       simulation.alphaTarget(0.7).restart()
       node.fx = d3.event.x
       node.fy = d3.event.y
     })
-    .on('end', node => {
+    .on('end', function(node) {
       if (!d3.event.active) {
         labelLayout.alphaTarget(0)
         simulation.alphaTarget(0)
