@@ -6,9 +6,9 @@ document.addEventListener("turbolinks:load", function() {
       "stateSave": true
     });
   }
-})
+});
 
-document.addEventListener('turbolinks:before-cache', () => {
+document.addEventListener('turbolinks:before-cache', function() {
   // Manually tear down bootstrap modals before caching. If turbolinks
   // caches the modal then tries to restore it, it breaks bootstrap's JS.
   // We can't just use bootstrap's `modal('close')` method because it is async.
