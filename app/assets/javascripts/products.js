@@ -6,13 +6,15 @@ document.addEventListener("turbolinks:load", function() {
       "stateSave": true
     });
   }
+  if ($("#sources_table_wrapper").length == 0) {
+    $('#sources_table').DataTable({
+      "pageLength": 25,
+      "stateSave": true
+    });
+  }
 })
 
 document.addEventListener('turbolinks:before-cache', () => {
-  // Manually tear down bootstrap modals before caching. If turbolinks
-  // caches the modal then tries to restore it, it breaks bootstrap's JS.
-  // We can't just use bootstrap's `modal('close')` method because it is async.
-  // Turbolinks will cache the page before it finishes running.
   $("#product_graph").innerHTML = "";
 });
 

@@ -1,6 +1,6 @@
 class AddProductNameIndex < Neo4j::Migrations::Base
   def up
-    execute 'CALL db.index.fulltext.createNodeIndex("productNames",["Product", "ProductAlias"],["name"])'
+    execute 'CALL db.index.fulltext.createNodeIndex("productNames",["ProductAlias"],["name"])'
   end
 
   def down

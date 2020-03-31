@@ -1,6 +1,7 @@
 class Ingredient 
   include Neo4j::ActiveNode
   property :weight, type: Float
+  property :description, type: String, default: ""
 
   has_one :out, :product, type: :IS_PRODUCT, model_class: :Product
   has_one :out, :recipe, type: :IS_INGREDIENT, model_class: :Recipe
@@ -19,12 +20,10 @@ class Ingredient
     mult = 1.0
     item = ""
     
-    m = /\s*([0-9\/.]*)?\s*(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|kg|gr|g|ml|l)?[s]?\s*(.*)/.match(s)
+    m = /\s*([0-9\/.\s]*)?\s*(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|kg|gr|g|ml|l)?[s]?\s*(.*)/.match(s.downcase)
     if m and m.length >= 3
-      if /\//.match(m[1])
-        amount = m[1].to_r
-      elsif m[1].length > 0
-        amount = m[1].to_f
+      if m[1].length > 0
+        amount = mixed_number_to_rational(m[1])
       end
       
       if /^(kg|l)$/.match(m[2])
@@ -53,10 +52,37 @@ class Ingredient
         mult = 0.2
       elsif /carrot[s]?$/.match(m[3])
         mult = 0.07
+      elsif /egg[s]?/.match(m[3])
+        mult = 0.06
       end
       item = m[3]
     end
     return (amount*mult).round(3), item
+  end
+  
+  def self.is_rational?(object)
+    true if Rational(object) rescue false
+  end
+   
+  # http://aspiringwebdev.com/mixed-numbers-in-ruby-rails/
+  def self.mixed_number_to_rational(amount)
+    rational_to_return = 0
+    amount.split(" ").each { |string|
+      if is_rational?(string) # Number?
+        if string.include?("/") # Fraction?
+          rational_to_return += Rational(string)
+        elsif string.to_i == string.to_f # Whole number?
+          rational_to_return += string.to_i
+        elsif string.include?(".") # Decimal?
+          rational_to_return += Rational(string)
+        else # Not a fraction, decimal, or whole number.
+          return false
+        end
+      else
+        return false # Not a number.
+      end
+    }
+    rational_to_return
   end
   
 end

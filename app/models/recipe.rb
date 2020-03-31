@@ -22,7 +22,11 @@ class Recipe
   def ingredients_list
     ingredients_text = ""
     for i in self.ingredients
-      ingredients_text += i.weight.to_s + " kg " + i.product.name + "\n"
+      if i.description.empty?
+        ingredients_text += i.weight.to_s + " kg " + i.product.name + "\n"
+      else
+        ingredients_text += i.description + "\n"
+      end
     end
     ingredients_text
   end

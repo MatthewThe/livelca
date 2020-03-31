@@ -50,7 +50,11 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
 
 <div class="space_16"></div>
 
-<table>
+<%= link_to "Add study", new_source_path(:product_id => @product) %>
+
+<div class="space_16"></div>
+
+<table id="sources_table">
   <thead>
     <tr>
       <th>Source</th>
@@ -59,7 +63,7 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
       <th>CO2e</th>
       <th>Notes</th>
       <th>Weight</th>
-      <th colspan="2"></th>
+      <th></th>
     </tr>
   </thead>
 
@@ -72,8 +76,8 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
         <td><%= source.co2_equiv %></td>
         <td><%= source.notes %></td>
         <td><%= source.weight %></td>
-        <td><%= link_to 'Edit', edit_source_path(source) %></td>
-        <td><%= link_to 'Delete', source, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Edit', edit_source_path(source) %>
+            <%= link_to 'Delete', source, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -84,4 +88,3 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
 </p>
 <% end %>
 
-<%= link_to "Add study", new_source_path(:product_id => @product) %>

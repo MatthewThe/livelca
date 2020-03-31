@@ -11,10 +11,10 @@ class ProductsController < ApplicationController
       end
     else
       @products = Product.all
-      @products_plus = @products.with_associations(:studies, :proxy)
-      @products_plus2 = @products_plus.to_json(:methods => :co2_equiv_color)
-      @product_tree = Product.get_product_tree
     end
+    @products_plus = @products.with_associations(:studies, :proxy)
+    @products_plus2 = @products_plus.to_json(:methods => :co2_equiv_color)
+    @product_tree = Product.get_product_tree
   end
   
   def autocomplete

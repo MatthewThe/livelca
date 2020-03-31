@@ -2,13 +2,17 @@
 
 <h1>Listing Resources</h1>
 
-<table>
+<%= link_to 'New Resource', new_resource_path %>
+
+<div class="space_16"></div>
+
+<table id="resources_table">
   <thead>
     <tr>
       <th>Name</th>
       <th>URL</th>
       <th>Default weight</th>
-      <th colspan="2"></th>
+      <th></th>
     </tr>
   </thead>
 
@@ -18,13 +22,9 @@
         <td><%= link_to resource.name, resource %></td>
         <td><%= link_to 'Link', resource.url, target: "_blank" %></td>
         <td><%= resource.default_weight %></td>
-        <td><%= link_to 'Edit', edit_resource_path(resource) %></td>
-        <td><%= link_to 'Destroy', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Edit', edit_resource_path(resource) %>
+            <%= link_to 'Destroy', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Resource', new_resource_path %>

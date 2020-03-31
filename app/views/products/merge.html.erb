@@ -1,4 +1,4 @@
-<h1>Merging Product</h1>
+<h1>Merge product with <%=@product.name%></h1>
 
 <%= form_for(@product) do |f| %>
   <% if @product.errors.any? %>
@@ -14,7 +14,7 @@
   <% end %>
 
   <div class="field">
-    <%= f.label "Merge into product" %><br>
+    <%= f.label "Merge the following product into this one" %><br>
     <%= f.text_field :merge_product_name, id: 'product-autocomplete', :required => true %>
   </div>
   <div class="actions">

@@ -43,7 +43,7 @@
       <td><%= f.text_field :item_name, :value => row.fetch(:item_name), :multiple => true, id: 'product_item_name_' + i.to_s %></td>
       <td><%= f.text_field :product_name, :value => row.fetch(:product_name), :multiple => true, id: 'product-autocomplete-' + i.to_s %></td>
       <td><%= f.number_field :weight, step: 0.001, value: row.fetch(:weight), :multiple => true, id: 'product_weight_' + i.to_s %></td>
-      <td><%= f.text_field :country_origin_name, value: row.fetch(:country_name), :multiple => true, id: 'product_country_origin_name_' + i.to_s %></td>
+      <td><%= f.text_field :country_origin_name, value: row.fetch(:country_name), :multiple => true, id: 'country-autocomplete-' + i.to_s %></td>
     </tr>
 <% end %>
   </tbody>
