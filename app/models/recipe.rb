@@ -9,7 +9,7 @@ class Recipe
   
   def co2_equiv
     co2_sum = 0.0
-    for p in self.ingredients.with_associations(:product => [:studies, :proxy => [:studies]])
+    for p in ingredients
       co2_sum += p.weight * p.product.co2_equiv
     end
     co2_sum.round(3)
@@ -21,7 +21,7 @@ class Recipe
   
   def ingredients_list
     ingredients_text = ""
-    for i in self.ingredients
+    for i in ingredients
       if i.description.empty?
         ingredients_text += i.weight.to_s + " kg " + i.product.name + "\n"
       else

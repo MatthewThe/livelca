@@ -19,8 +19,8 @@ class Ingredient
     (weight * product.co2_equiv).round(3)
   end
   
-  def co2_equiv_color
-    co2_equiv_scaled = [0, [co2_equiv / recipe.servings * 2, 1].min].max
+  def co2_equiv_color(servings)
+    co2_equiv_scaled = [0, [co2_equiv / servings * 2, 1].min].max
     green = [0,142,9]
     yellow = [255,191,0]
     red = [255,3,3]

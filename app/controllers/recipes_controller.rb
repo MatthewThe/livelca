@@ -5,7 +5,7 @@ class RecipesController < ApplicationController
   # GET /recipes
   # GET /recipes.json
   def index
-    @recipes = Recipe.where(user: current_user)
+    @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
   end
 
   # GET /recipes/1
@@ -139,7 +139,7 @@ class RecipesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_recipe
-      @recipe = Recipe.find(params[:id])
+      @recipe = Recipe.where(id: params[:id]).with_associations(:country_consumption, :ingredients => [:country_origin, :product => [:studies, :proxy => [:studies]]]).first
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

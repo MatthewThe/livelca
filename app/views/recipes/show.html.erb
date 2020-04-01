@@ -54,7 +54,7 @@
     <% if @ingredient != ingredient %> 
     <tr>
       <td><%= ingredient.co2_equiv %></td>
-      <td style="width:20px; background-color:<%= ingredient.co2_equiv_color %>">&nbsp;
+      <td style="width:20px; background-color:<%= ingredient.co2_equiv_color(@recipe.servings) %>">&nbsp;
         </td>
       <td><%= link_to ingredient.product.name, ingredient.product, class: ingredient.product.reliability_class %></td>
       <td><%= ingredient.weight %></td>
