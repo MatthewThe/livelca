@@ -19,7 +19,7 @@ class ProductsController < ApplicationController
   
   def autocomplete
     @products = Product.search(params[:term])
-    render json: @products.map(&:name).uniq 
+    render json: @products.map{|p| {:label => p.name, :value => p.id}}
   end
 
   # GET /products/1

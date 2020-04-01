@@ -18,6 +18,8 @@
   Total emission CO2 equivalent ("CO2e") per serving: <%= @recipe.co2_equiv_per_serving %> kg
 </p>
 
+<%= render 'pie_chart' %>
+
 <%= form_for(@ingredient) do |f| %>
   <%= f.hidden_field :recipe, value: @recipe.uuid %>
 
@@ -25,6 +27,7 @@
   <thead>
     <tr>
       <th>CO2e (kg)</th>
+      <th>&nbsp;</th>
       <th>Product</th>
       <th>Amount (kg)</th>
       <th>Description</th>
@@ -40,6 +43,7 @@
           <% else %>
           N/A
           <% end %></td>
+      <td>&nbsp;</td>
       <td><%= f.text_field :product_name, autofocus: true, id: 'product-autocomplete', :required => true %></td>
       <td><%= f.number_field :weight, step: 0.001, :required => true %></td>
       <td><%= f.text_field :description %></td>
@@ -49,7 +53,9 @@
   <% @recipe.ingredients.each_with_index do |ingredient, i| %>
     <% if @ingredient != ingredient %> 
     <tr>
-      <td><%= (ingredient.weight * ingredient.product.co2_equiv).round(3) %></td>
+      <td><%= ingredient.co2_equiv %></td>
+      <td style="width:20px; background-color:<%= ingredient.co2_equiv_color %>">&nbsp;
+        </td>
       <td><%= link_to ingredient.product.name, ingredient.product, class: ingredient.product.reliability_class %></td>
       <td><%= ingredient.weight %></td>
       <td><%= ingredient.description %></td>

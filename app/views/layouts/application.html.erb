@@ -29,7 +29,7 @@
       <div class="space_8"></div>
       
       <%= form_tag products_path, :method => 'get' do %>  
-        <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-autocomplete', :placeholder => "Search", :size => 15 %>
+        <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-select-autocomplete', :placeholder => "Search", :size => 15 %>
         <%= submit_tag "Find product", :name => nil, class: "search_submit" %>
       <% end %>
     </div>

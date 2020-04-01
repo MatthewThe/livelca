@@ -15,6 +15,23 @@ class Ingredient
     country_origin ? country_origin.name : "Unknown"
   end
   
+  def co2_equiv
+    (weight * product.co2_equiv).round(3)
+  end
+  
+  def co2_equiv_color
+    co2_equiv_scaled = [0, [co2_equiv / recipe.servings * 2, 1].min].max
+    green = [0,142,9]
+    yellow = [255,191,0]
+    red = [255,3,3]
+    if co2_equiv_scaled < 0.5
+      color = [green, yellow].transpose.map{|x| 2*(0.5 - co2_equiv_scaled) * x[0] + 2*co2_equiv_scaled * x[1]}
+    else
+      color = [yellow, red].transpose.map{|x| 2*(1.0 - co2_equiv_scaled) * x[0] + 2*(co2_equiv_scaled - 0.5) * x[1]}
+    end
+    "rgb(" + color[0].to_s + "," + color[1].to_s + "," + color[2].to_s + ")"
+  end
+  
   def self.parse(s)
     amount = 1.0
     mult = 1.0
