@@ -7,6 +7,7 @@ document.addEventListener("turbolinks:load", function() {
   $('[id^="product-autocomplete"]').autocomplete({
     source: '/product_autocomplete',
     autoFocus: true
+    select: function( event, ui ) { this.value = ui.item.label; return false; }
   })
   
   $('[id^="product-select-autocomplete"]').autocomplete({
