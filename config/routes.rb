@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   
   get '/country_autocomplete' => 'countries#autocomplete'
   get '/product_autocomplete' => 'products#autocomplete'
+  get '/product_autocomplete_name' => 'products#autocomplete_name'
   
   patch 'sources' => 'sources#duplicate'
   

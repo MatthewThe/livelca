@@ -81,3 +81,7 @@ yarn-debug.log*
 !/storage/.keep
 
 /vendor/cache
+
+env_variables.yaml
+
+/config/master.key

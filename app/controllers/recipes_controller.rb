@@ -66,42 +66,40 @@ class RecipesController < ApplicationController
       @recipe = Recipe.new(recipe_params)
       @recipe.country_consumption = Country.find_or_create(recipe_name_params[:country_consumption_name])
       @recipe.user = current_user
-
-      respond_to do |format|
-        if @recipe.save
-          if ingredient_params[:product_name]
-            ingredients = ingredient_params.values.transpose.map { |s| Hash[ingredient_params.keys.zip(s)] }
-            ingredients.each do |ingredient|
-              weight, item_name = Ingredient.parse(ingredient["item_name"])
-              if ingredient["product_name"].length > 0 and not ingredient["product_name"] == "None"
-                @ingredient = Ingredient.new({:weight => ingredient["weight"]})
-                @ingredient.recipe = @recipe
-                @ingredient.description = ingredient["item_name"]
-                @ingredient.product = Product.find_or_create(ingredient["product_name"])
-                @ingredient.country_origin = Country.find_or_create(ingredient["country_origin_name"])
-                if not @ingredient.save
-                  render :html => "Could not save ingredient"
-                  return
-                end
-                
-                @product_alias = ProductAlias.find_or_create(item_name)
-                @product_alias.country = @recipe.country_consumption
-                @product_alias.product = @ingredient.product
-                if not @product_alias.save
-                  render :html => "Could not save product alias"
-                  return
-                end
-              elsif item_name.length > 0
-                @product_alias = ProductAlias.find_or_create(item_name)
-                @product_alias.country = @recipe.country_consumption
-                @product_alias.product = Product.find_by(name: "None")
-                if not @product_alias.save
-                  render :html => "Could not save product alias"
-                  return
-                end
-              end
+      
+      if ingredient_params[:product_name]
+        ingredients = ingredient_params.values.transpose.map { |s| Hash[ingredient_params.keys.zip(s)] }
+        ingredients.each do |ingredient|
+          weight, item_name = Ingredient.parse(ingredient["item_name"])
+          if ingredient["product_name"].length > 0 and not ingredient["product_name"] == "None"
+            @ingredient = Ingredient.new({:weight => ingredient["weight"]})
+            #@ingredient.recipe = @recipe
+            @ingredient.description = ingredient["item_name"]
+            @ingredient.product = Product.find_or_create(ingredient["product_name"])
+            @ingredient.country_origin = Country.find_or_create(ingredient["country_origin_name"])
+            @recipe.ingredients << @ingredient
+            
+            @product_alias = ProductAlias.find_or_create(item_name)
+            @product_alias.country = @recipe.country_consumption
+            @product_alias.product = @ingredient.product
+            if not @product_alias.save
+              render :html => "Could not save product alias"
+              return
+            end
+          elsif item_name.length > 0
+            @product_alias = ProductAlias.find_or_create(item_name)
+            @product_alias.country = @recipe.country_consumption
+            @product_alias.product = Product.find_by(name: "None")
+            if not @product_alias.save
+              render :html => "Could not save product alias"
+              return
             end
           end
+        end
+      end
+      
+      respond_to do |format|
+        if @recipe.save
           format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
           format.json { render :show, status: :created, location: @recipe }
         else
