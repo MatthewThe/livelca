@@ -1,0 +1,14 @@
+{
+  "data": [
+<% cache(@products) do %>
+<% @products.each_with_index do |product, i| %>
+<%= "," if i > 0 %>
+[  "<%= (link_to product.name, product, class: product.reliability_class).gsub('"', '\"').html_safe %>",
+   "<div style='width:20px; background-color:<%= product.co2_equiv_color %>'>&nbsp;</div>",
+   "<%= product.co2_equiv %>",
+   "<% if product.study_count > 0 %><%= product.study_count %><% else %>N/A<% if product.proxy %> (proxy: <%= (link_to product.proxy.name, product.proxy).gsub('"', '\"').html_safe %>)<% end %><% end %>"
+]
+<% end %>
+<% end %>
+]
+}

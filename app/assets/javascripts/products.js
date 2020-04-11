@@ -3,7 +3,12 @@ document.addEventListener("turbolinks:load", function() {
   if ($("#products_table_wrapper").length == 0) {
     $('#products_table').DataTable({
       "pageLength": 25,
-      "stateSave": true
+      "stateSave": true,
+      "ajax": '/product_table.json',
+      "language": {
+         "loadingRecords": "Please wait - loading products..."
+      },
+      "oSearch": {"sSearch": "Initial search"}
     });
   }
   if ($("#sources_table_wrapper").length == 0) {
@@ -178,6 +183,10 @@ function displayProductGraph(tree, products) {
         }
     });
     labelNode.call(updateNode);
+  }
+  
+  for (var i = 0, n = 100; i < n; ++i) {
+    simulation.tick();
   }
 
   simulation.alphaDecay(decay);

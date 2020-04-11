@@ -21,6 +21,9 @@ Rails.application.routes.draw do
   get '/product_autocomplete' => 'products#autocomplete'
   get '/product_autocomplete_name' => 'products#autocomplete_name'
   
+  get 'product_table' => 'products#table'
+  get 'product_graph' => 'products#graph'
+  
   patch 'sources' => 'sources#duplicate'
   
   get 'products/:id/merge' => 'products#merge', as: :merge_product

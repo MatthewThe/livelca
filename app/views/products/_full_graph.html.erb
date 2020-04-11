@@ -1,0 +1,40 @@
+<svg style="border:1px solid black" id="product_graph">
+  <g id="loader">
+  <circle fill="#9ED54C" stroke="none" cx="130" cy="70" r="6">
+    <animate
+      attributeName="opacity"
+      dur="1s"
+      values="0;1;0"
+      repeatCount="indefinite"
+      begin="0.1"/>    
+  </circle>
+  <circle fill="#9ED54C" stroke="none" cx="150" cy="70" r="6">
+    <animate
+      attributeName="opacity"
+      dur="1s"
+      values="0;1;0"
+      repeatCount="indefinite" 
+      begin="0.2"/>       
+  </circle>
+  <circle fill="#9ED54C" stroke="none" cx="170" cy="70" r="6">
+    <animate
+      attributeName="opacity"
+      dur="1s"
+      values="0;1;0"
+      repeatCount="indefinite" 
+      begin="0.3"/>     
+  </circle>
+  </g>
+</svg>
+
+<script>
+$.ajax({
+  url: '/product_graph.json',
+  type: 'GET',
+  success: function(data){
+    d3.select('svg').select("#loader").remove();
+    
+    displayProductGraph(data.tree, data.products);
+  }
+ });
+</script>

@@ -1,5 +1,8 @@
 class Product 
   include Neo4j::ActiveNode
+  
+  include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  
   property :name, type: String
   property :wiki, type: String, default: ""
 

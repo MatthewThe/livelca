@@ -23,30 +23,5 @@
       <th>Studies</th>
     </tr>
   </thead>
-
-  <tbody>
-    <% @products_plus.each do |product| %>
-      <tr>
-        <td><%= link_to product.name, product, class: product.reliability_class %></td>
-        <td style="width:20px; background-color:<%= product.co2_equiv_color %>">&nbsp;
-        </td>
-        <td>
-          <%= product.co2_equiv %>
-        </td>
-        <td>
-          <% if product.study_count > 0 %>
-            <%= product.study_count %>
-          <% else %>
-            N/A
-            <% if product.proxy %>
-              (proxy: <%= link_to product.proxy.name, product.proxy %>)
-            <% end %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
 </table>
-
-<%= render 'graph' %>
 

@@ -12,9 +12,24 @@ class ProductsController < ApplicationController
     else
       @products = Product.all
     end
-    @products_plus = @products.with_associations(:studies, :proxy)
-    @products_plus2 = @products_plus.to_json(:methods => :co2_equiv_color)
-    @product_tree = Product.get_product_tree
+  end
+  
+  def table
+    @products = Product.all.with_associations(:studies, :proxy)
+    respond_to do |format|
+     format.json
+    end
+  end
+  
+  def graph
+    if request.format == :json
+      @product_tree = Product.get_product_tree
+      @products = Product.all.with_associations(:studies, :proxy).to_json(:methods => :co2_equiv_color)
+    end
+    respond_to do |format|
+     format.json
+     format.html
+    end
   end
   
   def autocomplete
