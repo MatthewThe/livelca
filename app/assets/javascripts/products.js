@@ -7,8 +7,7 @@ document.addEventListener("turbolinks:load", function() {
       "ajax": '/product_table.json',
       "language": {
          "loadingRecords": "Please wait - loading products..."
-      },
-      "oSearch": {"sSearch": "Initial search"}
+      }
     });
   }
   if ($("#sources_table_wrapper").length == 0) {
