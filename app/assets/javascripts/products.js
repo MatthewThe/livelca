@@ -184,7 +184,14 @@ function displayProductGraph(tree, products) {
   }
   
   simulation.tick(100);
-
+  nodeElements.call(updateNode);
+  linkElements.call(updateLink);
+  labelNode.each(function(d, i) {
+      d.x = d.node.x;
+      d.y = d.node.y;
+  });
+  labelNode.call(updateNode);
+  
   simulation.alphaDecay(decay);
   labelLayout.alphaDecay(decay);
 }
