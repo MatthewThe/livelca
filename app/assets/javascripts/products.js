@@ -159,12 +159,11 @@ function displayProductGraph(tree, products) {
   }
       
   function ticked() {
-    
     nodeElements.call(updateNode);
     linkElements.call(updateLink);
     
     labelNode.each(function(d, i) {
-        if(i % 2 == 0) {
+        if (i % 2 == 0) {
             d.x = d.node.x;
             d.y = d.node.y;
         } else {
@@ -184,9 +183,7 @@ function displayProductGraph(tree, products) {
     labelNode.call(updateNode);
   }
   
-  for (var i = 0, n = 100; i < n; ++i) {
-    simulation.tick();
-  }
+  simulation.tick(100);
 
   simulation.alphaDecay(decay);
   labelLayout.alphaDecay(decay);
