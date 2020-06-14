@@ -85,3 +85,6 @@ yarn-debug.log*
 env_variables.yaml
 
 /config/master.key
+
+*.zip
+.gitignore

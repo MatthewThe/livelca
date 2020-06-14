@@ -4,6 +4,9 @@ document.addEventListener("turbolinks:load", function() {
     $('#products_table').DataTable({
       "pageLength": 25,
       "stateSave": true,
+      "oLanguage": {
+         "sSearch": "Filter products:"
+       },
       "ajax": '/product_table.json',
       "language": {
          "loadingRecords": "Please wait - loading products..."
@@ -78,7 +81,7 @@ function displayProductGraph(tree, products) {
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("x", d3.forceX(width / 2).strength(0.01))
       .force("y", d3.forceY(height / 2).strength(0.01))
-      .force("link", d3.forceLink(rels).id(function(d) {return d.id; }).distance(5).strength(0.1))
+      .force("link", d3.forceLink(rels).distance(5).strength(0.1))
       .on("tick", ticked);
 
   function getNodeColor(node) {
