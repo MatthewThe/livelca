@@ -33,28 +33,32 @@ div#header{
   width:calc(93% - 20px);
   padding-left:4%;
   padding-top:10px;
-  height:80px;
+  height:70px;
+  font-size: 1.5em;
 }
 div#content{
   margin-left:0%;
   padding:10px;
-  background-color:#CBF0C2;
+  /*background-color:#CBF0C2;*/
+  background-color: rgba(203,240,194,0.6);
 }
 div#navbar{width:calc(100% - 50px);top:0px;}
 
-h1 { font-size: 3em; }
-h2 { font-size: 2em; }
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
 
 @media (max-width: 410px) {
-  h1 { font-size: calc(48vw / 4.1); }
-  div#header{ height: calc(80vw / 4.1); }
+  /*div#header{ 
+    height: calc(40vw / 4.1); 
+    font-size: calc(48vw / 4.1); 
+  }*/
 }
 
 @media (min-width: 800px) {
-  div#header{
+  /*div#header{
     height:70px;
     padding-top:10px;
-  }
+  }*/
   div#navbar {
     padding-left:50px;
   }
@@ -62,7 +66,7 @@ h2 { font-size: 2em; }
     max-width: 1024px;
     width:calc(100% - 120px);
     min-height:550px;
-    margin:0px 30px;
+    margin:15px 30px;
     padding:20px 30px;
   }
 }
@@ -89,7 +93,6 @@ body {
 	color:#333;
 }
 #header a		{
-  font-size:14px; 
   color:#FFF; 
   text-shadow: 2px 2px 4px #000000;
   text-decoration: none;
@@ -118,7 +121,7 @@ body {
 #content 		{
   text-align: left; 
   color: #333;
-  border:1px solid #45A32E;
+  /*border:1px solid #45A32E;*/
 }
 #content a, #content a:visited {
   color:#666;
@@ -189,12 +192,12 @@ input[type=submit] {
   user-select: none;
 }
 
-.button:hover{
+#content a.button:hover{
   background-color: #eee;
   color: #555;
 }
 
-.button:active{
+#content a.button:active{
   background: #e9e9e9;
   position: relative;
   top: 1px;
@@ -204,7 +207,7 @@ input[type=submit] {
   box-shadow: 0 1px 1px rgba(0, 0, 0, .3) inset;
 }
 
-.button.green, .button.red, .button.blue {
+#content a.button.green, a.button.red, a.button.blue {
   color: #fff;
   text-shadow: 0 1px 0 rgba(0,0,0,.2);
   
@@ -218,16 +221,16 @@ input[type=submit] {
 
 /* */
 
-.button.green{
-  background-color: #57a957;
-  border-color: #57a957;
+#content a.button.green{
+  background-color: #27AD05;
+  border-color: #27AD05;
 }
 
-.button.green:hover{
+#content a.button.green:hover{
   background-color: #62c462;
 }
 
-.button.green:active{
+#content a.button.green:active{
   background: #57a957;
 }
 
