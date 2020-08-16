@@ -1,12 +1,14 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <%= link_to 'Edit article', edit_product_path(@product) %> | <%= link_to 'Merge article', merge_product_path(@product) %>
+  <%= link_to 'Edit article', edit_product_path(@product), class: "green button" %> <%= link_to 'Merge article', merge_product_path(@product), class: "green button" %>
 </p>
 
 <h1>
   <%= @product.name %>
 </h1>
+
+CO2e per kg (weighted average): <%= @product.co2_equiv %>
 
 <% if @supercategories.count > 0 %>
 <p>
@@ -38,19 +40,13 @@
 </p>
 <% end %>
 
-<div class="space_16"></div>
-
 <%= render 'graph' %>
 
 <h2>Studies</h2>
 
+<%= link_to "Add study", new_source_path(:product_id => @product), class: "green button" %>
+
 <% if @product.study_count > 0 %>
-
-CO2e per kg (weighted average): <%= @product.co2_equiv %>
-
-<div class="space_16"></div>
-
-<%= link_to "Add study", new_source_path(:product_id => @product) %>
 
 <div class="space_16"></div>
 
@@ -58,26 +54,20 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
   <thead>
     <tr>
       <th>Source</th>
-      <th>Country origin</th>
-      <th>Country consumption</th>
       <th>CO2e</th>
-      <th>Notes</th>
       <th>Weight</th>
-      <th></th>
     </tr>
   </thead>
 
   <tbody>
     <% @product.studies.with_associations(:country_origin, :country_consumption, :product, :resource).each_with_index do |source, i| %>
       <tr>
-        <td><%= link_to source.resource.name, source.resource %></td>
-        <td><%= link_to source.country_origin.name, source.country_origin %></td>
-        <td><%= link_to source.country_consumption.name, source.country_consumption %></td>
+        <td><%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
+            <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
+            <%= link_to source.resource.name, source.resource %>
+            </td>
         <td><%= source.co2_equiv %></td>
-        <td><%= source.notes %></td>
         <td><%= source.weight %></td>
-        <td><%= link_to 'Edit', edit_source_path(source) %>
-            <%= link_to 'Delete', source, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

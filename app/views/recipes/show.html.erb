@@ -1,9 +1,14 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit details', edit_recipe_path(@recipe) %> | 
-<%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' } %>
-
 <h1><%= @recipe.name %></h1>
+
+<%= link_to 'Edit recipe', edit_recipe_path(@recipe), class: "green button" %>
+<%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>
+
+<p>
+  CO2 equivalent ("CO2e") per serving: <strong><%= @recipe.co2_equiv_per_serving %> kg</strong><br />
+  CO2 equivalent ("CO2e"): <%= @recipe.co2_equiv %> kg
+</p>
 
 <p>
   Servings: <%= @recipe.servings %>
@@ -11,11 +16,6 @@
 
 <p>
   Country of consumption: <%= @recipe.country_consumption.name %>
-</p>
-
-<p>
-  Total emission CO2 equivalent ("CO2e"): <%= @recipe.co2_equiv %> kg<br />
-  Total emission CO2 equivalent ("CO2e") per serving: <%= @recipe.co2_equiv_per_serving %> kg
 </p>
 
 <%= render 'pie_chart' %>
@@ -45,10 +45,10 @@
           <% end %></td>
       <td>&nbsp;</td>
       <td><%= f.text_field :product_name, autofocus: true, id: 'product-autocomplete', :required => true %></td>
-      <td><%= f.number_field :weight, step: 0.001, :required => true %></td>
+      <td><%= f.number_field :weight, step: 0.001, :required => true, style: "width:50px" %></td>
       <td><%= f.text_field :description %></td>
       <td><%= f.text_field :country_origin_name, id: 'country-autocomplete-origin', :required => true %></td>
-      <td><%= f.submit (@ingredient.product ? 'Update ingredient' : 'Add ingredient') %></td>
+      <td><%= f.submit (@ingredient.product ? 'Update' : 'Add'), class: "green button" %></td>
     </tr>
   <% @recipe.ingredients.each_with_index do |ingredient, i| %>
     <% if @ingredient != ingredient %> 
@@ -61,8 +61,8 @@
       <td><%= ingredient.description %></td>
       <td><%= link_to ingredient.country_origin_name, ingredient.country_origin %></td>
       <td>
-        <%= link_to 'Remove', ingredient, method: :delete, data: { confirm: 'Are you sure?' } %>
-        <%= link_to 'Edit', params.permit(:edit_ingredient).merge(edit_ingredient: ingredient) %>
+        <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), params.permit(:edit_ingredient).merge(edit_ingredient: ingredient) %>
+        <%= link_to image_tag("erase.png", size: "12x12", alt: "Remove"), ingredient, method: :delete, data: { confirm: 'Are you sure?' } %>
       </td>
     </tr>
     <% end %>

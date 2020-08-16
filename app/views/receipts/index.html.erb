@@ -1,6 +1,8 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Receipts</h1>
+<h1>My Receipts</h1>
+
+<%= link_to 'Add Receipt', new_receipt_path, class: "green button" %>
 
 <div class="space_16"></div>
 
@@ -28,10 +30,5 @@
   </tbody>
 </table>
 
-<div class="space_16"></div>
-
 Total emission CO2 equivalent ("CO2e"): <%= total_sum.round(3) %> kg
 
-<div class="space_16"></div>
-
-<%= link_to 'New Receipt', new_receipt_path %>

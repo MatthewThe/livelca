@@ -44,7 +44,7 @@ div#content{
 }
 div#navbar{width:calc(100% - 50px);top:0px;}
 
-h1 { font-size: 2em; }
+h1 { font-size: 2em; line-height: 1em; }
 h2 { font-size: 1.5em; }
 
 @media (max-width: 410px) {
@@ -61,6 +61,8 @@ h2 { font-size: 1.5em; }
   }*/
   div#navbar {
     padding-left:50px;
+    padding-right:50px;
+    width:calc(100% - 100px);
   }
   div#content{
     max-width: 1024px;
@@ -91,6 +93,7 @@ body {
 #header {
 	text-align:left;
 	color:#333;
+	margin-bottom: 18px;
 }
 #header a		{
   color:#FFF; 
@@ -112,7 +115,7 @@ body {
   background-color: #45A32E;
 }
 #navbar .search_box {
-  float: left;
+  float: right;
   display: block;
   padding:8px;
 }
@@ -192,12 +195,12 @@ input[type=submit] {
   user-select: none;
 }
 
-#content a.button:hover{
+#content .button:hover{
   background-color: #eee;
   color: #555;
 }
 
-#content a.button:active{
+#content .button:active{
   background: #e9e9e9;
   position: relative;
   top: 1px;
@@ -207,7 +210,7 @@ input[type=submit] {
   box-shadow: 0 1px 1px rgba(0, 0, 0, .3) inset;
 }
 
-#content a.button.green, a.button.red, a.button.blue {
+#content .button.green, .button.red, .button.blue {
   color: #fff;
   text-shadow: 0 1px 0 rgba(0,0,0,.2);
   
@@ -221,16 +224,16 @@ input[type=submit] {
 
 /* */
 
-#content a.button.green{
+#content .button.green{
   background-color: #27AD05;
   border-color: #27AD05;
 }
 
-#content a.button.green:hover{
+#content .button.green:hover{
   background-color: #62c462;
 }
 
-#content a.button.green:active{
+#content .button.green:active{
   background: #57a957;
 }
 

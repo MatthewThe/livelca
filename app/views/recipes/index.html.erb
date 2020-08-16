@@ -1,6 +1,10 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Recipes</h1>
+<h1>My Recipes</h1>
+
+<%= link_to 'Add Recipe', new_recipe_path, class: "green button" %>
+
+<div class="space_16"></div>
 
 <table id="recipes_table">
   <thead>
@@ -24,7 +28,3 @@
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Recipe', new_recipe_path %>

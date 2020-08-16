@@ -1,8 +1,8 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Resources</h1>
+<h1>Resources</h1>
 
-<%= link_to 'New Resource', new_resource_path %>
+<%= link_to 'New Resource', new_resource_path, class: "green button" %>
 
 <div class="space_16"></div>
 
@@ -10,9 +10,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>URL</th>
       <th>Default weight</th>
-      <th></th>
     </tr>
   </thead>
 
@@ -20,10 +18,7 @@
     <% @resources.each do |resource| %>
       <tr>
         <td><%= link_to resource.name, resource %></td>
-        <td><%= link_to 'Link', resource.url, target: "_blank" %></td>
         <td><%= resource.default_weight %></td>
-        <td><%= link_to 'Edit', edit_resource_path(resource) %>
-            <%= link_to 'Destroy', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

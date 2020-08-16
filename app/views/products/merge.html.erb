@@ -1,3 +1,5 @@
+<%= link_to 'Back to product', @product, class: "green button" %>
+
 <h1>Merge product with <%=@product.name%></h1>
 
 <%= form_for(@product) do |f| %>
@@ -18,9 +20,6 @@
     <%= f.text_field :merge_product_name, id: 'product-autocomplete', :required => true %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit class: "green button"%>
   </div>
 <% end %>
-
-<%= link_to 'Back to product', @product %> |
-<%= link_to 'Delete', @product, method: :delete, data: { confirm: 'Are you sure?' } %>

@@ -1,6 +1,7 @@
+<%= link_to 'Back to product', @product, class: "green button" %>
+
 <h1>Editing Product</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Back to product', @product %> |
-<%= link_to 'Delete', @product, method: :delete, data: { confirm: 'Are you sure?' } %>
+<%= link_to 'Delete', @product, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>

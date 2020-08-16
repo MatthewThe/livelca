@@ -1,23 +1,29 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Resource name:</strong>
+<%= link_to '> Back to all resources', resources_path, class: "green button" %>
+
+<h1>
   <%= @resource.name %>
+</h1>
+
+<p>
+  Notes:<br/><%= @resource.notes %>
 </p>
 
 <p>
-  <strong>Resource URL:</strong>
-  <%= link_to @resource.url, @resource.url %>
+  URL: <%= link_to @resource.url, @resource.url %>
 </p>
 
 <p>
-  <strong>Resource default weight:</strong>
-  <%= @resource.default_weight %>
+  Default weight: <%= @resource.default_weight %>
 </p>
 
-<h3>Products</h3>
 
-<%= link_to "Add product", new_source_path(:resource_id => @resource) %>
+<%= link_to 'Edit', edit_resource_path(@resource), class: "green button" %>
+
+<h2>Products</h2>
+
+<%= link_to "Add product", new_source_path(:resource_id => @resource), class: "green button" %>
 
 <div class="space_16"></div>
 
@@ -49,5 +55,3 @@
   </tbody>
 </table>
 
-<%= link_to 'Edit', edit_resource_path(@resource) %> |
-<%= link_to 'Back', resources_path %>
