@@ -1,0 +1,52 @@
+<h1>Editing Admin User</h1>
+
+<%= form_for(@admin_user) do |f| %>
+  <%= render "devise/shared/error_messages", resource: @admin_user %>
+  
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name, autofocus: true, autocomplete: "name" %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.email_field :email, autocomplete: "email" %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :country %><br />
+    <%= f.text_field :country_name, :value => @country_name, id: 'country-autocomplete-origin' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
+    <%= f.password_field :password, autocomplete: "new-password" %>
+    <% if @minimum_password_length %>
+      <br />
+      <em><%= @minimum_password_length %> characters minimum</em>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
+    <%= f.password_field :current_password, autocomplete: "current-password" %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :admin %><br />
+    <%= f.check_box :admin %>
+  </div>
+  
+  <div class="actions">
+    <%= f.submit "Update", class: "green button" %>
+  </div>
+<% end %>
+
+<h3>Cancel this account</h3>
+
+<p><%= button_to "Cancel this account", registration_path(@admin_user), data: { confirm: "Are you sure?" }, method: :delete, class: "green button" %></p>

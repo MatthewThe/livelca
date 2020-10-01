@@ -57,6 +57,8 @@ class User
   property :name, type: String
   
   has_one :out, :country, type: :LIVES_IN, model_class: :Country
+  
+  property :admin, type: Boolean, default: false
 
 
 end

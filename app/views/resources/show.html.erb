@@ -33,23 +33,17 @@
       <th>Product</th>
       <th>Country origin</th>
       <th>Country consumption</th>
-      <th>Co2 equiv</th>
-      <th>Weight</th>
-      <th></th>
     </tr>
   </thead>
   
   <tbody>
   <% @resource.sources.with_associations(:product, :country_origin, :country_consumption).each_with_index do |source, i| %>
     <tr>
-        <td><%= link_to source.product_name, source.product %></td>
+        <td><%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
+            <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
+            <%= link_to source.product_name, source %></td>
         <td><%= link_to source.country_origin_name, source.country_origin %></td>
         <td><%= link_to source.country_consumption_name, source.country_consumption %></td>
-        <td><%= source.co2_equiv %></td>
-        <td><%= source.weight %></td>
-        <td><%= link_to 'Show', source %>
-            <%= link_to 'Edit', edit_source_path(source) %>
-            <%= link_to 'Delete', source, method: :delete, data: { confirm: 'Are you sure?' } %></td>
     </tr>
   <% end %>
   </tbody>

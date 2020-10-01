@@ -4,6 +4,7 @@ document.addEventListener("turbolinks:load", function() {
     $('#products_table').DataTable({
       "pageLength": 25,
       "stateSave": true,
+      "deferRender": true,
       "oLanguage": {
          "sSearch": "Filter products:"
        },

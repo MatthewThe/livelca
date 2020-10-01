@@ -63,7 +63,7 @@ class User::RegistrationsController < Devise::RegistrationsController
     end
     
     def account_update_params
-      a = params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password, :country_name)
+      a = params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password, :country_name, :admin)
       a[:country] = get_country(a[:country_name])
       a.delete(:country_name)
       a

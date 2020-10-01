@@ -17,6 +17,10 @@ Rails.application.routes.draw do
     registrations: 'user/registrations'
   }
   
+  scope "/admin" do
+    resources :users
+  end
+  
   get '/country_autocomplete' => 'countries#autocomplete'
   get '/product_autocomplete' => 'products#autocomplete'
   get '/product_autocomplete_name' => 'products#autocomplete_name'
