@@ -7,12 +7,33 @@ document.addEventListener("turbolinks:load", function() {
       "deferRender": true,
       "oLanguage": {
          "sSearch": "Filter products:"
-       },
-      "ajax": '/product_table.json',
+      },
+      "ajax": {
+        "url":'/product_table.json',
+        "cache": true,
+      },
       "language": {
          "loadingRecords": "Please wait - loading products..."
-      }
+      },
+      "columnDefs": [
+        { "width": "250px", "targets": 0 },
+        { "width": "80px", "targets": 1 },
+        { "width": "80px", "targets": 2 }
+      ]
     });
+  }
+  if ($("#product_graph_container").length == 0) {
+    if ($("#product_graph").length > 0) {
+      $.ajax({
+        url: '/product_graph.json',
+        type: 'GET',
+        success: function(data) {
+          d3.select('svg').select("#product_graph_loader").remove();
+          
+          displayProductGraph(data.tree, data.products);
+        }
+      });
+    }
   }
   if ($("#sources_table_wrapper").length == 0) {
     $('#sources_table').DataTable({
@@ -21,10 +42,6 @@ document.addEventListener("turbolinks:load", function() {
     });
   }
 })
-
-document.addEventListener('turbolinks:before-cache', () => {
-  $("#product_graph").innerHTML = "";
-});
 
 function displayProductGraph(tree, products) {
   var nodes = [], rels = [], names = [];
@@ -48,8 +65,8 @@ function displayProductGraph(tree, products) {
     })
   });
   
-  console.log("#graph nodes: " + nodes.length);
-  console.log("#graph rels: " + rels.length);
+  //console.log("#graph nodes: " + nodes.length);
+  //console.log("#graph rels: " + rels.length);
 
   const width = Math.max(Math.min(Math.ceil(Math.sqrt(nodes.length)) * 60, 960), 240);
   const height = width;
@@ -109,7 +126,7 @@ function displayProductGraph(tree, products) {
       node.fy = null
     })
 
-  var container = svg.append("g");
+  var container = svg.append("g").attr("id", "product_graph_container");
 
   var linkElements = container.append("g")
     .attr("class", "links")

@@ -1,0 +1,4 @@
+vendor
+db/neo4j/development
+tmp
+.git

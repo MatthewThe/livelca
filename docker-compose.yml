@@ -1,0 +1,34 @@
+# Use the file format compatible with Docker Compose 3.8
+version: "3.8"
+
+services:
+
+  database:
+    image: neo4j:3.5.14
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - /var/lib/neo4j/data:/data
+    environment:
+      - NEO4J_dbms_memory_pagecache_size=64m
+      - NEO4J_dbms_memory_heap_max__size=64m
+
+  web:
+    # The root directory from which we're building.
+    image: matthewthe/livelca:latest
+
+    # The command to be run when we run "docker-compose up".
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+
+    # Expose port 3000.
+    ports:
+      - "80:3000"
+
+    # Specify that this container depends on the other
+    # container which we've called "database".
+    depends_on:
+      - database
+    
+    environment:
+      RAILS_ENV: production

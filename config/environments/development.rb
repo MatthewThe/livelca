@@ -35,4 +35,11 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  
+  # enable caching
+  #config.action_controller.perform_caching = true
+  #config.cache_store = :memory_store
+  #config.public_file_server.headers = {
+  #  'Cache-Control' => "public, max-age=#{2.days.seconds.to_i}"
+  #}
 end

@@ -2,9 +2,10 @@
 
 <h1>Resources</h1>
 
-<%= link_to 'New Resource', new_resource_path, class: "green button" %>
-
-<div class="space_16"></div>
+<% if user_signed_in? && current_user.admin? %>
+  <%= link_to 'New Resource', new_resource_path, class: "green button" %>
+  <div class="space_16"></div>
+<% end %>
 
 <table id="resources_table">
   <thead>

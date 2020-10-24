@@ -1,3 +1,17 @@
 // Place all the styles related to the Products controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+#products_table_wrapper {
+  max-width: 500px;
+}
+
+.co2_cell {
+  width:45px;
+  padding:0px 4px; 
+  color: white; 
+  text-align: right; 
+  float:right; 
+  border-radius: 5px;
+}

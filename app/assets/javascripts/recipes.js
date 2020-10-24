@@ -9,7 +9,11 @@ document.addEventListener("turbolinks:load", function() {
   if ($("#recipes_table_wrapper").length == 0) {
     $('#recipes_table').DataTable({
       "pageLength": 25,
-      "order": [[ 3, "desc" ]]
+      "order": [[ 1, "desc" ]],
+      "columnDefs": [
+        { "width": "250px", "targets": 0 },
+        { "width": "80px", "targets": 1 }
+      ]
     });
   }
 })

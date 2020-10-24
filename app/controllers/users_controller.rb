@@ -3,13 +3,6 @@ class UsersController < ApplicationController
   before_action :is_admin
   before_action :set_admin_user, only: [:show, :edit, :update, :destroy]
   
-  def is_admin
-    unless current_user.admin?
-      flash[:error] = "You must be an administrator in to access this section"
-      redirect_to new_user_session_path # halts request cycle
-    end
-  end
-  
   # GET /admin/users
   # GET /admin/users.json
   def index
@@ -50,7 +43,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /admin/users/1.json
   def update
     respond_to do |format|
-      if @admin_user.update(admin_user_params)
+      if @admin_user.update_without_password(admin_user_params)
         format.html { redirect_to @admin_user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @admin_user }
       else
@@ -78,6 +71,6 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def admin_user_params
-      params.fetch(:admin_user, {})
+      params.fetch(:user).permit(:name, :email, :password, :password_confirmation, :current_password, :country_name, :admin)
     end
 end

@@ -2,9 +2,10 @@
 
 <h1>Products</h1>
 
-<%= link_to 'Add Product', new_product_path, class: "green button" %>
-
-<div class="space_16"></div>
+<% if user_signed_in? && current_user.admin? %>
+  <%= link_to 'Add Product', new_product_path, class: "green button" %>
+  <div class="space_16"></div>
+<% end %>
 
 <!---<div class="search_box">
   <%= form_tag products_path, :method => 'get' do %>  
@@ -12,14 +13,12 @@
     <%= submit_tag "Find product", :name => nil, class: "search_submit" %>
   <% end %>
 </div>--->
-      
-<div class="space_16"></div>
+
 <table id="products_table" class="stripe">
   <thead>
     <tr>
       <th>Product</th>
-      <th>&nbsp;</th>
-      <th>CO2e per kg</th>
+      <th>CO2e / kg</th>
       <th>Studies</th>
     </tr>
   </thead>

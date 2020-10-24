@@ -1,4 +1,5 @@
 class ResourcesController < ApplicationController
+  before_action :authenticate_user!, :is_admin, only: [:new, :edit, :update, :destroy]
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
   # GET /resources

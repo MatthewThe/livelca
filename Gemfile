@@ -41,13 +41,14 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  
+  gem 'neo4j-rake_tasks'
 end
 
 
 gem 'neo4j', '~> 9.6.0'
 gem "devise-neo4j"
 
-gem 'neo4j-rake_tasks'
 
 gem 'jquery-ui-rails'
 

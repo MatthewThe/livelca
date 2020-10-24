@@ -1,8 +1,10 @@
 <svg style="border:1px solid black" id="product_graph"></svg>
 
 <script>
-var tree = <%=@product_tree.html_safe%>;
-var products = <%=@products_plus2.html_safe%>;
-
-displayProductGraph(tree, products);
+if ($("#product_graph_container").length == 0) {
+  var tree = <%=@product_tree.html_safe%>;
+  var products = <%=@products_plus2.html_safe%>;
+  
+  displayProductGraph(tree, products);
+}
 </script>
