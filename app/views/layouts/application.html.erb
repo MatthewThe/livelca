@@ -10,34 +10,45 @@
 <body>
   <div id="background"></div>
   <div id="container">
-    <div id="header">
-      <a href="/"><h1>LiveLCA</h1></a>
+    <div id="header" class="navbar">
+      <div id="logo">
+        <a href="/">LiveLCA</a>
+      </div>
+      
+      <div id="navbar">
+        <%= nav_link "Products", products_path %>
+        <%= nav_link "Products graph", product_graph_path %>
+        <%= nav_link "Resources", resources_path %>
+        <%= nav_link "About", "/pages/about" %>
+        
+        <div class="hspace_8"></div>
+        
+        <% if user_signed_in? %>
+          <%= nav_link 'My Receipts', receipts_path %>
+          <%= nav_link 'My Recipes', recipes_path %>
+          <%= nav_link 'Edit profile', edit_user_registration_path %>
+          <%= nav_link 'Logout', destroy_user_session_path, method: :delete %>        
+        <% else %>
+          <%= nav_link 'Login', new_user_session_path %>  
+        <% end %>
+        
+        <div class="hspace_8"></div>
+        
+        <%= form_tag products_path, :class => "search_box", :method => 'get' do %>
+          <div class="tb">
+            <div class="td">
+              <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-select-autocomplete', :placeholder => "Search", :size => 15 %>
+            </div>
+            <div class="td" id="s-cover">
+              <%= button_tag "", :type => "submit", :name => nil, class: "search_submit" do %>
+              <div id="s-circle"></div>
+              <span></span>
+              <% end %>  
+            </div>
+          </div>
+        <% end %>
+      </div>
     </div>
-    <div id="navbar">
-      <%= nav_link "Products", products_path %>
-      <%= nav_link "Products graph", product_graph_path %>
-      <%= nav_link "Resources", resources_path %>
-      <%= nav_link "About", "/pages/about" %>
-      
-      <div class="hspace_8"></div>
-      
-      <% if user_signed_in? %>
-        <%= nav_link 'My Receipts', receipts_path %>
-        <%= nav_link 'My Recipes', recipes_path %>
-        <%= nav_link 'Edit profile', edit_user_registration_path %>
-        <%= nav_link 'Logout', destroy_user_session_path, method: :delete %>        
-      <% else %>
-        <%= nav_link 'Login', new_user_session_path %>  
-      <% end %>
-      
-      <div class="hspace_8"></div>
-      
-      <%= form_tag products_path, :class => "search_box", :method => 'get' do %>  
-        <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-select-autocomplete', :placeholder => "Search", :size => 15 %>
-        <%= submit_tag "Find product", :name => nil, class: "search_submit" %>
-      <% end %>
-    </div>
-    
     <div class="clear"></div>
     
     <div id="content">

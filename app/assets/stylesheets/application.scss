@@ -16,7 +16,6 @@
  */
 
 div#container{
-  max-width: 1140px;
   margin: 0 auto;
 }
 div#background{
@@ -30,7 +29,7 @@ div#background{
   z-index:-1;
 }
 div#header{
-  width:calc(93% - 20px);
+  width:calc(97% - 60px);
   padding-left:4%;
   padding-top:10px;
   height:70px;
@@ -42,9 +41,12 @@ div#content{
   /*background-color:#CBF0C2;*/
   background-color: rgba(203,240,194,0.6);
 }
-div#navbar{width:calc(100% - 50px);top:0px;}
+div#navbar{
+  width: 100%;
+  top:0px;
+  margin-bottom: 10px;
+}
 
-h1 { font-size: 2em; line-height: 1em; }
 h2 { font-size: 1.5em; }
 
 @media (max-width: 410px) {
@@ -61,15 +63,12 @@ h2 { font-size: 1.5em; }
   }*/
   div#navbar {
     padding-left:50px;
-    padding-right:50px;
-    width:calc(100% - 100px);
+    width:calc(100% - 280px);
   }
   div#content{
-    max-width: 1024px;
-    width:calc(100% - 120px);
     min-height:550px;
-    margin:15px 30px;
-    padding:10px 30px;
+    margin:15px 0px;
+    padding:15px 30px;
   }
 }
 
@@ -97,34 +96,152 @@ label {
 
 #header {
 	text-align:left;
-	color:#333;
-	margin-bottom: 18px;
 }
-#header a		{
+
+#logo {
+  float: left;
+  display: block;
+  padding-top:20px;
+}
+#logo a {
   color:#FFF; 
   text-shadow: 2px 2px 4px #000000;
   text-decoration: none;
+  width: 250px;
+  font-size: 2em; 
+  font-weight: bold;
+  line-height: 1em;
+}
+#logo a:hover {
+  background-color: transparent;
 }
 
-
+#navbar {
+  padding-top: 25px;
+  float: right;
+  display: block;
+}
 #navbar a, #navbar a:visited {
   float: left;
   display: block;
-  color:#ddd;
+  color:#fefefe;
+  text-shadow: 1px 1px 2px #000000;
   text-decoration: none;
+  font-size: 16px;
   font-weight: bold;
   padding: 10px;
 }
-#navbar .current a, .current a:visited, a:hover {
+#navbar .current a, #navbar .current a:visited, #navbar a:hover {
   color:#fff;
   background-color: #45A32E;
 }
+
 #navbar .search_box {
   float: right;
   display: block;
-  padding:8px;
+  padding: 6px;
+  margin: 2px;
+  background-color: #45A32E;
+  border-radius: 5px;
+}
+#navbar .search_box .tb {
+  display: table;
+  width: 100%;
+}
+#navbar .search_box .td {
+  display: table-cell;
+  vertical-align: middle;
+}
+#navbar .search_box input {
+  color: #fff;
+  outline: none;
+  border: 0;
+  padding-left: 5px;
+  width: 120px;
+  background-color: transparent;
+}
+#navbar .search_box input[type="text"]::placeholder {
+  color: #ddd;
 }
 
+#s-cover button {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: transparent;
+}
+#s-cover button {
+  position: relative;
+  display: block;
+  top: -2px;
+  width: 21px;
+  height: 24px;
+  cursor: pointer;
+  border-width: 0px;
+}
+#s-cover #s-circle {
+  position: relative;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: 0;
+  border-width: 4px;
+  border: 4px solid #fff;
+  background-color: transparent;
+  border-radius: 50%;
+  transition: 0.5s ease all;
+}
+#s-cover button span {
+  position: absolute;
+  top: 19px;
+  left: 10px;
+  display: block;
+  width: 11px;
+  height: 4px;
+  background-color: transparent;
+  border-radius: 3px;
+  transform: rotateZ(52deg);
+  transition: 0.5s ease all;
+}
+#s-cover button span:before, #s-cover button span:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 11px;
+  height: 4px;
+  background-color: #fff;
+  border-radius: 3px;
+  transform: rotateZ(0);
+  transition: 0.5s ease all;
+}
+#s-cover:hover #s-circle {
+  width: 17px;
+  height: 4px;
+  border-width: 0;
+  background-color: #fff;
+  border-radius: 5px;
+}
+#s-cover:hover span {
+  top: 50%;
+  left: 10px;
+  width: 4px;
+  margin-top: -2px;
+  transform: rotateZ(0);
+}
+#s-cover:hover button span:before {
+  bottom: 3px;
+  transform: rotateZ(52deg);
+}
+#s-cover:hover button span:after {
+  bottom: -3px;
+  transform: rotateZ(-52deg);
+}
+#s-cover:hover button span:before, #s-cover:hover button span:after {
+  right: -8px;
+  width: 10px;
+  background-color: #fff;
+}
 
 #content 		{
   text-align: left; 

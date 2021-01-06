@@ -1,12 +1,13 @@
 <p id="notice"><%= notice %></p>
 
+<h1>
+  <%= @product.name %>
+</h1>
+
 <p>
   <%= link_to 'Edit article', edit_product_path(@product), class: "green button" %> <%= link_to 'Merge article', merge_product_path(@product), class: "green button" %>
 </p>
 
-<h1>
-  <%= @product.name %>
-</h1>
 
 CO2e per kg (weighted average): <%= @product.co2_equiv %>
 

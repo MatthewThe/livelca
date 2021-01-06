@@ -3,7 +3,7 @@
 <script>
 if ($("#product_graph_container").length == 0) {
   var tree = <%=@product_tree.html_safe%>;
-  var products = <%=@products_plus2.html_safe%>;
+  var products = <%=@products.html_safe%>;
   
   displayProductGraph(tree, products);
 }

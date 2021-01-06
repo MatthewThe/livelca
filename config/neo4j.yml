@@ -1,9 +1,7 @@
 development:
-#  type: bolt
-#  url: bolt://neo4j:PdThZZYzvy9tv7wEZvLt@35.196.194.251:7687 # breaks full text indices
   type: http
-#  url: https://neo4j:PdThZZYzvy9tv7wEZvLt@35.196.194.251:7473
   url: http://localhost:7474
+#  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@34.75.139.158:7474
 test:
   type: http
   url: http://localhost:7575

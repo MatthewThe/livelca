@@ -94,6 +94,24 @@ class Product
     end
   end
   
+  def get_graph_nodes(supercategories)
+    products_plus = ([self] + subcategories + supercategories).map{|sc| {:product => sc.attributes.merge(:co2_equiv_color => sc.co2_equiv_color)}}
+    
+    product_tree = []
+    supercategories.each_with_index do |sc, i|
+      if i == 0
+        product_tree.push({:product => sc.attributes.merge(:subcategories => [attributes])})
+      else
+        product_tree.push({:product => sc.attributes.merge(:subcategories => [supercategories[i-1].attributes])})
+      end
+    end
+    product_tree.push({:product => attributes.merge(:subcategories => subcategories.map{|p| p.attributes})})
+    
+    products_plus2 = products_plus.to_json()
+    product_tree = product_tree.to_json()
+    return products_plus2, product_tree
+  end
+  
   def self.name_from_id(product_id)
     product_name = ""
     product = find_by(id: product_id)

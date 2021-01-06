@@ -30,7 +30,7 @@ document.addEventListener("turbolinks:load", function() {
         success: function(data) {
           d3.select('svg').select("#product_graph_loader").remove();
           
-          displayProductGraph(data.tree, data.products);
+          displayProductGraph(data.tree, data.products, $("#content").width());
         }
       });
     }
@@ -43,10 +43,41 @@ document.addEventListener("turbolinks:load", function() {
   }
 })
 
-function displayProductGraph(tree, products) {
+function getNodeColor(node) {
+  return node.co2_equiv
+}
+
+function updateLink(link) {
+  link.attr("x1", function(d) { return fixna(d.source.x); })
+      .attr("y1", function(d) { return fixna(d.source.y); })
+      .attr("x2", function(d) { return fixna(d.target.x); })
+      .attr("y2", function(d) { return fixna(d.target.y); });
+}
+
+function updateNode(node) {
+  node.attr("transform", function(d) {
+      return "translate(" + fixna(d.x) + "," + fixna(d.y) + ")";
+  })
+  .attr("text-anchor", function(d) {
+    if (d.node) {
+      if (d.x > d.node.x) {
+        return "start"
+      } else {
+        return "end"
+      }
+    }
+  });
+}
+
+function fixna(x) {
+  if (isFinite(x)) return x;
+  return 0;
+}
+
+function displayProductGraph(tree, products, minWidth = 240) {
   var nodes = [], rels = [], names = [];
-  products.forEach(res => {
-    var pr = {id: res.product.name, label: 'product', size: 10, co2_equiv: res.product.co2_equiv_color};
+  products.forEach((res, idx) => {
+    var pr = {id: res.product.name, idx: idx, label: 'product', size: 10, co2_equiv: res.product.co2_equiv_color};
     var target = _.findIndex(names, {id: res.product.name});
     nodes.push(pr);
     names.push({id: res.product.name});
@@ -61,16 +92,15 @@ function displayProductGraph(tree, products) {
       source = nodes[source];
       
       //console.log(source, target);
-      rels.push({source: source, target: target, strength: 0.1})
+      rels.push({source: source, target: target})
     })
   });
   
   //console.log("#graph nodes: " + nodes.length);
   //console.log("#graph rels: " + rels.length);
 
-  const width = Math.max(Math.min(Math.ceil(Math.sqrt(nodes.length)) * 60, 960), 240);
+  const width = Math.max(Math.min(Math.ceil(Math.sqrt(nodes.length)) * 60, 960), minWidth);
   const height = width;
-  const decay = 1 - Math.pow(0.001, 1 / 500);
 
   const svg = d3.select('svg')
     .attr('width', width)
@@ -88,6 +118,7 @@ function displayProductGraph(tree, products) {
           source: i * 2,
           target: i * 2 + 1
       });
+      //d.label = label.nodes.slice(-1)[0];
   });
 
   var labelLayout = d3.forceSimulation(label.nodes)
@@ -95,16 +126,13 @@ function displayProductGraph(tree, products) {
       .force("link", d3.forceLink(label.links).distance(5).strength(2));
 
   const simulation = d3.forceSimulation(nodes)
-      .force("charge", d3.forceManyBody())
+      .force("charge", d3.forceManyBody().strength(-30))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("x", d3.forceX(width / 2).strength(0.01))
       .force("y", d3.forceY(height / 2).strength(0.01))
       .force("link", d3.forceLink(rels).distance(5).strength(0.1))
+      .force('collision', d3.forceCollide().radius(20))
       .on("tick", ticked);
-
-  function getNodeColor(node) {
-    return node.co2_equiv
-  }
 
   const dragDrop = d3.drag()
     .on('start', node => {
@@ -143,41 +171,29 @@ function displayProductGraph(tree, products) {
       .attr('r', 10)
       .attr('fill', getNodeColor)
       .call(dragDrop)
+      .on("mouseover", function(d) {
+        d3.select("#label-node-" + d.idx).attr("font-weight", "bold");
+      })
+      .on("mouseout", function(d) {
+        d3.select("#label-node-" + d.idx).attr("font-weight", "normal");
+      });
   
   var labelNode = container.append("g").attr("class", "labelNodes")
       .selectAll("text")
       .data(label.nodes)
-      .enter()
-      .append("text")
-      .text(function(d, i) { return i % 2 == 0 ? "" : d.node.id; })
-      .style("fill", "#555")
-      .style("font-family", "Arial")
-      .style("font-size", 12)
-      .style("pointer-events", "none"); // to prevent mouseover/drag capture
+      .enter().append("text")
+        .attr("id", function(d, i) { return i % 2 == 0 ? "" : "label-node-" + d.node.idx; })
+        .text(function(d, i) { return i % 2 == 0 ? "" : d.node.id; })
+        .style("opacity", "0.6")
+        .style("font-family", "Arial")
+        .style("font-size", 12)
+        .style("pointer-events", "none"); // to prevent mouseover/drag capture
 
   svg.call(
       d3.zoom()
           .scaleExtent([.1, 4])
           .on("zoom", function() { container.attr("transform", d3.event.transform); })
   );
-
-  function updateLink(link) {
-      link.attr("x1", function(d) { return fixna(d.source.x); })
-          .attr("y1", function(d) { return fixna(d.source.y); })
-          .attr("x2", function(d) { return fixna(d.target.x); })
-          .attr("y2", function(d) { return fixna(d.target.y); });
-  }
-
-  function updateNode(node) {
-      node.attr("transform", function(d) {
-          return "translate(" + fixna(d.x) + "," + fixna(d.y) + ")";
-      });
-  }
-
-  function fixna(x) {
-      if (isFinite(x)) return x;
-      return 0;
-  }
       
   function ticked() {
     nodeElements.call(updateNode);
@@ -204,7 +220,11 @@ function displayProductGraph(tree, products) {
     labelNode.call(updateNode);
   }
   
-  simulation.tick(100);
+  var decay = 0;
+  simulation.alphaDecay(decay);
+  
+  simulation.tick(400);
+  
   nodeElements.call(updateNode);
   linkElements.call(updateLink);
   labelNode.each(function(d, i) {
@@ -212,6 +232,8 @@ function displayProductGraph(tree, products) {
       d.y = d.node.y;
   });
   labelNode.call(updateNode);
+  
+  decay = 1 - Math.pow(0.001, 1 / 100);
   
   simulation.alphaDecay(decay);
   labelLayout.alphaDecay(decay);
