@@ -63,6 +63,11 @@ class ProductsController < ApplicationController
     @wiki = markdown.render(@product.wiki)
     
     @products, @product_tree = @product.get_graph_nodes(@supercategories)
+    
+    respond_to do |format|
+      format.js {render layout: false}
+      format.html {render layout: true}
+    end
   end
 
   # GET /products/new

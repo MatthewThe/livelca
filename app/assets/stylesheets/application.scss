@@ -68,7 +68,7 @@ h2 { font-size: 1.5em; }
   div#content{
     min-height:550px;
     margin:15px 0px;
-    padding:15px 30px;
+    padding: 5px 30px 15px 30px;
   }
 }
 
@@ -266,6 +266,17 @@ input[type=submit] {
 }
 #content a.unreliable {
   color: #F06533;
+}
+
+.table_pane {
+  display:block;
+  float:left;
+}
+
+.content_pane {
+  display:block;
+  float:left;
+  padding: 0px 20px 10px 40px;
 }
 
 .button::-moz-focus-inner{

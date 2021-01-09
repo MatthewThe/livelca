@@ -1,0 +1,11 @@
+$('html,body').animate({ scrollTop: $("#current_product").offset().top }, 'slow');
+
+$("#current_product").html("<%= escape_javascript(render partial: 'products/show', locals: { product: @product, supercategories: @supercategories, wiki: @wiki, products: @products, product_tree: @product_tree } ) %>");
+
+if ($("#sources_table_wrapper").length == 0) {
+  $('#sources_table').DataTable({
+    "pageLength": 25,
+    "stateSave": true
+  });
+}
+

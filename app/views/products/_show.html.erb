@@ -1,0 +1,83 @@
+<p id="notice"><%= notice %></p>
+
+<h1>
+  <%= @product.name %>
+</h1>
+
+<p>
+  <%= link_to 'Edit article', edit_product_path(@product), class: "green button" %> <%= link_to 'Merge article', merge_product_path(@product), class: "green button" %>
+</p>
+
+
+CO2e per kg (weighted average): <%= @product.co2_equiv %>
+
+<% if @supercategories.count > 0 %>
+<p>
+  Categories:
+  <% for supercategory in @supercategories do %>
+    <%= link_to supercategory.name, supercategory %>
+    <% if @supercategories.last != supercategory %>|<% end %>
+  <% end %>
+</p>
+<% end %>
+
+<% if @product.proxy and @product.studies.count == 0 %>
+<p>
+  Proxy: <%= link_to @product.proxy.name, @product.proxy %>
+</p>
+<% end %>
+
+<p>
+  <%= @wiki.html_safe %>
+</p>
+
+<% if @product.subcategories_count > 0 %>
+<p>
+  Subcategories:
+  <% @product.subcategories.each_with_index do |subcategory, i| %>
+    <%= link_to subcategory.name, subcategory %>
+    <% if i != @product.subcategories_count - 1 %>|<% end %>
+  <% end %>
+</p>
+<% end %>
+
+<%= render 'graph' %>
+
+<h2>Studies</h2>
+
+<% if user_signed_in? && current_user.admin? %>
+  <%= link_to "Add study", new_source_path(:product_id => @product), class: "green button" %>
+<% end %>
+
+<% if @product.study_count > 0 %>
+
+<div class="space_16"></div>
+
+<table id="sources_table">
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>CO2e</th>
+      <th>Weight</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @product.studies.with_associations(:country_origin, :country_consumption, :product, :resource).each_with_index do |source, i| %>
+      <tr>
+        <td><%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
+            <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
+            <%= link_to source.resource.name, source.resource %>
+            </td>
+        <td><%= source.co2_equiv %></td>
+        <td><%= source.weight %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% else %>
+<p>
+  No studies available yet.
+</p>
+<% end %>
+

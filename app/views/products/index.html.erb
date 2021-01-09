@@ -1,26 +1,24 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Products</h1>
+<div class="table_pane">
+  <h1>Products</h1>
 
-<% if user_signed_in? && current_user.admin? %>
-  <%= link_to 'Add Product', new_product_path, class: "green button" %>
-  <div class="space_16"></div>
-<% end %>
-
-<!---<div class="search_box">
-  <%= form_tag products_path, :method => 'get' do %>  
-    <%= text_field_tag :search, params[:search], class: "search_field", :id => 'product-autocomplete', :placeholder => "Search" %>
-    <%= submit_tag "Find product", :name => nil, class: "search_submit" %>
+  <% if user_signed_in? && current_user.admin? %>
+    <%= link_to 'Add Product', new_product_path, class: "green button" %>
+    <div class="space_16"></div>
   <% end %>
-</div>--->
 
-<table id="products_table" class="stripe">
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>CO2e / kg</th>
-      <th>Studies</th>
-    </tr>
-  </thead>
-</table>
+  <table id="products_table" class="stripe">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>CO2e / kg</th>
+        <th>Studies</th>
+      </tr>
+    </thead>
+  </table>
+</div>
 
+<div id="current_product" class="content_pane"></div>
+
+<div style="clear:both;"></div> 
