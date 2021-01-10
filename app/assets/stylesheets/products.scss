@@ -7,11 +7,34 @@
   max-width: 500px;
 }
 
+#product_graph {
+  border: 3px solid #27AD05;
+  border-radius: 20px;
+}
+
 .co2_cell {
   width:45px;
   padding:0px 4px; 
   color: white; 
-  text-align: right; 
-  float:right; 
+  text-align: right;
+  display: block-inline; 
   border-radius: 5px;
+}
+
+.co2_chart {
+  text-align: center; 
+  float: right;
+  display: block; 
+  //border: 1px solid #000;
+  //padding-bottom: 10px;
+}
+.gauge {
+  width: 280px;
+  height: 170px;
+} 
+.gauge-empty {
+  fill: #dedede;
+}
+.needle, .needle-center {
+  fill: #464A4F;
 }

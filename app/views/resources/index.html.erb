@@ -1,26 +1,27 @@
-<p id="notice"><%= notice %></p>
+<div class="table_pane">
+  <h1>Resources</h1>
 
-<h1>Resources</h1>
+  <% if user_signed_in? && current_user.admin? %>
+    <%= link_to 'New Resource', new_resource_path, class: "green button" %>
+    <div class="space_16"></div>
+  <% end %>
 
-<% if user_signed_in? && current_user.admin? %>
-  <%= link_to 'New Resource', new_resource_path, class: "green button" %>
-  <div class="space_16"></div>
-<% end %>
-
-<table id="resources_table" class="stripe">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Default weight</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @resources.each do |resource| %>
+  <table id="resources_table" class="stripe">
+    <thead>
       <tr>
-        <td><%= link_to resource.name, resource %></td>
-        <td><%= resource.default_weight %></td>
+        <th>Name</th>
+        <th>Default weight</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+  </table>
+</div>
+
+<div id="current_resource" class="content_pane">
+  <% if @resource %>
+  <%= render 'show' %>
+  <% else %>
+  <h1>Welcome to LiveLCA</h1>
+  <% end %>
+</div>
+
+<div style="clear:both;"></div> 

@@ -26,6 +26,9 @@ Rails.application.routes.draw do
   get '/product_autocomplete_name' => 'products#autocomplete_name'
   
   get 'product_table' => 'products#table'
+  get 'resource_table' => 'resources#table'
+  get 'recipe_table' => 'recipes#table'
+  
   get 'product_graph' => 'products#graph'
   
   patch 'sources' => 'sources#duplicate'

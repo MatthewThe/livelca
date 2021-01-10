@@ -7,10 +7,26 @@ class ResourcesController < ApplicationController
   def index
     @resources = Resource.all
   end
-
+  
+  def table
+    expires_in 1.hour, :public => true
+    @resources = Resource.all
+    respond_to do |format|
+      format.json
+    end
+  end
+  
   # GET /resources/1
   # GET /resources/1.json
-  def show
+  def show    
+    renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
+    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
+    @notes = markdown.render(@resource.notes)
+    
+    respond_to do |format|
+      format.js {render layout: false}
+      format.html {render :index, layout: true}
+    end
   end
 
   # GET /resources/new

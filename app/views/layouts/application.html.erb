@@ -52,7 +52,8 @@
     <div class="clear"></div>
     
     <div id="content">
-      <p id="alert"><%= alert %></p>
+      <% if alert %><p id="alert"><%= alert %></p><% end %>
+      <% if notice %><p id="notice"><%= notice %></p><% end %>
       <%= yield %>
     </div>
   </div>

@@ -1,4 +1,4 @@
-<svg style="border:1px solid black" id="ingredient_pie_chart"></svg>
+<svg id="ingredient_pie_chart"></svg>
 
 <script>
 var ingredients = <%=@recipe.ingredients.map{|i| {:label => i.product.name, :value => i.co2_equiv, :color => i.co2_equiv_color(@recipe.servings) }}.to_json.html_safe%>;

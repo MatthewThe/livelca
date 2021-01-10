@@ -1,13 +1,13 @@
-<p id="notice"><%= notice %></p>
-
-<%= link_to '> Back to all resources', resources_path, class: "green button" %>
-
 <h1>
   <%= @resource.name %>
 </h1>
 
+<% if user_signed_in? && current_user.admin? %>
+<%= link_to 'Edit resource', edit_resource_path(@resource), class: "green button" %>
+<% end %>
+
 <p>
-  Notes:<br/><%= @resource.notes %>
+  Notes:<br/><%= @notes.html_safe %>
 </p>
 
 <p>
@@ -19,13 +19,12 @@
 </p>
 
 
-<%= link_to 'Edit', edit_resource_path(@resource), class: "green button" %>
-
 <h2>Products</h2>
 
+<% if user_signed_in? && current_user.admin? %>
 <%= link_to "Add product", new_source_path(:resource_id => @resource), class: "green button" %>
-
 <div class="space_16"></div>
+<% end %>
 
 <table id="sources_table">
   <thead>
@@ -39,8 +38,10 @@
   <tbody>
   <% @resource.sources.with_associations(:product, :country_origin, :country_consumption).each_with_index do |source, i| %>
     <tr>
-        <td><%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
+        <td><% if user_signed_in? && current_user.admin? %>
+            <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
             <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
+            <% end %>
             <%= link_to source.product_name, source %></td>
         <td><%= link_to source.country_origin_name, source.country_origin %></td>
         <td><%= link_to source.country_consumption_name, source.country_consumption %></td>

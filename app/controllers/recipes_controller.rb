@@ -5,9 +5,16 @@ class RecipesController < ApplicationController
   # GET /recipes
   # GET /recipes.json
   def index
-    @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
   end
-
+  
+  def table
+    expires_in 1.hour, :public => false
+    @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+    respond_to do |format|
+      format.json
+    end
+  end
+  
   # GET /recipes/1
   # GET /recipes/1.json
   def show
@@ -15,6 +22,11 @@ class RecipesController < ApplicationController
       @ingredient = Ingredient.find(params[:edit_ingredient])
     else
       @ingredient = Ingredient.new
+    end
+    
+    respond_to do |format|
+      format.js {render layout: false}
+      format.html {render :index, layout: true}
     end
   end
 

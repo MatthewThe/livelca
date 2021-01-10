@@ -1,26 +1,26 @@
-<p id="notice"><%= notice %></p>
+<div class="table_pane">
+  <h1>My Recipes</h1>
 
-<h1>My Recipes</h1>
+  <%= link_to 'Add Recipe', new_recipe_path, class: "green button" %>
 
-<%= link_to 'Add Recipe', new_recipe_path, class: "green button" %>
+  <div class="space_16"></div>
 
-<div class="space_16"></div>
-
-<table id="recipes_table" class="stripe">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>CO2e (kg) per serving</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @recipes.each do |recipe| %>
-      <% emission = recipe.co2_equiv %>
+  <table id="recipes_table" class="stripe">
+    <thead>
       <tr>
-        <td><%= link_to recipe.name, recipe %></td>
-        <td><div class='co2_cell' style='background-color:<%= recipe.co2_equiv_color %>'><%= (emission / recipe.servings).round(3) %></div></td>
+        <th>Name</th>
+        <th>CO2e (kg) per serving</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+  </table>
+</div>
+
+<div id="current_recipe" class="content_pane">
+  <% if @recipe %>
+  <%= render 'show' %>
+  <% else %>
+  <h1>Welcome to LiveLCA</h1>
+  <% end %>
+</div>
+
+<div style="clear:both;"></div> 

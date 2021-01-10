@@ -1,0 +1,12 @@
+{
+  "data": [
+<% cache(@resources) do %>
+<% @resources.each_with_index do |resource, i| %>
+    <%= "," if i > 0 %>
+    [  "<%= (link_to resource.name, resource, remote: true).gsub('"', '\"').html_safe %>",
+       "<%= resource.default_weight %>"
+    ]
+<% end %>
+<% end %>
+  ]
+}

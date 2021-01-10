@@ -1,0 +1,15 @@
+$('#alert').hide();
+$('#notice').hide();
+
+$('html,body').animate({ scrollTop: $("#current_resource").offset().top }, 'slow');
+
+history.pushState({ id: '<%=@resource.name%>'}, 'LiveLCA - <%=@resource.name%>', '/resources/<%= @resource.id %>');
+
+$("#current_resource").html("<%= escape_javascript(render partial: 'resources/show', locals: { resource: @resource, notes: @notes } ) %>");
+
+if ($("#sources_table_wrapper").length == 0) {
+  $('#sources_table').DataTable({
+    "pageLength": 25,
+    "stateSave": true
+  });
+}

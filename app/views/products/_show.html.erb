@@ -1,21 +1,24 @@
-<p id="notice"><%= notice %></p>
+<div class="co2_chart">
+  <div class="front"></div><div class="back"></div>
+  <div class="co2_cell" style='display:inline-block; margin-right: 5px; background-color:<%= @product.co2_equiv_color %>'><%= @product.co2_equiv %></div><strong>CO2e / kg</strong>
+  <script>drawGauge(<%=@product.co2_equiv%>, '<%=@product.co2_equiv_color%>');</script>
+</div>
 
 <h1>
   <%= @product.name %>
 </h1>
 
+<% if user_signed_in? && current_user.admin? %>
 <p>
   <%= link_to 'Edit article', edit_product_path(@product), class: "green button" %> <%= link_to 'Merge article', merge_product_path(@product), class: "green button" %>
 </p>
-
-
-CO2e per kg (weighted average): <%= @product.co2_equiv %>
+<% end %>
 
 <% if @supercategories.count > 0 %>
 <p>
   Categories:
   <% for supercategory in @supercategories do %>
-    <%= link_to supercategory.name, supercategory %>
+    <%= link_to supercategory.name, supercategory, remote: true %>
     <% if @supercategories.last != supercategory %>|<% end %>
   <% end %>
 </p>
@@ -23,7 +26,7 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
 
 <% if @product.proxy and @product.studies.count == 0 %>
 <p>
-  Proxy: <%= link_to @product.proxy.name, @product.proxy %>
+  Proxy: <%= link_to @product.proxy.name, @product.proxy, remote: true %>
 </p>
 <% end %>
 
@@ -35,7 +38,7 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
 <p>
   Subcategories:
   <% @product.subcategories.each_with_index do |subcategory, i| %>
-    <%= link_to subcategory.name, subcategory %>
+    <%= link_to subcategory.name, subcategory, remote: true %>
     <% if i != @product.subcategories_count - 1 %>|<% end %>
   <% end %>
 </p>
@@ -65,8 +68,10 @@ CO2e per kg (weighted average): <%= @product.co2_equiv %>
   <tbody>
     <% @product.studies.with_associations(:country_origin, :country_consumption, :product, :resource).each_with_index do |source, i| %>
       <tr>
-        <td><%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
+        <td><% if user_signed_in? && current_user.admin? %>
+            <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
             <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
+            <% end %>
             <%= link_to source.resource.name, source.resource %>
             </td>
         <td><%= source.co2_equiv %></td>

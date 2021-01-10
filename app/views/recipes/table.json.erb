@@ -1,0 +1,12 @@
+{
+  "data": [
+<% cache(@recipes) do %>
+<% @recipes.each_with_index do |recipe, i| %>
+    <%= "," if i > 0 %>
+    [  "<%= (link_to recipe.name, recipe, remote: true).gsub('"', '\"').html_safe %>",
+       "<div class='co2_cell' style='background-color:<%= recipe.co2_equiv_color %>;float:right;'><%= (recipe.co2_equiv / recipe.servings).round(3) %></div>"
+    ]
+<% end %>
+<% end %>
+  ]
+}

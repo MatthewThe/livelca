@@ -31,12 +31,16 @@ div#background{
 div#header{
   width:calc(97% - 60px);
   padding-left:4%;
-  padding-top:10px;
+  padding-bottom:15px;
   height:70px;
   font-size: 1.5em;
 }
+
 div#content{
-  margin-left:0%;
+  text-align: left; 
+  color: #333;
+  margin-bottom: 10px;
+  margin-left:0;
   padding:10px;
   /*background-color:#CBF0C2;*/
   background-color: rgba(203,240,194,0.6);
@@ -44,9 +48,10 @@ div#content{
 div#navbar{
   width: 100%;
   top:0px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
+h1 { line-height: 1em; }
 h2 { font-size: 1.5em; }
 
 @media (max-width: 410px) {
@@ -67,8 +72,7 @@ h2 { font-size: 1.5em; }
   }
   div#content{
     min-height:550px;
-    margin:15px 0px;
-    padding: 5px 30px 15px 30px;
+    padding: 10px 30px 15px 30px;
   }
 }
 
@@ -243,11 +247,6 @@ label {
   background-color: #fff;
 }
 
-#content 		{
-  text-align: left; 
-  color: #333;
-  /*border:1px solid #45A32E;*/
-}
 #content a, #content a:visited {
   color:#666;
 }
@@ -268,15 +267,30 @@ input[type=submit] {
   color: #F06533;
 }
 
+#alert, #notice {
+  margin: 0;
+  padding: 5px 10px;
+  width: 100%;
+  color: white;
+}
+#alert {
+  background-color: red;
+}
+#notice {
+  background-color: green;
+}
+
 .table_pane {
-  display:block;
-  float:left;
+  display: block;
+  float: left;
+  margin-right:35px;
 }
 
 .content_pane {
-  display:block;
-  float:left;
-  padding: 0px 20px 10px 40px;
+  display: block;
+  overflow: hidden;
+  min-width: 500px;
+  padding: 0px 0px 10px 0px;
 }
 
 .button::-moz-focus-inner{

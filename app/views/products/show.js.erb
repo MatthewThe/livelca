@@ -1,4 +1,9 @@
+$('#alert').hide();
+$('#notice').hide();
+
 $('html,body').animate({ scrollTop: $("#current_product").offset().top }, 'slow');
+
+history.pushState({ id: '<%=@product.name%>'}, 'LiveLCA - <%=@product.name%>', '/products/<%= @product.id %>');
 
 $("#current_product").html("<%= escape_javascript(render partial: 'products/show', locals: { product: @product, supercategories: @supercategories, wiki: @wiki, products: @products, product_tree: @product_tree } ) %>");
 
@@ -8,4 +13,3 @@ if ($("#sources_table_wrapper").length == 0) {
     "stateSave": true
   });
 }
-

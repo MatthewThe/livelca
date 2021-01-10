@@ -66,7 +66,7 @@ class ProductsController < ApplicationController
     
     respond_to do |format|
       format.js {render layout: false}
-      format.html {render layout: true}
+      format.html {render :index, layout: true}
     end
   end
 

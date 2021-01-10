@@ -1,0 +1,17 @@
+$('#alert').hide();
+$('#notice').hide();
+
+<% if !params[:edit_ingredient] %>
+$('html,body').animate({ scrollTop: $("#current_recipe").offset().top }, 'slow');
+<% end %>
+
+history.pushState({ id: '<%=@recipe.name%>'}, 'LiveLCA - <%=@recipe.name%>', '/recipes/<%= @recipe.id %>');
+
+$("#current_recipe").html("<%= escape_javascript(render partial: 'recipes/show', locals: { recipe: @recipe, notes: @notes } ) %>");
+
+if ($("#ingredients_table_wrapper").length == 0) {
+  $('#ingredients_table').DataTable({
+    "order": [[ 0, "desc" ]],
+    "paging": false
+  });
+}

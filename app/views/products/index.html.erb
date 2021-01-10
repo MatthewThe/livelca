@@ -1,5 +1,3 @@
-<p id="notice"><%= notice %></p>
-
 <div class="table_pane">
   <h1>Products</h1>
 
@@ -19,6 +17,12 @@
   </table>
 </div>
 
-<div id="current_product" class="content_pane"></div>
+<div id="current_product" class="content_pane">
+  <% if @product %>
+  <%= render 'show' %>
+  <% else %>
+  <h1>Welcome to LiveLCA</h1>
+  <% end %>
+</div>
 
 <div style="clear:both;"></div> 
