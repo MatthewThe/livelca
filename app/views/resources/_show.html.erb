@@ -11,7 +11,7 @@
 </p>
 
 <p>
-  URL: <%= link_to @resource.url, @resource.url %>
+  URL: <%= link_to @resource.url, @resource.url, target: "_blank" %>
 </p>
 
 <p>
@@ -26,7 +26,7 @@
 <div class="space_16"></div>
 <% end %>
 
-<table id="sources_table">
+<table id="sources_table" class="stripe">
   <thead>
     <tr>
       <th>Product</th>
@@ -42,7 +42,7 @@
             <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
             <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
             <% end %>
-            <%= link_to source.product_name, source %></td>
+            <%= link_to source.product_name, source.product %></td>
         <td><%= link_to source.country_origin_name, source.country_origin %></td>
         <td><%= link_to source.country_consumption_name, source.country_consumption %></td>
     </tr>

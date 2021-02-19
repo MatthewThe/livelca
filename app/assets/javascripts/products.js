@@ -1,8 +1,9 @@
-document.addEventListener("turbolinks:load", function() {
+$( document ).ready(function() {
   "use strict";
   if ($("#products_table_wrapper").length == 0) {
     $('#products_table').DataTable({
-      "pageLength": 25,
+      "pageLength": 20,
+      "lengthMenu": [[10, 20, 50], [10, 20, 50]],
       "stateSave": true,
       "deferRender": true,
       "oLanguage": {
@@ -45,7 +46,7 @@ document.addEventListener("turbolinks:load", function() {
 
 // adapted from https://codepen.io/judy/pen/mPGmYq
 function drawGauge(val, color) {
-  chart = {}
+  var chart = {}
   chart.card = d3.select('.front');
   chart.data = [
     {
@@ -58,7 +59,7 @@ function drawGauge(val, color) {
       percent, radius, sectionIndx, svg, totalPercent, width;
   datapoint = chart.data[chart.data.length-1];
   percent = Math.min(1.0, datapoint.value / datapoint.max);
-  console.log(percent)
+  
   numSections = 1;
   sectionPerc = 1 / numSections / 2;
   padRad = 0.01;
@@ -68,11 +69,15 @@ function drawGauge(val, color) {
   totalPercent = .75;
 
   var el = chart.card.selectAll('.gauge').data(chart.data).enter().append('div').attr('class', 'gauge')
-
+  
   margin = {
     right: 0,
     left: 0
   };
+  
+  if (!el.node()) { // turbolinks guard
+    return
+  }
   
   var svgWidth = el.node().offsetWidth
   width = svgWidth - margin.left - margin.right;

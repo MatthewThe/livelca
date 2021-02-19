@@ -1,9 +1,10 @@
 <div class="table_pane">
-  <h1>My Recipes</h1>
-
+  <h1>Recipes</h1>
+  
+  <% if user_signed_in? && current_user.admin? %>
   <%= link_to 'Add Recipe', new_recipe_path, class: "green button" %>
-
   <div class="space_16"></div>
+  <% end %>
 
   <table id="recipes_table" class="stripe">
     <thead>

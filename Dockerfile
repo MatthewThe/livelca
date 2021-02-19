@@ -24,6 +24,8 @@ RUN yarn install --check-files
 
 COPY . /code
 
+ENV RAILS_ENV=production
+
 # Set "rails server -b 0.0.0.0" as the command to
 # run when this container starts.
 CMD ["rails", "server", "-b", "0.0.0.0"]

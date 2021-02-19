@@ -2,7 +2,7 @@ class Resource
   include Neo4j::ActiveNode
   property :name, type: String
   property :url, type: String
-  property :notes, type: String
+  property :notes, type: String, default: ""
   property :default_weight, type: Integer
   
   has_many :out, :sources, type: :IS_RESOURCE, model_class: :Source, dependent: :destroy

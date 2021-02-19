@@ -7,6 +7,8 @@ test:
   url: http://localhost:7575
 production:
   type: http
-  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@34.75.139.158:7474
-#  type: bolt
+  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@database:7474
+#  type: http
+#  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@34.75.139.158:7474
+#  url: bolt://localhost:7687
 #  url: bolt://neo4j:PdThZZYzvy9tv7wEZvLt@34.75.139.158:7687

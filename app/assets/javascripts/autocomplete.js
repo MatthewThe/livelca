@@ -1,4 +1,4 @@
-document.addEventListener("turbolinks:load", function() {
+$( document ).ready(function() {
   $('[id^="country-autocomplete"').autocomplete({
     source: '/country_autocomplete',
     autoFocus: true,

@@ -1,4 +1,4 @@
-document.addEventListener("turbolinks:load", function() {
+$( document ).ready(function() {
   "use strict";
   if ($("#resources_table_wrapper").length == 0) {
     $('#resources_table').DataTable({

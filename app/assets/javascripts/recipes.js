@@ -1,4 +1,4 @@
-document.addEventListener("turbolinks:load", function() {
+$( document ).ready(function() {
   "use strict";
   if ($("#ingredients_table_wrapper").length == 0) {
     $('#ingredients_table').DataTable({
@@ -13,7 +13,7 @@ document.addEventListener("turbolinks:load", function() {
       "stateSave": true,
       "deferRender": true,
       "oLanguage": {
-         "sSearch": "Filter recipes:"
+         "sSearch": "Filter:"
       },
       "ajax": {
         "url":'/recipe_table.json',

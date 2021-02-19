@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Livelca</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag asset_path('favicon.ico') %>
 </head>
@@ -18,14 +18,11 @@
       <div id="navbar">
         <%= nav_link "Products", products_path %>
         <%= nav_link "Products graph", product_graph_path %>
+        <%= nav_link 'Recipes', recipes_path %>
         <%= nav_link "Resources", resources_path %>
         <%= nav_link "About", "/pages/about" %>
-        
-        <div class="hspace_8"></div>
-        
         <% if user_signed_in? %>
           <%= nav_link 'My Receipts', receipts_path %>
-          <%= nav_link 'My Recipes', recipes_path %>
           <%= nav_link 'Edit profile', edit_user_registration_path %>
           <%= nav_link 'Logout', destroy_user_session_path, method: :delete %>        
         <% else %>

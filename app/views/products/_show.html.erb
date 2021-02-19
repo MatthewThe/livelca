@@ -1,4 +1,4 @@
-<div class="co2_chart">
+<div id="co2_gauge" class="co2_chart">
   <div class="front"></div><div class="back"></div>
   <div class="co2_cell" style='display:inline-block; margin-right: 5px; background-color:<%= @product.co2_equiv_color %>'><%= @product.co2_equiv %></div><strong>CO2e / kg</strong>
   <script>drawGauge(<%=@product.co2_equiv%>, '<%=@product.co2_equiv_color%>');</script>
@@ -56,7 +56,7 @@
 
 <div class="space_16"></div>
 
-<table id="sources_table">
+<table id="sources_table" class="stripe">
   <thead>
     <tr>
       <th>Source</th>

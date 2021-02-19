@@ -2,6 +2,7 @@ class Recipe
   include Neo4j::ActiveNode
   property :name, type: String
   property :servings, type: Float
+  property :public, type: Boolean, default: false
   
   has_one :out, :user, type: :IS_OWNED, model_class: :User
   has_many :in, :ingredients, type: :IS_INGREDIENT, model_class: :Ingredient, dependent: :destroy

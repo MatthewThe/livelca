@@ -1,15 +1,19 @@
 class RecipesController < ApplicationController
-  before_action :authenticate_user!  
+  before_action :authenticate_user!, only: [:new, :edit, :merge, :update, :destroy]
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
-
+  
   # GET /recipes
   # GET /recipes.json
   def index
   end
   
   def table
-    expires_in 1.hour, :public => false
-    @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+    #expires_in 1.hour, :public => false
+    if current_user
+      @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+    else
+      @recipes = Recipe.where(public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+    end
     respond_to do |format|
       format.json
     end
