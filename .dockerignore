@@ -2,3 +2,5 @@ vendor
 db/neo4j/development
 tmp
 .git
+config/master.key
+.env

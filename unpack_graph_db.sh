@@ -8,6 +8,8 @@ cd /var/lib/neo4j/data/databases
 
 sudo rm -rf graph.db
 
+#sudo cp -r ~/Projects/livelca/db/neo4j/development/data/databases/graph.db ./graph.db
+
 sudo cp ~/Projects/livelca/db/neo4j/development/data/databases/graph.db.zip ./
 sudo unzip graph.db.zip
 

@@ -12,7 +12,7 @@ class RecipesController < ApplicationController
     if current_user
       @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
     else
-      @recipes = Recipe.where(public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+      @recipes = Recipe.where(is_public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
     end
     respond_to do |format|
       format.json

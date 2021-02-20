@@ -76,4 +76,7 @@ Rails.application.configure do
   config.log_formatter = ::Logger::Formatter.new
   
   config.require_master_key = true
+  
+  config.neo4j.session.type = :http
+  config.neo4j.session.url = 'http://' + Rails.application.credentials.neo4j[:user] + ':' + Rails.application.credentials.neo4j[:pass] + '@database:7474'
 end
