@@ -63,7 +63,7 @@ unpack_graph_db.sh
 
 5. Start up the docker
    ```
-docker-compose up --detach
+sudo docker-compose up --detach
    ```
 
 6. Check the logs of docker-compose to verify everything started correctly
@@ -85,7 +85,8 @@ docker push matthewthe/livelca:latest
 
 3. Deploy the new docker
 ```
-docker-compose up -d --no-deps --build web
+sudo docker pull matthewthe/livelca
+sudo docker-compose up -d --no-deps --build web
 ```
 
 ## Deployment instructions local

@@ -1,4 +1,5 @@
-sudo apt-get install git docker.io
+sudo apt-get update
+sudo apt-get install git docker.io zip unzip
 
 sudo usermod -aG docker ${USER}
 
