@@ -6,6 +6,7 @@
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag asset_path('favicon.ico') %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
   <div id="background"></div>
@@ -15,6 +16,8 @@
         <a href="/">LiveLCA</a>
       </div>
       
+      <input type="checkbox" id="nav-toggle">
+      <label for="nav-toggle"><span class="toggle-words">Menu</span></label>
       <div id="navbar">
         <%= nav_link "Products", products_path %>
         <%= nav_link "Products graph", product_graph_path %>

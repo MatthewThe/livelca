@@ -23,7 +23,7 @@
 <%= form_for(@ingredient) do |f| %>
   <%= f.hidden_field :recipe, value: @recipe.uuid %>
 
-<table id="ingredients_table">
+<table id="ingredients_table" class="stripe">
   <thead>
     <tr>
       <th>CO2e (kg)</th>

@@ -22,28 +22,30 @@ div#background{
   height:400px;
   width:100%;
   position:absolute;
+  /*
   background-image: image_url("farms.jpg");
   background-size: cover;
   -webkit-mask-image: linear-gradient(to top, transparent 10%, black);
-  mask-image: linear-gradient(to top, transparent 10%, black);  
+  mask-image: linear-gradient(to top, transparent 10%, black);  */
+  background-color: #4CAF50;
   z-index:-1;
 }
 div#header{
   width:calc(97% - 60px);
   padding-left:4%;
   padding-bottom:15px;
-  height:70px;
+  height:60px;
   font-size: 1.5em;
 }
 
 div#content{
   text-align: left; 
-  color: #333;
+  color: #444;
   margin-bottom: 10px;
   margin-left:0;
   padding:10px;
-  /*background-color:#CBF0C2;*/
-  background-color: rgba(203,240,194,0.6);
+  background-color:#fcfcfc;
+  /*background-color: rgba(203,240,194,0.6);*/
 }
 div#navbar{
   width: 100%;
@@ -51,31 +53,19 @@ div#navbar{
   margin-bottom: 5px;
 }
 
+#nav-toggle {
+  // Hides the checkbox
+  position: absolute;
+  opacity: 0;
+  display: none;
+}
+
+#nav-toggle ~ label {
+  display: none;
+}
+
 h1 { line-height: 1em; }
 h2 { font-size: 1.5em; }
-
-@media (max-width: 410px) {
-  /*div#header{ 
-    height: calc(40vw / 4.1); 
-    font-size: calc(48vw / 4.1); 
-  }*/
-}
-
-@media (min-width: 800px) {
-  /*div#header{
-    height:70px;
-    padding-top:10px;
-  }*/
-  div#navbar {
-    padding-left:50px;
-    width:calc(100% - 280px);
-  }
-  div#content{
-    min-height:550px;
-    padding: 10px 30px 15px 30px;
-  }
-}
-
 
 html {min-height:100%; margin-bottom:1px;}
 
@@ -105,7 +95,7 @@ label {
 #logo {
   float: left;
   display: block;
-  padding-top:20px;
+  padding-top:15px;
 }
 #logo a {
   color:#FFF; 
@@ -121,7 +111,7 @@ label {
 }
 
 #navbar {
-  padding-top: 25px;
+  padding-top: 20px;
   float: right;
   display: block;
 }
@@ -425,3 +415,94 @@ input[type=submit] {
 .hspace_16	{width:16px;}
 .relative {position:relative;}
 .float    {display:block; float:left;}
+
+@media (max-width: 410px) {
+  h1 {
+    margin: 5px;
+  }
+  div#header{
+    width:calc(97% - 15px);
+    padding-bottom: 0px;
+  }
+  #nav-toggle ~ label {
+    display: block;
+    background-color: #45A32E;
+    color: #FFF;
+    padding: 12px 0;
+    margin-top: 10px;
+    border-radius: 3px;
+    width: 100px;
+    float: right;
+    text-align: center;
+  }
+  #nav-toggle:checked ~ #navbar {
+    display: block;
+  }
+  #nav-toggle ~ #navbar, #nav-toggle ~ label {
+    transition: .5s transform;
+    transition-timing-function: cubic-bezier(.38,.52,.37,1.27);
+  }
+  #nav-toggle:checked ~ #navbar, #nav-toggle:checked ~ label {
+    transform: translateX(-250px);
+  }
+  
+  #navbar {
+    position: fixed; // Absolute positioning would work as well
+    right: -100%;
+    top: 0;
+    background-color: #666;
+    z-index: 1;
+    padding-top: 10px;
+
+    height: 100%;
+    width: 250px;
+  }
+  #navbar a, #navbar a:visited {
+    float: left;
+    display: block;
+    color:#fefefe;
+    text-shadow: 1px 1px 2px #000000;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    width: 250px;
+  }
+  #navbar .search_box {
+    margin-top: 10px;
+    margin-left: 5px;
+    float: left;
+    width: 225px;
+  }
+  #logo {
+    padding-top: 12px;
+  }
+  #logo a {
+    font-size: calc(40vw / 4.1);
+  }
+  .content_pane {
+    min-width: 240px;
+  }
+  .table_pane {
+    margin-right: 0px;
+  }
+  /*div#header{ 
+    height: calc(40vw / 4.1); 
+    font-size: calc(48vw / 4.1); 
+  }*/
+}
+
+@media (min-width: 800px) {
+  /*div#header{
+    height:70px;
+    padding-top:10px;
+  }*/
+  div#navbar {
+    padding-left:50px;
+    width:calc(100% - 280px);
+  }
+  div#content{
+    min-height:550px;
+    padding: 10px 30px 15px 30px;
+  }
+}

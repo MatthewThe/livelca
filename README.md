@@ -1,7 +1,6 @@
 # LiveLCA rails app
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This README documents the necessary steps to get the application up and running.
 
 ## Ruby version
 
@@ -58,6 +57,7 @@ and restart the server
    
 4. Transfer the zipped neo4j database to the server and unzip in the neo4j folder:
    ```
+   scp_dev_db.sh
    unpack_graph_db.sh
    ```
 
@@ -85,10 +85,10 @@ build.sh
 docker push matthewthe/livelca:latest
 ```
 
-3. Deploy the new docker
+3. SSH into the server and deploy the new docker
 ```
-sudo docker pull matthewthe/livelca
-sudo docker-compose up -d --no-deps --build web
+docker pull matthewthe/livelca
+docker-compose up -d --no-deps --build web
 ```
 
 ## Deployment instructions local
