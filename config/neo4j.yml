@@ -1,6 +1,6 @@
-development:
-  type: http
-  url: http://localhost:7474
+#development:
+#  type: http
+#  url: http://localhost:7474
 #  url: http://neo4j:PdThZZYzvy9tv7wEZvLt@34.75.139.158:7474
 test:
   type: http

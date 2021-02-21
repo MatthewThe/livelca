@@ -88,9 +88,9 @@ function drawGauge(val, color) {
   /*
     Utility methods 
   */
-  percToDeg = (perc) => {return perc * 360}
-  degToRad  =  (deg) => {return deg * Math.PI / 180}
-  percToRad = (perc) => {return degToRad(percToDeg(perc))}
+  percToDeg = function(perc) {return perc * 360}
+  degToRad  =  function(deg) {return deg * Math.PI / 180}
+  percToRad = function(perc) {return degToRad(percToDeg(perc))}
 
   // Create SVG element
   svg = el.append('svg').attr('width', svgWidth).attr('height', height);
@@ -228,20 +228,20 @@ function fixna(x) {
   return 0;
 }
 
-function displayProductGraph(tree, products, minWidth = 240) {
+function displayProductGraph(tree, products, minWidth) {
   var nodes = [], rels = [], names = [];
-  products.forEach((res, idx) => {
+  products.forEach(function(res, idx) {
     var pr = {id: res.product.name, idx: idx, label: 'product', size: 10, co2_equiv: res.product.co2_equiv_color};
     var target = _.findIndex(names, {id: res.product.name});
     nodes.push(pr);
     names.push({id: res.product.name});
   });
 
-  tree.forEach(res => {
+  Array.from(tree).forEach(function(res) {
     var target = _.findIndex(names, {id: res.product.name});
     target = nodes[target];
 
-    res.product.subcategories.forEach(subcategory => {
+    res.product.subcategories.forEach(function(subcategory) {
       var source = _.findIndex(names, {id: subcategory.name});
       source = nodes[source];
       
@@ -289,17 +289,17 @@ function displayProductGraph(tree, products, minWidth = 240) {
       .on("tick", ticked);
 
   const dragDrop = d3.drag()
-    .on('start', node => {
+    .on('start', function(node) {
       node.fx = node.x
       node.fy = node.y
     })
-    .on('drag', node => {
+    .on('drag', function(node) {
       labelLayout.alphaTarget(0.7).restart()
       simulation.alphaTarget(0.7).restart()
       node.fx = d3.event.x
       node.fy = d3.event.y
     })
-    .on('end', node => {
+    .on('end', function(node) {
       if (!d3.event.active) {
         labelLayout.alphaTarget(0)
         simulation.alphaTarget(0)

@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-  $('[id^="country-autocomplete"').autocomplete({
+  $('[id^="country-autocomplete"]').autocomplete({
     source: '/country_autocomplete',
     autoFocus: true,
   })

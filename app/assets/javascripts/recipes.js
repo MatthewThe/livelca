@@ -34,14 +34,14 @@ function displayIngredientPieChart(ingredients) {
   var co2_sum = ingredients.reduce(function(a, b) { return a + b.value; }, 0);
   const threshold = co2_sum * 0.03;
   
-  data = ingredients.filter(item => item.value > threshold);
-  data.sort((a, b) => b.value - a.value);
+  data = ingredients.filter(function(item) { return item.value > threshold });
+  data.sort(function(a, b) { return b.value - a.value });
   
-  small_items = ingredients.filter(item => item.value <= threshold);
+  small_items = ingredients.filter(function(item) { return item.value <= threshold });
   if (small_items.length > 0) {
     collected_value = { 
-        label: `Other ingredients (${small_items.length} items)`,
-        value: small_items.reduce((accumulator, item) => accumulator + item.value, 0), 
+        label: "Other ingredients (" + small_items.length + " items)",
+        value: small_items.reduce(function(accumulator, item) { return accumulator + item.value }, 0), 
         color: "rgb(0,142,9)"
     }
     data.push(collected_value);

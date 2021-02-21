@@ -28,7 +28,7 @@ services:
 
     # Expose port 3000.
     ports:
-      - "80:3000"
+      - "3000:3000"
 
     # Specify that this container depends on the other
     # container which we've called "database".
