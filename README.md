@@ -43,33 +43,35 @@ and restart the server
 
 1. Create a zip file from the neo4j database you want to use as a base:
    ```
-pack_graph_db.sh
+   pack_graph_db.sh
    ```
 
 2. Copy the `.env` and `docker-compose.yml` files to the server
    ```
-scp {.env,docker-compose.yml} <remote>:~/
+   scp {.env,docker-compose.yml} <remote>:~/
    ```
 
 3. SSH into the server and execute the setup bash script. This installs git, docker and docker-compose and sets up the folder structure for neo4j:
    ```
-setup_vm.sh
+   setup_vm.sh
    ```
    
 4. Transfer the zipped neo4j database to the server and unzip in the neo4j folder:
    ```
-unpack_graph_db.sh
+   unpack_graph_db.sh
    ```
 
 5. Start up the docker
    ```
-sudo docker-compose up --detach
+   sudo docker-compose up --detach
    ```
 
 6. Check the logs of docker-compose to verify everything started correctly
    ```
-docker-compose logs
+   docker-compose logs
    ```
+
+7. Configure NGINX and certbot to provide https support: https://github.com/MatthewThe/nginx-certbot
 
 ## Update instructions server
 

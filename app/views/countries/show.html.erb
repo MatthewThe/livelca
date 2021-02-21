@@ -1,5 +1,3 @@
-<p id="notice"><%= notice %></p>
-
 <h1>
   <%= @country.name %>
 </h1>
@@ -8,5 +6,7 @@
   <%= @wiki.html_safe %>
 </p>
 
+<% if user_signed_in? && current_user.admin? %>
 <%= link_to 'Edit', edit_country_path(@country) %> |
 <%= link_to 'Back', countries_path %>
+<% end %>

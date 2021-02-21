@@ -1,7 +1,9 @@
 <h1><%= @recipe.name %></h1>
 
+<% if user_signed_in? && current_user.admin? %>
 <%= link_to 'Edit recipe', edit_recipe_path(@recipe), class: "green button" %>
 <%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>
+<% end %>
 
 <p>
   CO2 equivalent ("CO2e") per serving: <strong><%= @recipe.co2_equiv_per_serving %> kg</strong><br />
@@ -29,11 +31,14 @@
       <th>Amount (kg)</th>
       <th>Description</th>
       <th>Country produced</th>
+      <% if user_signed_in? && current_user.admin? %>
       <th></th>
+      <% end %>
     </tr>
   </thead>
   
   <tbody>
+  <% if user_signed_in? && current_user.admin? %>
     <tr>
       <td style="text-align:right;"><% if @ingredient.product %>
           <%= (@ingredient.weight * @ingredient.product.co2_equiv).round(3) %>
@@ -46,6 +51,7 @@
       <td><%= f.text_field :country_origin_name, id: 'country-autocomplete-origin', :required => true %></td>
       <td><%= f.submit (@ingredient.product ? 'Update' : 'Add'), class: "green button" %></td>
     </tr>
+  <% end %>
   <% @recipe.ingredients.each_with_index do |ingredient, i| %>
     <% if @ingredient != ingredient %> 
     <tr>
@@ -56,10 +62,12 @@
       <td><%= ingredient.weight %></td>
       <td><%= ingredient.description %></td>
       <td><%= link_to ingredient.country_origin_name, ingredient.country_origin %></td>
+      <% if user_signed_in? && current_user.admin? %>
       <td>
         <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), params.permit(:edit_ingredient).merge(edit_ingredient: ingredient), remote: true %>
         <%= link_to image_tag("erase.png", size: "12x12", alt: "Remove"), ingredient, method: :delete, data: { confirm: 'Are you sure?' }, remote: true %>
       </td>
+      <% end %>
     </tr>
     <% end %>
   <% end %>
