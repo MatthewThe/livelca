@@ -17,3 +17,12 @@
 //= require_tree .
 //= require jquery-ui/widgets/autocomplete
 //= require jquery.dataTables.min
+
+
+$(document).on('click', 'a[data-remote=true]', function(e) {
+  history.pushState({}, '', $(this).attr('href'));
+});
+
+$(window).on('popstate', function () {
+  $.get(document.location.href)
+});

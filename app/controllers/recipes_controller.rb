@@ -5,6 +5,7 @@ class RecipesController < ApplicationController
   # GET /recipes
   # GET /recipes.json
   def index
+    respond_to_format
   end
   
   def table
@@ -27,11 +28,7 @@ class RecipesController < ApplicationController
     else
       @ingredient = Ingredient.new
     end
-    
-    respond_to do |format|
-      format.js {render layout: false}
-      format.html {render :index, layout: true}
-    end
+    respond_to_format
   end
 
   # GET /recipes/new

@@ -5,7 +5,7 @@ class ResourcesController < ApplicationController
   # GET /resources
   # GET /resources.json
   def index
-    @resources = Resource.all
+    respond_to_format
   end
   
   def table
@@ -23,10 +23,7 @@ class ResourcesController < ApplicationController
     markdown = Redcarpet::Markdown.new(renderer, extensions = {})
     @notes = markdown.render(@resource.notes)
     
-    respond_to do |format|
-      format.js {render layout: false}
-      format.html {render :index, layout: true}
-    end
+    respond_to_format
   end
 
   # GET /resources/new
@@ -53,6 +50,9 @@ class ResourcesController < ApplicationController
         @source.notes = row[:notes]
         @source.weight = @resource.default_weight
         @source.product = Product.find_or_create(row[:product_name])
+        if !row[:product_category].nil? && @source.product.category.nil?
+          @source.product.category = Product.find_or_create(row[:product_category])
+        end
         @source.country_origin_id = Country.find_or_create("Unknown")
         @source.country_consumption_id = Country.find_or_create("Unknown")
         @source.save
@@ -86,7 +86,7 @@ class ResourcesController < ApplicationController
       require 'csv'
       queries = []
       CSV.foreach(file,{:headers=>:first_row, :col_sep => "\t"}) do |row|
-        product_table.push({ product_name: row[0], co2_emission: row[1], notes: row[2] })
+        product_table.push({ product_name: row[0], co2_emission: row[1], notes: row[2], product_category: row[3] })
         #Product.add_product_query(row[0], queries)
       end
     end

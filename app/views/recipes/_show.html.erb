@@ -1,3 +1,5 @@
+<% content_for(:html_title) { @recipe.name } %>
+
 <h1><%= @recipe.name %></h1>
 
 <% if user_signed_in? && current_user.admin? %>

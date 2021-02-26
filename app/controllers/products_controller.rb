@@ -13,6 +13,8 @@ class ProductsController < ApplicationController
     else
       @products = Product.all
     end
+    
+    respond_to_format
   end
   
   def table
@@ -64,10 +66,7 @@ class ProductsController < ApplicationController
     
     @products, @product_tree = @product.get_graph_nodes(@supercategories)
     
-    respond_to do |format|
-      format.js {render layout: false}
-      format.html {render :index, layout: true}
-    end
+    respond_to_format
   end
 
   # GET /products/new

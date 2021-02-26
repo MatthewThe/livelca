@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Livelca</title>
+  <title><%= content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA" %></title>
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag asset_path('favicon.ico') %>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Montserrat&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="background"></div>
@@ -55,6 +57,10 @@
       <% if alert %><p id="alert"><%= alert %></p><% end %>
       <% if notice %><p id="notice"><%= notice %></p><% end %>
       <%= yield %>
+    </div>
+    
+    <div id="footer">
+    	&#169; 2021 Matthew The, Ditte Juhl and LiveLCA contributors 
     </div>
   </div>
 </body>

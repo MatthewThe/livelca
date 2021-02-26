@@ -44,7 +44,7 @@ div#content{
   margin-bottom: 10px;
   margin-left:0;
   padding:10px;
-  background-color:#fcfcfc;
+  background-color:#f6f6f6;
   /*background-color: rgba(203,240,194,0.6);*/
 }
 div#navbar{
@@ -70,8 +70,7 @@ h2 { font-size: 1.5em; }
 html {min-height:100%; margin-bottom:1px;}
 
 body {
-  margin:0px;
-	font-family:Verdana,Arial,Helvetica,sans-serif; 
+  margin:0px; 
 	font-size:14px;
 	line-height:17px;
 	color:#BBB;
@@ -84,6 +83,44 @@ body {
 	/*background-position:center top; */
 }
 
+body, p, ol, ul, td {
+	font-family: 'DM Sans', sans-serif;
+}
+
+table {
+  border-collapse: separate; 
+  border-spacing:0 5px;
+}
+table th:first-child{
+  border-radius:10px 0 0 10px;
+}
+
+table th:last-child{
+  border-radius:0 10px 10px 0;
+}
+
+table td {
+  background-color: #fff;
+  border-width: 3px 0;
+  border-style: solid;
+  border-color: #f6f6f6;
+}
+
+table td:first-child{
+  border-radius:10px 0 0 10px;
+}
+
+table td:last-child{
+  border-radius:0 10px 10px 0;
+}
+
+tbody:before {
+    content:"@";
+    display:block;
+    line-height:10px;
+    text-indent:-99999px;
+}
+
 label {
   display:inline-block;
 }
@@ -94,6 +131,7 @@ label {
 
 #logo {
   float: left;
+  font-family: 'Montserrat', sans-serif;
   display: block;
   padding-top:15px;
 }
@@ -156,6 +194,12 @@ label {
 }
 #navbar .search_box input[type="text"]::placeholder {
   color: #ddd;
+}
+
+#footer {
+  text-align: center;
+  padding-bottom: 5px;
+  color: #333;
 }
 
 #s-cover button {
@@ -347,7 +391,7 @@ input[type=submit] {
   box-shadow: 0 1px 1px rgba(0, 0, 0, .3) inset;
 }
 
-#content .button.green, .button.red, .button.blue {
+#content .button.green, #content .button.red, #content .button.blue {
   color: #fff;
   text-shadow: 0 1px 0 rgba(0,0,0,.2);
   
@@ -376,31 +420,31 @@ input[type=submit] {
 
 /* */
 
-.button.red{
+#content .button.red{
   background-color: #ca3535;
   border-color: #c43c35;
 }
 
-.button.red:hover{
+#content .button.red:hover{
   background-color: #ee5f5b;
 }
 
-.button.red:active{
+#content .button.red:active{
   background: #c43c35;
 }
 
 /* */
 
-.button.blue{
+#content .button.blue{
   background-color: #269CE9;
   border-color: #269CE9;
 }
 
-.button.blue:hover{
+#content .button.blue:hover{
   background-color: #70B9E8;
 }
 
-.button.blue:active{
+#content .button.blue:active{
   background: #269CE9;
 }
 

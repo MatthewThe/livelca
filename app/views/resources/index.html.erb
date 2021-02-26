@@ -20,25 +20,7 @@
   <% if @resource %>
   <%= render 'show' %>
   <% else %>
-  <h1>Where the data comes from</h1>
-  
-<p style="font-size:16px">
-Here you find a list of the sources used for the calculation of CO2-emissions of products and processes.
-</p>
-
-<p style="font-size:16px">
-Each source is weighted according to credibility, where papers published in highly renowned journals are weighted the highest and sources for which the origin is unclear or generally giving a poor impression will be weighted the lowest. The weighting goes from 1 to 10, meaning that a source rated 5, will only have half as much influence on the results as a source rated 10.
-</p>
-
-<p style="font-size:16px">
-If you are interested in the specific source, you can press on the link. Here you find information on which product they cover and from which country. There will of course also be a link to the specific study or website where the data is available.
-</p>
-
-<p style="font-size:16px">
-We are continuously collecting sources for all products and processes, increasing the database and working on improving the overall quality and coverage. 
-If there is a product you are interested knowing the emission for or if you have a specific product/process source you are very welcome to contact us at ditte <i>[at]</i> livelca.com
-</p>
-
+  <%= render 'greeter' %>
   <% end %>
 </div>
 
