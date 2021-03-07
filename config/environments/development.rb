@@ -44,5 +44,6 @@ Rails.application.configure do
   #}
   
   config.neo4j.session.type = :http
-  config.neo4j.session.url = 'http://' + Rails.application.credentials.neo4j[:user] + ':' + Rails.application.credentials.neo4j[:pass] + '@78.47.169.186:7474'
+  #config.neo4j.session.url = 'http://' + Rails.application.credentials.neo4j[:user] + ':' + Rails.application.credentials.neo4j[:pass] + '@78.47.169.186:7474'
+  config.neo4j.session.url = 'http://localhost:7474'
 end

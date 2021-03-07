@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc><%= @host %></loc>
+   </url>
+   <url>
+      <loc><%= "#{@host}#{products_path}" %></loc>
+   </url>
+   <% @products.each do |product| %>
+     <url>
+        <loc><%= "#{@host}/products/#{product.id}" %></loc>
+     </url>
+   <% end %>
+   <url>
+      <loc><%= "#{@host}/product_graph" %></loc>
+   </url>
+   <url>
+      <loc><%= "#{@host}#{recipes_path}" %></loc>
+   </url>
+   <% @recipes.each do |recipe| %>
+     <url>
+        <loc><%= "#{@host}/recipes/#{recipe.id}" %></loc>
+     </url>
+   <% end %>
+   <url>
+      <loc><%= "#{@host}#{resources_path}" %></loc>
+   </url>
+   <% @resources.each do |resource| %>
+     <url>
+        <loc><%= "#{@host}/resources/#{resource.id}" %></loc>
+     </url>
+   <% end %>
+   <url>
+      <loc><%= "#{@host}/pages/about" %></loc>
+   </url>
+   <url>
+      <loc><%= "#{@host}#{new_user_session_path}" %></loc>
+   </url>
+</urlset>

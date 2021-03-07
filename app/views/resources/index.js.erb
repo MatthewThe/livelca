@@ -1,0 +1,8 @@
+$('#alert').hide();
+$('#notice').hide();
+
+$('html,body').animate({ scrollTop: $("#current_resource").offset().top }, 'slow');
+
+$("#current_resource").html("<%= escape_javascript(render partial: 'resources/greeter' ) %>");
+
+document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'

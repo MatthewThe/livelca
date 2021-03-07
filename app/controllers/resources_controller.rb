@@ -40,24 +40,7 @@ class ResourcesController < ApplicationController
   def create
     @resource = Resource.new(resource_params)
     
-    if table_params[:table]
-      @csv_table = upload
-      
-      @csv_table.each_with_index do |row, i|
-        @source = Source.new
-        @source.resource = @resource
-        @source.co2_equiv = row[:co2_emission]
-        @source.notes = row[:notes]
-        @source.weight = @resource.default_weight
-        @source.product = Product.find_or_create(row[:product_name])
-        if !row[:product_category].nil? && @source.product.category.nil?
-          @source.product.category = Product.find_or_create(row[:product_category])
-        end
-        @source.country_origin_id = Country.find_or_create("Unknown")
-        @source.country_consumption_id = Country.find_or_create("Unknown")
-        @source.save
-      end
-    end
+    save_table
     
     respond_to do |format|
       if @resource.save
@@ -66,6 +49,29 @@ class ResourcesController < ApplicationController
       else
         format.html { render :new }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
+  def save_table
+    if table_params[:table]
+      @csv_table = upload
+      
+       Neo4j::ActiveBase.current_session.transaction do |tx|
+        @csv_table.each_with_index do |row, i|
+          @source = Source.new
+          @source.resource = @resource
+          @source.co2_equiv = row[:co2_emission]
+          @source.notes = row[:notes]
+          @source.weight = @resource.default_weight
+          @source.product = Product.find_or_create(row[:product_name])
+          if !row[:product_category].nil? && @source.product.category.nil?
+            @source.product.category = Product.find_or_create(row[:product_category])
+          end
+          @source.country_origin_id = Country.find_or_create("Unknown")
+          @source.country_consumption_id = Country.find_or_create("Unknown")
+          @source.save
+        end
       end
     end
   end
@@ -106,6 +112,8 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1
   # PATCH/PUT /resources/1.json
   def update
+    save_table
+    
     respond_to do |format|
       if @resource.update(resource_params)
         format.html { redirect_to @resource, notice: 'Resource was successfully updated.' }

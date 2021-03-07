@@ -6,6 +6,7 @@ $( document ).ready(function() {
       "lengthMenu": [[10, 20, 50], [10, 20, 50]],
       "stateSave": true,
       "deferRender": true,
+      "order": [[ 2, "desc" ]],
       "oLanguage": {
          "sSearch": "Filter products:"
       },
@@ -39,7 +40,10 @@ $( document ).ready(function() {
   if ($("#sources_table_wrapper").length == 0) {
     $('#sources_table').DataTable({
       "pageLength": 25,
-      "stateSave": true
+      "stateSave": true,
+      "columnDefs": [ 
+        { "targets": 0, "orderable": false }
+      ]
     });
   }
 })

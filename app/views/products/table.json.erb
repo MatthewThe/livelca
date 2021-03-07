@@ -5,7 +5,7 @@
     <%= "," if i > 0 %>
     [  "<%= (link_to product.name, product, class: product.reliability_class, remote: true).gsub('"', '\"').html_safe %>",
        "<div class='co2_cell' style='background-color:<%= product.co2_equiv_color %>;float:right;'><%= product.co2_equiv %></div>",
-       "<% if product.study_count > 0 %><%= product.study_count %><% else %>N/A<% if product.proxy %> (proxy: <%= (link_to product.proxy.name, product.proxy).gsub('"', '\"').html_safe %>)<% end %><% end %>"
+       "<%= product.study_count %><% if product.proxy && product.study_count == 0 %> (proxy: <%= (link_to product.proxy.name, product.proxy).gsub('"', '\"').html_safe %>)<% end %>"
     ]
 <% end %>
 <% end %>
