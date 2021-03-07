@@ -9,7 +9,7 @@ class ResourcesController < ApplicationController
   end
   
   def table
-    expires_in 1.hour, :public => true
+    expires_in 24.hours, :public => true
     @resources = Resource.all
     respond_to do |format|
       format.json

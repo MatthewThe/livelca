@@ -9,7 +9,7 @@ class RecipesController < ApplicationController
   end
   
   def table
-    expires_in 1.hour, :public => false
+    expires_in 24.hours, :public => true
     #if current_user
     #  @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
     #else

@@ -18,7 +18,7 @@ class ProductsController < ApplicationController
   end
   
   def table
-    expires_in 1.hour, :public => true
+    expires_in 24.hours, :public => true
     @products = Product.all.with_associations(:studies, :proxy)
     respond_to do |format|
      format.json
@@ -26,7 +26,7 @@ class ProductsController < ApplicationController
   end
   
   def graph
-    expires_in 1.hour, :public => true
+    expires_in 24.hours, :public => true
     if request.format == :json
       @product_tree = Product.get_product_tree
       @products = Product.all.with_associations(:studies, :proxy).to_json(:methods => :co2_equiv_color)
