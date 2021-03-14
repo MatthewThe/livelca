@@ -1,3 +1,5 @@
+var updateWiki;
+
 $( document ).ready(function() {
   "use strict";
   if ($("#products_table_wrapper").length == 0) {
@@ -45,6 +47,22 @@ $( document ).ready(function() {
         { "targets": 0, "orderable": false }
       ]
     });
+  }
+  
+  if ($("#editor").length > 0) {
+    const editor = new toastui.Editor({
+      el: document.querySelector('#editor'),
+      height: '500px',
+      initialEditType: 'markdown',
+      previewStyle: 'vertical',
+      usageStatistics: false
+    });
+    
+    $('#wiki-editor').hide();
+    editor.setMarkdown($('#wiki-editor').val())
+    updateWiki = function() {
+      $('#wiki-editor').val(editor.getMarkdown());
+    }
   }
 })
 

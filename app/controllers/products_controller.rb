@@ -60,7 +60,7 @@ class ProductsController < ApplicationController
   # GET /products/1.json
   def show
     @supercategories = @product.get_super_categories
-    renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
+    renderer = Redcarpet::Render::HTML.new(:link_attributes => Hash["target" => "_blank"], hard_wrap: true)
     markdown = Redcarpet::Markdown.new(renderer, extensions = {})
     @wiki = markdown.render(@product.wiki)
     
