@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :blogs
   resources :ingredients
   resources :recipes
   resources :resources
@@ -28,12 +29,15 @@ Rails.application.routes.draw do
   get 'product_table' => 'products#table'
   get 'resource_table' => 'resources#table'
   get 'recipe_table' => 'recipes#table'
+  get 'blog_table' => 'blogs#table'
   
   get 'product_graph' => 'products#graph'
   
   patch 'sources' => 'sources#duplicate'
   
   get 'products/:id/merge' => 'products#merge', as: :merge_product
+  get 'blogs/:id/publish' => 'blogs#publish', as: :publish_blog
+  get 'blogs/:id/unpublish' => 'blogs#unpublish', as: :unpublish_blog
   
   get "/pages/:page" => "pages#show"
   

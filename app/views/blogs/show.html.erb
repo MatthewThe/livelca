@@ -1,0 +1,25 @@
+<% content_for(:html_title) { @blog.title } %>
+
+<h1>
+  <%= @blog.title %>
+</h1>
+
+<% if user_signed_in? && current_user.admin? %>
+<p>
+  <%= link_to 'Edit article', edit_blog_path(@blog), class: "green button" %> 
+  <% if @blog.published_at? %>
+  <%= link_to 'Unpublish article', unpublish_blog_path(@blog), class: "green button" %>
+  <% else %>
+  <%= link_to 'Publish article', publish_blog_path(@blog), class: "green button" %>
+  <% end %>
+</p>
+<% end %>
+
+<% if @blog.published_at? %>
+<p>Posted at <%= @blog.published_at.strftime("%Y-%m-%d %T") %> by <%= @blog.user.name %></p>
+<% end %>
+
+
+<div class="tui-editor-contents">
+  <%= @wiki.html_safe %>
+</div>

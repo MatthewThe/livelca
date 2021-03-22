@@ -329,6 +329,10 @@ input[type=submit] {
   padding: 0px 0px 10px 0px;
 }
 
+.page_text p, .page_text ol, .page_text ul, .page_text td {
+  font-size: 16px;
+}
+
 .button::-moz-focus-inner{
   border: 0;
   padding: 0;
