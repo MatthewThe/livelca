@@ -37,10 +37,10 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
   
   # enable caching
-  #config.action_controller.perform_caching = true
+  config.action_controller.perform_caching = true
   #config.cache_store = :memory_store
   #config.public_file_server.headers = {
-  #  'Cache-Control' => "public, max-age=#{2.days.seconds.to_i}"
+  #  'Cache-Control' => "must-revalidate, private, max-age=#{2.days.seconds.to_i}",
   #}
   
   config.neo4j.session.type = :http

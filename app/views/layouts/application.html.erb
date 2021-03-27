@@ -22,12 +22,12 @@
       <label for="nav-toggle"><span class="toggle-words">Menu</span></label>
       <div id="navbar">
         <%= nav_link "Products", products_path %>
-        <%= nav_link "Products graph", product_graph_path %>
+        <%= nav_link "Blog", blogs_path %>
         <%= nav_link 'Recipes', recipes_path %>
         <%= nav_link "Resources", resources_path %>
+        <%= nav_link "Products graph", product_graph_path %>
         <%= nav_link "About", "/pages/about" %>
         <% if user_signed_in? %>
-          <%= nav_link 'My Receipts', receipts_path %>
           <%= nav_link 'Edit profile', edit_user_registration_path %>
           <%= nav_link 'Logout', destroy_user_session_path, method: :delete %>        
         <% else %>

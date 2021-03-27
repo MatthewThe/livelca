@@ -64,3 +64,5 @@ gem 'rest-client'
 #gem 'fastimage_resize'
 
 gem 'lodash-rails'
+
+gem 'actionpack-page_caching'

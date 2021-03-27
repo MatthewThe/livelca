@@ -1,7 +1,9 @@
 class ProductsController < ApplicationController
   before_action :authenticate_user!, :is_admin, only: [:new, :edit, :merge, :update, :destroy]
   before_action :set_product, only: [:show, :edit, :merge, :update, :destroy]
-
+  
+  caches_page :table, :graph_json
+  
   # GET /products
   # GET /products.json
   def index
@@ -18,7 +20,6 @@ class ProductsController < ApplicationController
   end
   
   def table
-    expires_in 24.hours, :public => true
     @products = Product.all.with_associations(:studies, :proxy)
     respond_to do |format|
      format.json
@@ -26,23 +27,20 @@ class ProductsController < ApplicationController
   end
   
   def graph
-    expires_in 24.hours, :public => true
-    if request.format == :json
-      @product_tree = Product.get_product_tree
-      @products = Product.all.with_associations(:studies, :proxy).to_json(:methods => :co2_equiv_color)
-      
-      # tree with depth 1
-      #@product = Product.find_by(name: "Food")
-      #@products, @product_tree = @product.get_graph_nodes([])
-      
-      # slow query
-      #@products = (@product.subcategories + [@product]).map{|sc| {:product => sc.attributes.merge(:co2_equiv_color => sc.co2_equiv_color)}}
-      #@product_tree = []
-      #@product_tree.push({:product => @product.attributes.merge(:subcategories => @product.subcategories.map{|p| p.attributes})})
+    respond_to do |format|
+     format.html
     end
+  end
+  
+  def graph_json
+    @product_tree = Product.get_product_tree
+    @products = Product.all.with_associations(:studies, :proxy).to_json(:methods => :co2_equiv_color)
+    
+    # tree with depth 1
+    #@product = Product.find_by(name: "Food")
+    #@products, @product_tree = @product.get_graph_nodes([])
     respond_to do |format|
      format.json
-     format.html
     end
   end
   
@@ -103,7 +101,7 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     if product_merge_params[:merge_product_name]
-      
+      expire_page :action => [:table, :graph_json], :format => 'json'
       respond_to do |format|
         if @product.merge_with(product_merge_params[:merge_product_name])
           format.html { redirect_to @product, notice: 'Product was successfully merged.' }
@@ -115,8 +113,10 @@ class ProductsController < ApplicationController
       end
       
     else
+      if @product.name != product_params[:name]
+        expire_page :action => [:table, :graph_json], :format => 'json'
+      end
       save_relations
-      
       respond_to do |format|
         if @product.update(product_params)
           format.html { redirect_to @product, notice: 'Product was successfully updated.' }

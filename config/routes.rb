@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   get 'blog_table' => 'blogs#table'
   
   get 'product_graph' => 'products#graph'
+  get 'product_graph_json' => 'products#graph_json'
   
   patch 'sources' => 'sources#duplicate'
   

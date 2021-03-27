@@ -29,7 +29,7 @@ $( document ).ready(function() {
   if ($("#product_graph_container").length == 0) {
     if ($("#product_graph").length > 0) {
       $.ajax({
-        url: '/product_graph.json',
+        url: '/product_graph_json.json',
         type: 'GET',
         success: function(data) {
           d3.select('svg').select("#product_graph_loader").remove();

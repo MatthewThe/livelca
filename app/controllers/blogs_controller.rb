@@ -1,4 +1,5 @@
 class BlogsController < ApplicationController
+  before_action :authenticate_user!, only: [:new, :edit, :publish, :unpublish, :update, :destroy]
   before_action :set_blog, only: %i[ show edit update destroy publish unpublish ]
 
   # GET /blogs or /blogs.json
@@ -21,6 +22,8 @@ class BlogsController < ApplicationController
     renderer = Redcarpet::Render::HTML.new(:link_attributes => Hash["target" => "_blank"], hard_wrap: true)
     markdown = Redcarpet::Markdown.new(renderer, extensions = {})
     @wiki = markdown.render(@blog.post)
+    
+    respond_to_format
   end
 
   # GET /blogs/new

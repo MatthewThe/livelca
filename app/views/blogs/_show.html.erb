@@ -7,11 +7,11 @@
 <% if user_signed_in? && current_user.admin? %>
 <p>
   <%= link_to 'Edit article', edit_blog_path(@blog), class: "green button" %> 
-  <% if @blog.published_at? %>
+<% if @blog.published_at? %>
   <%= link_to 'Unpublish article', unpublish_blog_path(@blog), class: "green button" %>
-  <% else %>
+<% else %>
   <%= link_to 'Publish article', publish_blog_path(@blog), class: "green button" %>
-  <% end %>
+<% end %>
 </p>
 <% end %>
 

@@ -3,8 +3,8 @@
 <% cache(@blogs) do %>
 <% @blogs.each_with_index do |blog, i| %>
     <%= "," if i > 0 %>
-    [  "<% if user_signed_in? && current_user.admin? %><%= link_to(image_tag("modify.png", size: "12x12", alt: "Edit"), edit_blog_path(blog)).gsub('"', '\"').html_safe %> <%= link_to(image_tag("erase.png", size: "12x12", alt: "Remove"), blog, method: :delete, data: { confirm: 'Are you sure?' }).gsub('"', '\"').html_safe %><% end %> <%= link_to(blog.title, blog).gsub('"', '\"').html_safe %>",
-       "<% if blog.published_at? %><%= blog.published_at.strftime("%Y-%m-%d %T") %><% else %>Not published<% end %>"
+    [  "<%= link_to(blog.title, blog, remote: true).gsub('"', '\"').html_safe %>",
+       "<% if blog.published_at? %><%= blog.published_at.strftime("%Y-%m-%d") %><% else %>Not published<% end %>"
     ]
 <% end %>
 <% end %>

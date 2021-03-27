@@ -1,14 +1,27 @@
-<h1>Blogs</h1>
+<div class="table_pane">
+  <h1>Blogs</h1>
 
-<table id="blogs_table" class="stripe">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Published at</th>
-    </tr>
-  </thead>
-</table>
+  <% if user_signed_in? && current_user.admin? %>
+    <%= link_to 'New Blog', new_blog_path, class: "green button" %>
+    <div class="space_16"></div>
+  <% end %>
 
-<br>
+  <table id="blogs_table" class="stripe">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Published at</th>
+      </tr>
+    </thead>
+  </table>
+</div>
 
-<%= link_to 'New Blog', new_blog_path, class: "green button" %>
+<div id="current_blog" class="content_pane">
+  <% if @blog %>
+  <%= render 'show' %>
+  <% else %>
+  <%= render 'greeter' %>
+  <% end %>
+</div>
+
+<div style="clear:both;"></div> 

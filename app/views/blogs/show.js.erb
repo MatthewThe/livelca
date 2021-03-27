@@ -1,0 +1,8 @@
+$('#alert').hide();
+$('#notice').hide();
+
+$('html,body').animate({ scrollTop: $("#current_blog").offset().top }, 'slow');
+
+$("#current_blog").html("<%= escape_javascript(render partial: 'blogs/show', locals: { blog: @blog } ) %>");
+
+document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'
