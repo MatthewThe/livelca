@@ -66,7 +66,7 @@ div#navbar{
   display: none;
 }
 
-h1 { line-height: 1em; }
+h1 { line-height: 1em; font-size: 28px; }
 h2 { font-size: 1.5em; }
 
 html {min-height:100%; margin-bottom:1px;}
@@ -329,7 +329,10 @@ input[type=submit] {
   padding: 0px 0px 10px 0px;
 }
 
-.page_text p, .page_text ol, .page_text ul, .page_text td {
+.content_pane p, 
+.content_pane ol, 
+.content_pane ul, 
+.content_pane td {
   font-size: 16px;
 }
 

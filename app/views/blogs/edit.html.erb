@@ -1,7 +1,10 @@
+<div class="content_pane">
 <%= link_to 'Back to blog', @blog, class: "green button" %>
 
 <h1>Editing Blog</h1>
 
+
 <%= render 'form', blog: @blog %>
 
 <%= link_to 'Delete', @blog, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>
+</div>
