@@ -23,8 +23,6 @@
 
 .co2_chart {
   text-align: center; 
-  float: right;
-  display: block; 
   //border: 1px solid #000;
   //padding-bottom: 10px;
 }
@@ -37,4 +35,19 @@
 }
 .needle, .needle-center {
   fill: #464A4F;
+}
+
+#info_charts_box {
+  text-align: center; 
+  float: right;
+  display: block;
+  margin-top:20px;
+  width: 280px;
+}
+
+.daily_budget_chart {
+  margin-top:20px;
+  margin-left:5px;
+  margin-bottom:20px;
+  margin-right:10px;
 }

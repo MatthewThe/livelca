@@ -4,10 +4,20 @@
   <%= @product.name %>
 </h1>
 
-<div id="co2_gauge" class="co2_chart">
-  <div class="front"></div><div class="back"></div>
-  <div class="co2_cell" style='display:inline-block; margin-right: 5px; background-color:<%= @product.co2_equiv_color %>'><%= @product.co2_equiv %></div><strong>CO2e / kg</strong>
-  <script>drawGauge(<%=@product.co2_equiv%>, '<%=@product.co2_equiv_color%>');</script>
+<div id="info_charts_box">
+  <div id="co2_gauge" class="co2_chart">
+    <div class="front"></div><div class="back"></div>
+    <div class="co2_cell" style='display:inline-block; margin-right: 5px; background-color:<%= @product.co2_equiv_color %>'><%= @product.co2_equiv %></div><strong>CO2e / kg</strong>
+    <script>drawGauge(<%=@product.co2_equiv%>, '<%=@product.co2_equiv_color%>');</script>
+  </div>
+
+  <div id="daily_budget" class="daily_budget_chart">
+    <div class="daily-budget-chart"></div>
+    <div style="margin-bottom:3px;"><svg height="11" width="11"><rect class="rect" x="0" y="0" width="11" height="11" fill="rgb(153, 153, 153)"></rect></svg> = 100 g of <%=@product.name%></div>
+    You can eat
+    <div class="co2_cell" style='display:inline-block; margin-right: 5px; background-color:<%= @product.co2_equiv_color %>'><%= (2.7 / @product.co2_equiv).round(2) %></div>kg of <%=@product.name%> to exhaust your <a href="/blogs/75a697d4-fe34-4977-ae2f-b472f1ee02da">daily CO2e food budget</a>
+    <script>drawDailyBudget(<%=@product.co2_equiv%>);</script>
+  </div>
 </div>
 
 <% if user_signed_in? && current_user.admin? %>
