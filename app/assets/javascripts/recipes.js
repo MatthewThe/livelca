@@ -156,7 +156,6 @@ function updateIngredient(idx, update = true) {
     $("#product-co2e-" + data.idx).html(data.value).css('background-color', data.color)
     ingredients[data.idx] = data
     if (update) {
-      displayIngredientPieChart(ingredients)
       updateRecipeTotalCO2e()
     }
   })
@@ -181,9 +180,10 @@ function updateRecipeTotalCO2e() {
     drawGauge(perServingCO2e, data.color);
     $("#co2_cell_gauge").css('background-color', data.color)
     $("#co2_cell_daily_budget").html((2.7 / perServingCO2e).toFixed(2)).css('background-color', data.color)
+    
+    displayIngredientPieChart(ingredients)
+    
+    $(".daily-budget-chart").children('svg').remove();
+    drawDailyBudget(perServingCO2e);
   })
-  
-  
-  $(".daily-budget-chart").children('svg').remove();
-  drawDailyBudget(perServingCO2e);
 }

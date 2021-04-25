@@ -76,5 +76,9 @@
     [  "<a data-remote=\"true\" href=\"/recipes/78d179d0-dd60-4b76-9db4-4f2ac7b749a4\">Tomato soup</a>",
        "<div class='co2_cell' style='background-color:rgb(34.578,148.64440000000002,7.7796);float:right;'>0.339</div>"
     ]
+    ,
+    [  "<a data-remote=\"true\" href=\"/recipes/5236c7b3-7296-4d49-b0be-ea7aa1df7f26\">White pesto pasta</a>",
+       "<div class='co2_cell' style='background-color:rgb(69.156,155.28879999999998,6.5592);float:right;'>0.678</div>"
+    ]
   ]
 }

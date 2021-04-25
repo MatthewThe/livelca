@@ -45,8 +45,6 @@ function drawDailyBudget(val) {
     .attr("y", function(d, i) {  
       var vertGroupOffset = Math.floor(i / numBlocksPerGrid);
       var vertWithinGroupOffset = Math.floor(i % numBlocksPerGrid / numBlocksPerRow);
-      console.log(vertWithinGroupOffset)
-      console.log(vertGroupOffset)
       return groupSpacing * vertGroupOffset + (cellSpacing + cellSize) * (vertWithinGroupOffset + vertGroupOffset * (numGroupsPerGrid / numGroupsPerRow)); 
     })  
     .attr('width', 0)  
