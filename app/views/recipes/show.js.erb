@@ -15,3 +15,13 @@ if ($("#ingredients_table_wrapper").length == 0) {
     "paging": false
   });
 }
+
+$('[id^="country-autocomplete"]').autocomplete({
+  source: '/country_autocomplete',
+  autoFocus: true,
+})
+
+$('[id^="product-autocomplete"]').autocomplete({
+  source: '/product_autocomplete_name',
+  autoFocus: true,
+})

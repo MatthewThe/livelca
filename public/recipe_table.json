@@ -70,7 +70,7 @@
     ]
     ,
     [  "<a data-remote=\"true\" href=\"/recipes/c2ee4c5c-e754-4693-bd4c-69314aeccf44\">White pasta pesto</a>",
-       "<div class='co2_cell' style='background-color:rgb(69.156,155.28879999999998,6.5592);float:right;'>0.678</div>"
+       "<div class='co2_cell' style='background-color:rgb(70.38,155.524,6.516);float:right;'>0.69</div>"
     ]
     ,
     [  "<a data-remote=\"true\" href=\"/recipes/78d179d0-dd60-4b76-9db4-4f2ac7b749a4\">Tomato soup</a>",
@@ -79,6 +79,10 @@
     ,
     [  "<a data-remote=\"true\" href=\"/recipes/5236c7b3-7296-4d49-b0be-ea7aa1df7f26\">White pesto pasta</a>",
        "<div class='co2_cell' style='background-color:rgb(69.156,155.28879999999998,6.5592);float:right;'>0.678</div>"
+    ]
+    ,
+    [  "<a data-remote=\"true\" href=\"/recipes/89d9fc7e-a130-4e8a-aca2-b3edc418d2de\">Veggie moussaka</a>",
+       "<div class='co2_cell' style='background-color:rgb(255.0,3.0,3.0);float:right;'>8.169</div>"
     ]
   ]
 }

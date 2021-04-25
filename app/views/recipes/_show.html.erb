@@ -2,8 +2,6 @@
 
 <h1><%= @recipe.name %></h1>
 
-<%= form_for(@recipe) do |f| %>
-
 <div id="info_charts_box">
   <div id="co2_gauge" class="co2_chart">
     <div class="front"></div><div class="back"></div>
@@ -22,6 +20,8 @@
   CO2e per serving: <strong><span class="recipe-co2e-per-serving"><%= @recipe.co2_equiv_per_serving %></span> kg</strong><br />
   CO2e total: <span class="recipe-co2e-total"><%= @recipe.co2_equiv %></span> kg
 </p>
+
+<%= form_for(@recipe) do |f| %>
 
 <% if user_signed_in? && current_user.admin? && @csv_table %>
   <% if @recipe.errors.any? %>
@@ -107,10 +107,14 @@ calculateRecipeCO2e(<%=@csv_table.length%>);
 </div>
 <% end %>
 
-<% else %>
+<% end # if @csv_table %>
 
-<%= form_for(@ingredient) do |f| %>
-  <%= f.hidden_field :recipe, value: @recipe.uuid %>
+<% end # form_for(@recipe) do |f| %>
+
+<% if not @csv_table # if @csv_table %>
+
+<%= form_for(@ingredient) do |i| %>
+  <%= i.hidden_field :recipe, value: @recipe.uuid %>
 
 <table id="ingredients_table" class="stripe">
   <thead>
@@ -134,11 +138,11 @@ calculateRecipeCO2e(<%=@csv_table.length%>);
           <% else %>
           N/A
           <% end %></td>
-      <td><%= f.text_field :product_name, autofocus: true, id: 'product-autocomplete', :required => true %></td>
-      <td><%= f.number_field :weight, step: 0.001, :required => true, style: "width:50px" %></td>
-      <td><%= f.text_field :description %></td>
-      <td><%= f.text_field :country_origin_name, id: 'country-autocomplete-origin', :required => true %></td>
-      <td><%= f.submit (@ingredient.product ? 'Update' : 'Add'), class: "green button" %></td>
+      <td><%= i.text_field :product_name, autofocus: true, id: 'product-autocomplete', :required => true %></td>
+      <td><%= i.number_field :weight, step: 0.001, :required => true, style: "width:50px" %></td>
+      <td><%= i.text_field :description %></td>
+      <td><%= i.text_field :country_origin_name, id: 'country-autocomplete-origin', :required => true %></td>
+      <td><%= i.submit (@ingredient.product ? 'Update' : 'Add'), class: "green button" %></td>
     </tr>
   <% end %>
   <% @recipe.ingredients.each_with_index do |ingredient, i| %>
@@ -150,7 +154,7 @@ calculateRecipeCO2e(<%=@csv_table.length%>);
       <td><%= link_to ingredient.product.name, ingredient.product, class: ingredient.product.reliability_class %></td>
       <td><%= ingredient.weight %></td>
       <td><%= ingredient.description %></td>
-      <td><%= link_to ingredient.country_origin_name, ingredient.country_origin %></td>
+      <td><%= ingredient.country_origin_name %></td>
       <% if user_signed_in? && current_user.admin? %>
       <td>
         <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), params.permit(:edit_ingredient).merge(edit_ingredient: ingredient), remote: true %>
@@ -171,8 +175,6 @@ drawGauge(<%=@recipe.co2_equiv_per_serving%>, '<%=@recipe.co2_equiv_color%>');
 drawDailyBudget(<%=@recipe.co2_equiv_per_serving%>);
 </script>
 
-<% end %>
+<% end # form_for(@ingredient) do |i| %>
 
-<% end %>
-
-<% end %>
+<% end # if @csv_table %>
