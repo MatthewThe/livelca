@@ -29,20 +29,22 @@ class Ingredient
     else
       color = [yellow, red].transpose.map{|x| 2*(1.0 - co2_equiv_scaled) * x[0] + 2*(co2_equiv_scaled - 0.5) * x[1]}
     end
-    "rgb(" + color[0].to_s + "," + color[1].to_s + "," + color[2].to_s + ")"
+    "rgb(" + color[0].round(1).to_s + "," + color[1].round(1).to_s + "," + color[2].round(1).to_s + ")"
   end
   
   def self.parse(s)
-    amount = 1.0
-    mult = 1.0
+    amount = -1
+    mult = -1
     item = ""
     
-    m = /\s*([0-9\/.\s]*)?\s*(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|kg|gr|g|ml|l)?[s]?\s*(.*)/.match(s.downcase)
+    m = /([0-9\/.\s]*)?\s*(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|kg|gr|g|dl|ml|l)?(?:[s]+\s+)?(.*)/.match(s.downcase.strip.gsub('.', ''))
     if m and m.length >= 3
+      puts m[3]
       if m[1].length > 0
         amount = mixed_number_to_rational(m[1])
       end
       
+      # regex cheatsheet: "^": start of line, "$": end of line, "\b": word boundary (space or new line)
       if /^(kg|l)$/.match(m[2])
         mult = 1.0
       elsif /^(dl)$/.match(m[2])
@@ -65,15 +67,33 @@ class Ingredient
         mult = 0.012
       elsif /^(can[s]?)$/.match(m[2])
         mult = 0.4
-      elsif /onion[s]?/.match(m[3])
+      elsif /\bonion[s]?\b/.match(m[3])
         mult = 0.2
-      elsif /carrot[s]?$/.match(m[3])
+      elsif /\bcarrot[s]?\b/.match(m[3])
         mult = 0.07
-      elsif /egg[s]?/.match(m[3])
+      elsif /\begg[s]?\b/.match(m[3])
         mult = 0.06
+      elsif /\bsalt\b/.match(m[3])
+        mult = 0.001
+      elsif /\bpepper\b/.match(m[3])
+        mult = 0.001
+      elsif /\boil\b/.match(m[3])
+        mult = 0.015
       end
       item = m[3]
     end
+    
+    if amount == -1
+      if mult == -1
+        amount = 0.1
+        mult = 1.0
+      else
+        amount = 1.0
+      end
+    elsif mult == -1
+      mult = 1.0
+    end
+    
     return (amount*mult).round(3), item
   end
   

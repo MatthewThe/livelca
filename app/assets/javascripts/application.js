@@ -17,6 +17,7 @@
 //= require_tree .
 //= require jquery-ui/widgets/autocomplete
 //= require jquery.dataTables.min
+//= require blocks
 
 
 $(document).on('click', 'a[data-remote=true]', function(e) {

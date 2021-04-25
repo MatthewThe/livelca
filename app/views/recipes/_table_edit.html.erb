@@ -1,0 +1,178 @@
+<% content_for(:html_title) { @recipe.name } %>
+
+<h1><%= @recipe.name %></h1>
+
+<%= form_for(@recipe) do |f| %>
+
+<div id="info_charts_box">
+  <div id="co2_gauge" class="co2_chart">
+    <div class="front"></div><div class="back"></div>
+    <div class="co2_cell" id="co2_cell_gauge" style='display:inline-block; margin-right: 5px; background-color:<%= @recipe.co2_equiv_color %>'><span class="recipe-co2e-per-serving"><%= @recipe.co2_equiv_per_serving %></span></div><strong>kg CO2e / portion</strong>
+  </div>
+
+  <div id="daily_budget" class="daily_budget_chart">
+    <div class="daily-budget-chart"></div>
+    <div style="margin-bottom:3px;"><svg height="11" width="11"><rect class="rect" x="0" y="0" width="11" height="11" fill="rgb(153, 153, 153)"></rect></svg> = 0.1 portion of <%=@recipe.name%></div>
+    You can eat
+    <div class="co2_cell" id="co2_cell_daily_budget" style='display:inline-block; margin-right: 5px; background-color:<%= @recipe.co2_equiv_color %>'><%= (2.7 / @recipe.co2_equiv_per_serving).round(2) %></div> portions of <%=@recipe.name%> to exhaust your <a href="/blogs/75a697d4-fe34-4977-ae2f-b472f1ee02da" target="_blank">daily CO2e food budget</a>
+  </div>
+</div>
+
+<p>
+  CO2e per serving: <strong><span class="recipe-co2e-per-serving"><%= @recipe.co2_equiv_per_serving %></span> kg</strong><br />
+  CO2e total: <span class="recipe-co2e-total"><%= @recipe.co2_equiv %></span> kg
+</p>
+
+<% if user_signed_in? && current_user.admin? %>
+  <% if @recipe.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@receipt.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+
+      <ul>
+      <% @recipe.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :servings %><br>
+    <%= f.number_field :servings, step: 1.0 %>
+  </div>
+  <div class="field">
+    <%= f.label :country_consumption %><br>
+    <%= f.text_field :country_consumption_name, :value => @country_consumption_name, id: 'country-autocomplete-consumption', :required => true %>
+  </div>
+<% else %>
+  <p>
+    Servings: <%= @recipe.servings %>
+    <%= f.number_field :servings, step: 1.0, :hidden => true %>
+  </p>
+
+  <p>
+    Country of consumption: <%= @country_consumption_name %>
+  </p>
+<% end %>
+
+<svg id="ingredient_pie_chart"></svg>
+ 
+<div class="space_16"></div>
+
+<h2>Ingredients</h2>
+
+<% if @csv_table %>
+<table class="stripe dataTable no-footer" style="max-width:800px; margin: 0">
+  <thead>
+    <tr>
+      <th>CO2e (kg)</th>
+      <th>Product</th>
+      <th>Amount (kg)</th>
+      <th>Description</th>
+      <% if user_signed_in? && current_user.admin? %>
+      <th>Country produced</th>
+      <% end %>
+    </tr>
+  </thead>
+  
+  <tbody>
+<% @csv_table.each_with_index do |row, i| %> 
+    <tr>
+      <td><div class="co2_cell" style="float:right; background-color: #ccc" id="product-co2e-<%=i.to_s%>"></div></td>
+      <td><%= f.text_field :product_name, :value => row.fetch(:product_name), :multiple => true, id: 'product-autocomplete-' + i.to_s, :onChange=> "javascript: updateIngredient(" + i.to_s + ");" %></td>
+      <td><%= f.number_field :weight, step: 0.001, style: 'width: 80px', value: row.fetch(:weight), :multiple => true, id: 'product_weight_' + i.to_s, :onInput=> "javascript: updateIngredient(" + i.to_s + ");" %></td>
+      <td><%= f.text_field :item_name, :value => row.fetch(:item_name), style: 'width: 320px', :multiple => true, id: 'product_item_name_' + i.to_s %></td>
+      <% if user_signed_in? && current_user.admin? %>
+      <td><%= f.text_field :country_origin_name, style: 'width: 120px', value: row.fetch(:country_name), :multiple => true, id: 'country-autocomplete-' + i.to_s %></td>
+      <% end %>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<script>
+var ingredients = []
+calculateRecipeCO2e(<%=@csv_table.length%>);
+</script>
+
+<div class="space_16"></div>
+
+<% if user_signed_in? && current_user.admin? %>
+<div class="actions">
+  <%= f.submit class: "green button" %>
+</div>
+<% end %>
+
+<% else %>
+
+<%= form_for(@ingredient) do |f| %>
+  <%= f.hidden_field :recipe, value: @recipe.uuid %>
+
+<table id="ingredients_table" class="stripe">
+  <thead>
+    <tr>
+      <th>CO2e (kg)</th>
+      <th>Product</th>
+      <th>Amount (kg)</th>
+      <th>Description</th>
+      <th>Country produced</th>
+      <% if user_signed_in? && current_user.admin? %>
+      <th></th>
+      <% end %>
+    </tr>
+  </thead>
+  
+  <tbody>
+  <% if user_signed_in? && current_user.admin? %>
+    <tr>
+      <td style="text-align:right;"><% if @ingredient.product %>
+          <%= (@ingredient.weight * @ingredient.product.co2_equiv).round(3) %>
+          <% else %>
+          N/A
+          <% end %></td>
+      <td><%= f.text_field :product_name, autofocus: true, id: 'product-autocomplete', :required => true %></td>
+      <td><%= f.number_field :weight, step: 0.001, :required => true, style: "width:50px" %></td>
+      <td><%= f.text_field :description %></td>
+      <td><%= f.text_field :country_origin_name, id: 'country-autocomplete-origin', :required => true %></td>
+      <td><%= f.submit (@ingredient.product ? 'Update' : 'Add'), class: "green button" %></td>
+    </tr>
+  <% end %>
+  <% @recipe.ingredients.each_with_index do |ingredient, i| %>
+    <% if @ingredient != ingredient %> 
+    <tr>
+      <td>
+        <div class="co2_cell" style="float:right; background-color:<%= ingredient.co2_equiv_color(@recipe.servings) %>"><%= ingredient.co2_equiv %></div>
+      </td>
+      <td><%= link_to ingredient.product.name, ingredient.product, class: ingredient.product.reliability_class %></td>
+      <td><%= ingredient.weight %></td>
+      <td><%= ingredient.description %></td>
+      <td><%= link_to ingredient.country_origin_name, ingredient.country_origin %></td>
+      <% if user_signed_in? && current_user.admin? %>
+      <td>
+        <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), params.permit(:edit_ingredient).merge(edit_ingredient: ingredient), remote: true %>
+        <%= link_to image_tag("erase.png", size: "12x12", alt: "Remove"), ingredient, method: :delete, data: { confirm: 'Are you sure?' }, remote: true %>
+      </td>
+      <% end %>
+    </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>
+
+<script>
+var ingredients = <%=@recipe.ingredients.map{|i| {:label => i.product.name, :value => i.co2_equiv, :color => i.co2_equiv_color(@recipe.servings) }}.to_json.html_safe%>;
+
+displayIngredientPieChart(ingredients);
+drawGauge(<%=@recipe.co2_equiv_per_serving%>, '<%=@recipe.co2_equiv_color%>');
+drawDailyBudget(<%=@recipe.co2_equiv_per_serving%>);
+</script>
+
+<% end %>
+
+<% end %>
+
+<% end %>

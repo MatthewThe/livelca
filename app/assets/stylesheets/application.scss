@@ -472,6 +472,8 @@ input[type=submit] {
 .hspace_16	{width:16px;}
 .relative {position:relative;}
 .float    {display:block; float:left;}
+.max_width_800 {max-width: 800px;}
+.max_width_1024 {max-width: 1024px;}
 
 @media (max-width: 410px) {
   h1 {

@@ -2,14 +2,30 @@
 
 <h1><%= @recipe.name %></h1>
 
+<div id="info_charts_box">
+  <div id="co2_gauge" class="co2_chart">
+    <div class="front"></div><div class="back"></div>
+    <div class="co2_cell" style='display:inline-block; margin-right: 5px; background-color:<%= @recipe.co2_equiv_color %>'><%= @recipe.co2_equiv_per_serving %></div><strong>CO2e / portion</strong>
+    <script>drawGauge(<%=@recipe.co2_equiv_per_serving%>, '<%=@recipe.co2_equiv_color%>');</script>
+  </div>
+
+  <div id="daily_budget" class="daily_budget_chart">
+    <div class="daily-budget-chart"></div>
+    <div style="margin-bottom:3px;"><svg height="11" width="11"><rect class="rect" x="0" y="0" width="11" height="11" fill="rgb(153, 153, 153)"></rect></svg> = 1 portion of <%=@recipe.name%></div>
+    You can eat
+    <div class="co2_cell" style='display:inline-block; margin-right: 5px; background-color:<%= @recipe.co2_equiv_color %>'><%= (2.7 / @recipe.co2_equiv_per_serving).round(2) %></div> portions of <%=@recipe.name%> to exhaust your <a href="/blogs/75a697d4-fe34-4977-ae2f-b472f1ee02da" target="_blank">daily CO2e food budget</a>
+    <script>drawDailyBudget(<%=@recipe.co2_equiv_per_serving%>);</script>
+  </div>
+</div>
+
 <% if user_signed_in? && current_user.admin? %>
 <%= link_to 'Edit recipe', edit_recipe_path(@recipe), class: "green button" %>
 <%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>
 <% end %>
 
 <p>
-  CO2 equivalent ("CO2e") per serving: <strong><%= @recipe.co2_equiv_per_serving %> kg</strong><br />
-  CO2 equivalent ("CO2e"): <%= @recipe.co2_equiv %> kg
+  CO2 equivalent ("CO2e") per serving: <strong><span id="recipe-co2e-per-serving"><%= @recipe.co2_equiv_per_serving %></span> kg</strong><br />
+  CO2 equivalent ("CO2e"): <span id="recipe-co2e-total"><%= @recipe.co2_equiv %></span> kg
 </p>
 
 <p>
@@ -17,10 +33,14 @@
 </p>
 
 <p>
-  Country of consumption: <%= @recipe.country_consumption.name %>
+  Country of consumption: <%= @country_consumption_name %>
 </p>
 
 <%= render 'pie_chart' %>
+
+<div class="space_16"></div>
+
+<h2>Ingredients</h2>
 
 <%= form_for(@ingredient) do |f| %>
   <%= f.hidden_field :recipe, value: @recipe.uuid %>

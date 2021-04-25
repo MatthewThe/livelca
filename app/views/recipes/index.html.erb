@@ -1,10 +1,8 @@
 <div class="table_pane">
   <h1>Recipes</h1>
   
-  <% if user_signed_in? && current_user.admin? %>
-  <%= link_to 'Add Recipe', new_recipe_path, class: "green button" %>
+  <%= link_to 'Calculate CO2e for my recipe', new_recipe_path, class: "green button" %>
   <div class="space_16"></div>
-  <% end %>
 
   <table id="recipes_table" class="stripe">
     <thead>
@@ -16,9 +14,11 @@
   </table>
 </div>
 
-<div id="current_recipe" class="content_pane">
-  <% if @recipe %>
-  <%= render 'show' %>
+<div id="current_recipe" class="content_pane max_width_1024">
+  <% if @recipe and @recipe.name %>
+  <%= render 'table_edit' %>
+  <% elsif @recipe %>
+  <%= render 'new' %>
   <% else %>
   <%= render 'greeter' %>
   <% end %>

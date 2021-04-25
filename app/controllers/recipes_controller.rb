@@ -1,6 +1,8 @@
 class RecipesController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :edit, :merge, :update, :destroy]
+  before_action :authenticate_user!, only: [:edit, :merge, :update, :destroy]
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
+  
+  caches_page :table
   
   # GET /recipes
   # GET /recipes.json
@@ -9,12 +11,7 @@ class RecipesController < ApplicationController
   end
   
   def table
-    expires_in 24.hours, :public => true
-    #if current_user
-    #  @recipes = Recipe.where(user: current_user).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
-    #else
-      @recipes = Recipe.where(is_public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
-    #end
+    @recipes = Recipe.where(is_public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
     respond_to do |format|
       format.json
     end
@@ -28,53 +25,35 @@ class RecipesController < ApplicationController
     else
       @ingredient = Ingredient.new
     end
+    @country_consumption_name = @recipe.country_consumption.name
     respond_to_format
   end
 
   # GET /recipes/new
   def new
     @recipe = Recipe.new
-    @country_consumption_name = current_user.country.name
+    @country_consumption_name = ""
+    if current_user
+      @country_consumption_name = current_user.country.name
+    end
+    respond_to_format
   end
 
   # GET /recipes/1/edit
   def edit
     @country_consumption_name = @recipe.country_consumption.name
   end
-
-  def upload
-    purchase_table = []
-    queries = []
-    for row in recipe_ingredient_params[:ingredients_list].split("\n")
-      weight, item = Ingredient.parse(row)
-      purchase_table.push({ item_name: row.strip, weight: weight, country_name: "Unknown" })
-      Product.add_product_query(item, queries)
-    end
-    
-    results = Product.run_products_query(queries)
-    purchase_table.zip(results).each_with_index do |z, i|
-      row, result = z
-      product_name = ""
-      if result.count > 0
-        product_name = result.first['p.name']
-      end
-      purchase_table[i][:product_name] = product_name
-    end
-    purchase_table
-  end
   
   # POST /recipes
   # POST /recipes.json
   def create
     if recipe_ingredient_params[:ingredients_list]
-      @csv_table = upload
+      @csv_table = parse_ingredients
       @country_consumption_name = recipe_name_params[:country_consumption_name]
       @recipe = Recipe.new(recipe_params)
       @recipe.user = current_user
       
-      respond_to do |format|
-        format.html { render :table_edit }
-      end
+      respond_to_format
     else
       @recipe = Recipe.new(recipe_params)
       @recipe.country_consumption = Country.find_or_create(recipe_name_params[:country_consumption_name])
@@ -113,6 +92,7 @@ class RecipesController < ApplicationController
       
       respond_to do |format|
         if @recipe.save
+          expire_cache
           format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
           format.json { render :show, status: :created, location: @recipe }
         else
@@ -128,6 +108,7 @@ class RecipesController < ApplicationController
   def update
     respond_to do |format|
       if @recipe.update(recipe_params)
+        expire_cache
         format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: @recipe }
       else
@@ -142,10 +123,16 @@ class RecipesController < ApplicationController
   def destroy
     @recipe.destroy
     respond_to do |format|
+      expire_cache
       format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
+  
+  def get_color
+    render json: {:color => Recipe.co2_equiv_color_compute(params[:co2_equiv_kg].to_f)}
+  end
+  
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -168,5 +155,30 @@ class RecipesController < ApplicationController
     
     def ingredient_params
       params.require(:recipe).permit(:item_name => [], :product_name => [], :weight => [], :country_origin_name => [])
+    end
+    
+    def expire_cache
+      expire_page :action => [:table], :format => 'json'
+    end
+    
+    def parse_ingredients
+      ingredients_table = []
+      queries = []
+      for row in recipe_ingredient_params[:ingredients_list].split("\n")
+        weight, item = Ingredient.parse(row)
+        ingredients_table.push({ item_name: row.strip, weight: weight, country_name: "Unknown" })
+        Product.add_product_query(item, queries)
+      end
+      
+      results = Product.run_products_query(queries)
+      ingredients_table.zip(results).each_with_index do |z, i|
+        row, result = z
+        product_name = ""
+        if result.count > 0
+          product_name = result.first['p.name']
+        end
+        ingredients_table[i][:product_name] = product_name
+      end
+      ingredients_table
     end
 end

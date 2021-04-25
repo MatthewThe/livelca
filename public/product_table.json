@@ -3710,5 +3710,20 @@
        "<div class='co2_cell' style='background-color:rgb(255.0,3.0,3.0);float:right;'>26.3</div>",
        "1"
     ]
+    ,
+    [  "<a class=\"unreliable\" data-remote=\"true\" href=\"/products/e4a97ee1-8143-4b90-baab-13117e978c25\">Mint</a>",
+       "<div class='co2_cell' style='background-color:rgb(102.0,161.60000000000002,5.3999999999999995);float:right;'>1.0</div>",
+       "0"
+    ]
+    ,
+    [  "<a class=\"proxy\" data-remote=\"true\" href=\"/products/a9273cd2-c3b1-41f1-aaa3-70c008a407f6\">Ricotta</a>",
+       "<div class='co2_cell' style='background-color:rgb(255.0,3.0,3.0);float:right;'>9.403</div>",
+       "0 (proxy: <a href=\"/products/0ed7452b-be6e-4995-9762-f1902a63d1b8\">Cheese</a>)"
+    ]
+    ,
+    [  "<a class=\"unreliable\" data-remote=\"true\" href=\"/products/db6661ac-b01e-45bc-b5f6-b4d1eadc5f04\">Cloves</a>",
+       "<div class='co2_cell' style='background-color:rgb(102.0,161.60000000000002,5.3999999999999995);float:right;'>1.0</div>",
+       "0"
+    ]
   ]
 }

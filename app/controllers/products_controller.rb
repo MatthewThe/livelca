@@ -88,6 +88,7 @@ class ProductsController < ApplicationController
     
     respond_to do |format|
       if @product.save
+        expire_cache
         format.html { redirect_to @product, notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
@@ -101,9 +102,9 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     if product_merge_params[:merge_product_name]
-      expire_page :action => [:table, :graph_json], :format => 'json'
       respond_to do |format|
         if @product.merge_with(product_merge_params[:merge_product_name])
+          expire_cache
           format.html { redirect_to @product, notice: 'Product was successfully merged.' }
           format.json { render :show, status: :ok, location: @product }
         else
@@ -113,12 +114,10 @@ class ProductsController < ApplicationController
       end
       
     else
-      if @product.name != product_params[:name]
-        expire_page :action => [:table, :graph_json], :format => 'json'
-      end
       save_relations
       respond_to do |format|
         if @product.update(product_params)
+          expire_cache
           format.html { redirect_to @product, notice: 'Product was successfully updated.' }
           format.json { render :show, status: :ok, location: @product }
         else
@@ -134,9 +133,14 @@ class ProductsController < ApplicationController
   def destroy
     @product.destroy
     respond_to do |format|
+      expire_cache
       format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  def expire_cache
+    expire_page :action => [:table, :graph_json], :format => 'json'
   end
   
   private

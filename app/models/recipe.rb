@@ -21,6 +21,10 @@ class Recipe
   end
   
   def co2_equiv_color
+    self.class.co2_equiv_color_compute(co2_equiv_per_serving)
+  end
+  
+  def self.co2_equiv_color_compute(co2_equiv_per_serving)
     co2_equiv_scaled = [0, [co2_equiv_per_serving / 5, 1].min].max
     green = [0,142,9]
     yellow = [255,191,0]

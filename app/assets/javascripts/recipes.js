@@ -40,7 +40,7 @@ function displayIngredientPieChart(ingredients) {
   small_items = ingredients.filter(function(item) { return item.value <= threshold });
   if (small_items.length > 0) {
     collected_value = { 
-        label: "Other ingredients (" + small_items.length + " items)",
+        label: "Other (" + small_items.length + " items)",
         value: small_items.reduce(function(accumulator, item) { return accumulator + item.value }, 0), 
         color: "rgb(0,142,9)"
     }
@@ -48,17 +48,20 @@ function displayIngredientPieChart(ingredients) {
   }
   
   // set the dimensions and margins of the graph
-  var width = 800
+  var width = 1000 - 280
       height = 450
       margin = 40
 
   // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
   var radius = Math.min(width, height) / 2;
   
-  var svg = d3.select("svg")
+  var svg_frame = d3.select("svg#ingredient_pie_chart")
       .attr("width", width)
       .attr("height", height)
-    .append("g")
+  
+  svg_frame.select('g').remove()
+  
+  var svg = svg_frame.append("g")
       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
   
   svg.append("g")
@@ -131,4 +134,56 @@ function displayIngredientPieChart(ingredients) {
 				pos[0] = radius * 0.95 * (midAngle(t) < Math.PI ? 1 : -1);
 				return [arc.centroid(t), outerArc.centroid(t), pos];
 		});
+}
+
+function calculateRecipeCO2e(numIngredients) {
+  for (let i = 0; i < numIngredients; i++) {
+    ingredients.push({})
+    var idx = i.toString()
+    var update = (i == numIngredients - 1)
+    updateIngredient(idx, update)
+  }
+}
+
+function updateIngredient(idx, update = true) {
+  $.getJSON("ingredient_json", { 
+      "idx" : idx,
+      "weight" : $("#product_weight_" + idx).val(), 
+      "name" : $("#product-autocomplete-" + idx).val(), 
+      "servings" : $("#recipe_servings").val() 
+  })
+  .done(function( data ) {
+    $("#product-co2e-" + data.idx).html(data.value).css('background-color', data.color)
+    ingredients[data.idx] = data
+    if (update) {
+      displayIngredientPieChart(ingredients)
+      updateRecipeTotalCO2e()
+    }
+  })
+}
+
+function updateRecipeTotalCO2e() {
+  var totalCO2e = 0.0
+  for (let i = 0; i < ingredients.length; i++) {
+    if (ingredients[i].value) {
+      totalCO2e += ingredients[i].value;
+    }
+  }
+  var perServingCO2e = totalCO2e / parseFloat($("#recipe_servings").val());
+  $(".recipe-co2e-per-serving").html(perServingCO2e.toFixed(2));
+  $(".recipe-co2e-total").html(totalCO2e.toFixed(2));
+  
+  $.getJSON("recipe_color_json", { 
+      "co2_equiv_kg" : perServingCO2e
+  })
+  .done(function( data ) {
+    $(".gauge").remove();
+    drawGauge(perServingCO2e, data.color);
+    $("#co2_cell_gauge").css('background-color', data.color)
+    $("#co2_cell_daily_budget").html((2.7 / perServingCO2e).toFixed(2)).css('background-color', data.color)
+  })
+  
+  
+  $(".daily-budget-chart").children('svg').remove();
+  drawDailyBudget(perServingCO2e);
 }

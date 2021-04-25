@@ -1,5 +1,5 @@
 class IngredientsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:json]
   before_action :set_ingredient, only: [:show, :edit, :update, :destroy]
 
   # GET /ingredients
@@ -69,6 +69,19 @@ class IngredientsController < ApplicationController
         format.json { head :no_content }
       end
     end
+  end
+  
+  def json
+    @ingredient = Ingredient.new({:weight => params[:weight]})
+    @ingredient.product = Product.find_by(name: params[:name])
+    if not @ingredient.product
+      @ingredient.product = Product.find_by(name: "Food")
+      product_name = params[:name]
+    else
+      product_name = @ingredient.product.name
+    end
+    servings = params[:servings].to_f
+    render json: {:idx => params[:idx], :label => product_name, :value => @ingredient.co2_equiv, :color => @ingredient.co2_equiv_color(servings) }
   end
 
   private

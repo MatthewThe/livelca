@@ -6,7 +6,8 @@ $( document ).ready(function() {
   
   $('[id^="product-autocomplete"]').autocomplete({
     source: '/product_autocomplete_name',
-    autoFocus: true
+    autoFocus: true,
+    select: function (event, ui) { this.value = ui.item.label; this.onchange(); return true; }
   })
   
   $('[id^="product-select-autocomplete"]').autocomplete({

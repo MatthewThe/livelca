@@ -34,6 +34,9 @@ Rails.application.routes.draw do
   get 'product_graph' => 'products#graph'
   get 'product_graph_json' => 'products#graph_json'
   
+  get 'ingredient_json' => 'ingredients#json'
+  get 'recipe_color_json' => 'recipes#get_color'
+  
   patch 'sources' => 'sources#duplicate'
   
   get 'products/:id/merge' => 'products#merge', as: :merge_product
