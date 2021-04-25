@@ -1,0 +1,13 @@
+$('#alert').hide();
+$('#notice').hide();
+
+$('html,body').animate({ scrollTop: $("#current_recipe").offset().top }, 'slow');
+
+$("#current_recipe").html("<%= escape_javascript(render partial: 'recipes/new') %>");
+
+document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'
+
+$('[id^="country-autocomplete"]').autocomplete({
+  source: '/country_autocomplete',
+  autoFocus: true,
+})

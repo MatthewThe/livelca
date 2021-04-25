@@ -16,6 +16,13 @@
   </div>
 </div>
 
+<% if user_signed_in? && current_user.admin? %>
+<p>
+  <%= link_to 'Edit recipe', edit_recipe_path(@recipe), class: "green button" %>
+  <%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>
+</p>
+<% end %>
+
 <p>
   CO2e per serving: <strong><span class="recipe-co2e-per-serving"><%= @recipe.co2_equiv_per_serving %></span> kg</strong><br />
   CO2e total: <span class="recipe-co2e-total"><%= @recipe.co2_equiv %></span> kg
