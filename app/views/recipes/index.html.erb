@@ -17,10 +17,8 @@
 <div id="current_recipe" class="content_pane max_width_1024">
   <% if @recipe and @recipe.name %>
   <%= render 'show' %>
-  <% elsif @recipe %>
-  <%= render 'new' %>
   <% else %>
-  <%= render 'greeter' %>
+  <%= render 'new' %>
   <% end %>
 </div>
 

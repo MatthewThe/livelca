@@ -90,3 +90,5 @@ env_variables.yaml
 .gitignore
 .env
 import/
+
+public/*.json

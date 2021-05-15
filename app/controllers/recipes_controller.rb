@@ -7,7 +7,7 @@ class RecipesController < ApplicationController
   # GET /recipes
   # GET /recipes.json
   def index
-    respond_to_format
+    new
   end
   
   def table

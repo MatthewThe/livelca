@@ -37,7 +37,7 @@ function displayIngredientPieChart(ingredients) {
   data = ingredients.filter(function(item) { return item.value > threshold });
   data.sort(function(a, b) { return b.value - a.value });
   
-  small_items = ingredients.filter(function(item) { return item.value <= threshold });
+  small_items = ingredients.filter(function(item) { return item.value <= threshold && item.value > 0 });
   if (small_items.length > 0) {
     collected_value = { 
         label: "Other (" + small_items.length + " items)",
@@ -136,9 +136,51 @@ function displayIngredientPieChart(ingredients) {
 		});
 }
 
-function calculateRecipeCO2e(numIngredients) {
+function initRecipe(numIngredients) {
   for (let i = 0; i < numIngredients; i++) {
     ingredients.push({})
+  }
+  calculateRecipeCO2e()
+}
+
+function addIngredient() {
+  var elem = $("#product-row-0").clone().appendTo("#product-rows");
+  var idx = ingredients.length
+  fixIds(elem, idx)
+  elem.show()
+  ingredients.push({})
+  
+  $('[id^="product-autocomplete"]').autocomplete({
+    source: '/product_autocomplete_name',
+    autoFocus: true,
+    select: function (event, ui) { this.value = ui.item.label; this.onchange(); return true; }
+  })
+  
+  updateIngredient(idx)
+}
+
+function removeIngredient(idx) {
+  ingredients[idx] = {}
+  var elem = $("#product-row-" + idx.toString())
+  elem.hide()
+  fixIds(elem, idx)
+  updateIngredient(idx)
+}
+
+function fixIds(elem, cntr) {
+  $(elem).find("[id]").add(elem).each(function() {
+      this.id = this.id.replace(/\d+$/, "") + cntr;
+      if (this.id.includes('weight')) {
+        this.value = 0;
+      } else {
+        this.value = "";
+      }
+  })
+}
+
+function calculateRecipeCO2e() {
+  var numIngredients = ingredients.length;
+  for (let i = 0; i < numIngredients; i++) {
     var idx = i.toString()
     var update = (i == numIngredients - 1)
     updateIngredient(idx, update)

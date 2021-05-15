@@ -22,7 +22,7 @@ $( document ).ready(function() {
       "columnDefs": [
         { "width": "250px", "targets": 0 },
         { "width": "80px", "targets": 1 },
-        { "width": "80px", "targets": 2 }
+        { "type": 'num', "width": "80px", "targets": 2 }
       ]
     });
   }
