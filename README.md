@@ -1,5 +1,7 @@
 # LiveLCA rails app
 
+https://livelca.com
+
 This README documents the necessary steps to get the application up and running.
 
 ## Ruby version

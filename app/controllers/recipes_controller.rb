@@ -179,6 +179,11 @@ class RecipesController < ApplicationController
         end
         ingredients_table[i][:product_name] = product_name
       end
+      
+      if ingredients_table.length == 0
+        ingredients_table.push({ item_name: "", product_name: "", weight: 0, country_name: "Unknown" })
+      end
+      
       ingredients_table
     end
 end

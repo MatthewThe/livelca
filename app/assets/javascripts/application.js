@@ -18,6 +18,7 @@
 //= require jquery-ui/widgets/autocomplete
 //= require jquery.dataTables.min
 //= require blocks
+//= require html2pdf.bundle.min
 
 
 $(document).on('click', 'a[data-remote=true]', function(e) {

@@ -112,6 +112,8 @@ function displayIngredientPieChart(ingredients) {
 				pos[0] = radius * (midAngle(t) < Math.PI ? 1 : -1);
 				return "translate("+ pos +")";
 		})
+		.style("font-size", '13px')
+		.style("font-family", "'DM Sans', sans-serif")
 	  .style("text-anchor", function(t) {
 				return midAngle(t) < Math.PI ? "start":"end";
 		});
@@ -228,4 +230,17 @@ function updateRecipeTotalCO2e() {
     $(".daily-budget-chart").children('svg').remove();
     drawDailyBudget(perServingCO2e);
   })
+}
+
+function saveAsPDF() {
+  var source = document.body;
+  source.classList.add('print');
+  html2pdf(source, {
+       filename: $(document).find("title").text(),
+       image: { type: 'jpeg', quality: 1 },
+       html2canvas: { scale: 2 },
+       jsPDF: { unit: 'mm', format: 'A4', orientation: 'landscape', putOnlyUsedFonts: true }
+  }).then(function(){
+       source.classList.remove('print');
+  });
 }

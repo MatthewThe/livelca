@@ -78,7 +78,7 @@ function drawGauge(val, color) {
 
     gauge.select('text.value textpath').text(perc);
     gauge.select(".gauge-filled").attr('d', arc1).attr('fill', color);
-    gauge.select(".gauge-empty").attr('d', arc2);
+    gauge.select(".gauge-empty").attr('d', arc2).attr('fill', '#dedede');
   }
 
 
@@ -109,8 +109,16 @@ function drawGauge(val, color) {
     }
 
     Needle.prototype.render = function() {
-      this.el.append('circle').attr('class', 'needle-center').attr('cx', 0).attr('cy', 0).attr('r', this.radius);
-      return this.el.append('path').attr('class', 'needle').attr('d', recalcPointerPos.call(this, 0));
+      this.el.append('circle')
+          .attr('class', 'needle-center')
+          .attr('cx', 0)
+          .attr('cy', 0)
+          .attr('r', this.radius)
+          .attr('fill', '#464A4F');
+      return this.el.append('path')
+                .attr('class', 'needle')
+                .attr('d', recalcPointerPos.call(this, 0))
+                .attr('fill', '#464A4F');
     };
 
     Needle.prototype.moveTo = function(perc) {

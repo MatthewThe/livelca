@@ -5,6 +5,8 @@
 <%= form_for(@recipe) do |f| %>
 
 <div id="info_charts_box">
+  <button type="button" onclick="saveAsPDF()" class="green button no-print">Save as PDF</button>
+  <div class="space_16"></div>
   CO2e total: <strong><span class="recipe-co2e-total"><%= @recipe.co2_equiv %></span> kg</strong><br />
   Servings: 
   <% if @csv_table %>
@@ -69,7 +71,7 @@
 <h2>Ingredients</h2>
 
 <% if @csv_table %>
-<table class="stripe dataTable no-footer" style="max-width:800px; margin: 0">
+<table class="stripe dataTable no-footer" style="max_width_1024">
   <thead>
     <tr>
       <th>CO2e (kg)</th>
@@ -88,13 +90,13 @@
     <tr id="product-row-<%=i.to_s%>">
       <td><div class="co2_cell" style="float:right; background-color: #ccc" id="product-co2e-<%=i.to_s%>"></div></td>
       <td><%= f.text_field :product_name, :value => row.fetch(:product_name), :multiple => true, id: 'product-autocomplete-' + i.to_s, :onChange=> "javascript: updateIngredient(this.id.match(/\\d+/g)[0]);" %></td>
-      <td><%= f.number_field :weight, step: 0.001, style: 'width: 80px', value: row.fetch(:weight), :multiple => true, id: 'product_weight_' + i.to_s, :onInput=> "javascript: updateIngredient(this.id.match(/\\d+/g)[0]);" %></td>
-      <td><%= f.text_field :item_name, :value => row.fetch(:item_name), style: 'width: 320px', :multiple => true, id: 'product_item_name_' + i.to_s %></td>
+      <td><%= f.number_field :weight, step: 0.001, style: 'max-width: 80px', value: row.fetch(:weight), :multiple => true, id: 'product_weight_' + i.to_s, :onInput=> "javascript: updateIngredient(this.id.match(/\\d+/g)[0]);" %></td>
+      <td><%= f.text_field :item_name, :value => row.fetch(:item_name), style: 'max-width: 320px', :multiple => true, id: 'product_item_name_' + i.to_s %></td>
       <% if user_signed_in? && current_user.admin? %>
-      <td><%= f.text_field :country_origin_name, style: 'width: 120px', value: row.fetch(:country_name), :multiple => true, id: 'country-autocomplete-' + i.to_s %></td>
+      <td><%= f.text_field :country_origin_name, style: 'max-width: 120px', value: row.fetch(:country_name), :multiple => true, id: 'country-autocomplete-' + i.to_s %></td>
       <% end %>
       <td>
-        <%= link_to image_tag("erase.png", size: "12x12", alt: "Remove"), "javascript:void(0);",  id: 'product_remove_' + i.to_s, :onclick => 'javascript:removeIngredient(this.id.match(/\\d+/g)[0]);' %>
+        <%= link_to image_tag("erase.png", size: "12x12", alt: "Remove"), "javascript:void(0);",  id: 'product_remove_' + i.to_s, class: 'no-print', :onclick => 'javascript:removeIngredient(this.id.match(/\\d+/g)[0]);' %>
       </td>
     </tr>
 <% end %>
@@ -102,7 +104,8 @@
 </table>
 
 <div class="space_16"></div>
-<button type="button" onclick="addIngredient()" class="green button">Add ingredient</button>
+
+<button type="button" onclick="addIngredient()" class="green button no-print">Add ingredient</button>
 
 <script>
 var ingredients = []
@@ -126,7 +129,7 @@ initRecipe(<%=@csv_table.length%>);
 <%= form_for(@ingredient) do |i| %>
   <%= i.hidden_field :recipe, value: @recipe.uuid %>
 
-<table id="ingredients_table" class="stripe">
+<table id="ingredients_table">
   <thead>
     <tr>
       <th>CO2e (kg)</th>
