@@ -30,12 +30,27 @@
     <%= f.label :ingredients_id, 'Ingredients (optional, can be added later as well)' %><br>
     <%= f.text_area :ingredients_list, cols: "80", rows: "15", placeholder: 'e.g.
 500g minced meat
+1 large onion
 800g tomatoes
 1 tbsp sugar
 1 dl red wine
 etc.' %>
   </div>
   <% end %>
+<% if user_signed_in? && current_user.admin? %>
+  <div class="field" style="clear:both;">
+    <%= f.label :url %><br>
+    <%= f.text_field :url %>
+  </div>
+  <div class="field" style="clear:both;">
+    <%= f.label :instructions, 'Instructions (optional, only fill if this is your own recipe)' %><br>
+    <%= f.text_area :instructions, cols: "80", rows: "15", placeholder: 'e.g.
+Fry the onions for 10 minutes
+Add the minced meat and fry for 5 minutes
+Add the red wine and let it reduce' 
+%>
+  </div>
+<% end %>
   <div class="actions">
     <%= f.submit "Calculate CO2e emissions", class: "green button" %>
   </div>

@@ -1,8 +1,13 @@
 class Recipe 
   include Neo4j::ActiveNode
+  before_save :update_instructions
+  
   property :name, type: String
   property :servings, type: Float
   property :is_public, type: Boolean, default: true
+  
+  property :url, type: String
+  property :instructions, type: String, default: ""
   
   has_one :out, :user, type: :IS_OWNED, model_class: :User
   has_many :in, :ingredients, type: :IS_INGREDIENT, model_class: :Ingredient, dependent: :destroy
@@ -48,5 +53,17 @@ class Recipe
     end
     ingredients_text
   end
-
+  
+  def update_instructions
+    if self.instructions
+      instruction_list = []
+      for row in self.instructions.split("\n")
+        line = row.strip
+        if line.length > 0
+          instruction_list.push(line)
+        end
+      end
+      self.instructions = instruction_list.join("\n")
+    end
+  end
 end

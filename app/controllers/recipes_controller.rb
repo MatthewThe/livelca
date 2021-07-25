@@ -46,7 +46,7 @@ class RecipesController < ApplicationController
   
   # POST /recipes
   # POST /recipes.json
-  def create
+  def create    
     if recipe_ingredient_params[:ingredients_list]
       @csv_table = parse_ingredients
       @country_consumption_name = recipe_name_params[:country_consumption_name]
@@ -105,7 +105,7 @@ class RecipesController < ApplicationController
 
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
-  def update
+  def update    
     respond_to do |format|
       if @recipe.update(recipe_params)
         expire_cache
@@ -142,7 +142,7 @@ class RecipesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def recipe_params
-      params.require(:recipe).permit(:name, :servings)
+      params.require(:recipe).permit(:name, :servings, :instructions, :url)
     end
     
     def recipe_name_params

@@ -66,7 +66,7 @@
  <% end %>
 <% end %>
  
-<div class="space_16"></div>
+<div class="space_4"></div>
 
 <h2>Ingredients</h2>
 
@@ -191,3 +191,25 @@ drawDailyBudget(<%=@recipe.co2_equiv_per_serving%>);
 <% end # form_for(@ingredient) do |i| %>
 
 <% end # if @csv_table %>
+
+<% if (@recipe.url && @recipe.url.length > 0) || (@recipe.instructions && @recipe.instructions.length > 0) %>
+<div class="space_16"></div>
+
+<h2>Instructions</h2>
+
+<% if @recipe.url %>
+<p>
+  Source: <%= link_to @recipe.url, @recipe.url, target: "_blank" %>
+</p>
+<% end %>
+<% if @recipe.instructions %>
+<div class="instructions_pane">
+  <ol>
+  <% for row in @recipe.instructions.split("\n") %>
+    <li><%=row%></li>
+  <% end %>
+  </ol>
+</div>
+<% end %>
+
+<% end %>

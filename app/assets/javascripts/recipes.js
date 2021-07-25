@@ -3,7 +3,8 @@ $( document ).ready(function() {
   if ($("#ingredients_table_wrapper").length == 0) {
     $('#ingredients_table').DataTable({
       "order": [[ 0, "desc" ]],
-      "paging": false
+      "paging": false,
+      "searching": false
     });
   }
   if ($("#recipes_table_wrapper").length == 0) {
