@@ -8,6 +8,6 @@ scp ${remote}:~/graph_db.zip ./
 sudo rm -rf graph.db.bak
 sudo mv graph.db/ graph.db.bak
 sudo unzip graph_db.zip
-#sudo chown neo4j:neo4j -R graph.db
+sudo chown matthewt:matthewt -R graph.db
 cd ../../../../../
 rake neo4j:start

@@ -17,7 +17,7 @@
   </div>
   <div class="field" style="float:left; margin-left: 10px;">
     <%= f.label :servings %><br>
-    <%= f.select :servings, options_for_select(1..10) %>
+    <%= f.select :servings, options_for_select(1..12, f.object.servings.to_i) %>
   </div>
 <% if user_signed_in? && current_user.admin? %>
   <div class="field" style="float:left; margin-left: 10px;">
