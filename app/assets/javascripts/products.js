@@ -22,7 +22,11 @@ $( document ).ready(function() {
       "columnDefs": [
         { "width": "250px", "targets": 0 },
         { "width": "80px", "targets": 1 },
-        { "type": 'num', "width": "80px", "targets": 2 }
+        { "type": 'num', "width": "80px", 
+          "render": {
+            "sort" : function ( data, type, row, meta ) {
+              return data.split(" ")[0];
+            }}, "targets": 2 }
       ]
     });
   }
