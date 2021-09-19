@@ -66,3 +66,5 @@ gem 'rest-client'
 gem 'lodash-rails'
 
 gem 'actionpack-page_caching'
+
+gem 'exception_handler'

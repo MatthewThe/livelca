@@ -2,6 +2,7 @@
 <html>
 <head>
   <title><%= content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA" %></title>
+  <meta name='description' content='<%= content_for?(:meta_description) ? yield(:meta_description) : default_meta_description %>' />
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>

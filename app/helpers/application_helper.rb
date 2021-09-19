@@ -6,4 +6,8 @@ module ApplicationHelper
       link_to link_text, link_path, *args
     end
   end
+  
+  def default_meta_description
+    "LiveLCA is a platform for all people to get a view into their daily CO2 spendings. The platform provides data on food in various food groups and the database keeps growing. You can use LiveLCA to calculate the CO2 emissions from recipes, settle disputes with your friends or simply as a reference work."
+  end
 end

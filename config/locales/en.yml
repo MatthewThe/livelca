@@ -21,3 +21,10 @@
 
 en:
   hello: "Hello world"
+  
+
+en:
+  exception_handler:
+    not_found:              "<div class=\"content_pane\"><h1>Page not found</h1><p>We can't seem to find the page you're looking for. Try going back to the previous page, or navigate to one of the pages in the top menu.</p></div>" # -> 404 page
+    unauthorized:           "<div class=\"content_pane\"><h1>Unauthorized</h1><p>We're sorry, but you don't have access to this page. Try going back to the previous page, or navigate to one of the pages in the top menu.</p></div>" # -> 403 page
+    internal_server_error:  "<div class=\"content_pane\"><h1>Internal server error</h1><p>We're sorry, but something went wrong. Try going back to the previous page, or navigate to one of the pages in the top menu.</p></div>" # -> 500 page

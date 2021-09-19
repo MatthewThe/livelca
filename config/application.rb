@@ -22,7 +22,13 @@ module Livelca
     config.generators do |g|
       g.orm             :neo4j
     end
-
+    
+    config.exception_handler = { dev: true,
+      exceptions: {
+        :all => { layout: nil },
+      },
+    }
+    
     # Configure where to connect to the Neo4j DB
     # Note that embedded db is only available for JRuby
     # config.neo4j.session.type = :http

@@ -11,6 +11,14 @@ class Product
   has_many :in, :subcategories, type: :IS_SUBCATEGORY_OF, model_class: :Product
   has_one :out, :proxy, type: :USE_AS_PROXY, model_class: :Product
   
+  def description
+    description = "Product: " + name + "\n"\
+       + "Category: " + (category ? category.name : "-") + "\n"\
+       + "You can consume " + (2.7 / co2_equiv).round(2).to_s + " kg of " + name + " to exhaust your daily CO2e food budget" + "\n"\
+       + "Emissions per kg: " + co2_equiv.to_s + " kg CO2e" + "\n"\
+       + "Number of studies included: " + study_count.to_s
+  end
+  
   def study_count
     count = 0
     studies.each do |s|
