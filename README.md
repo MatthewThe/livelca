@@ -113,3 +113,11 @@ Setting up a neo4j server in the Google Cloud Platform:
 ```
 gcloud compute instances create neo4j-livelca --image neo4j-community-1-3-5-1-apoc --tags neo4j --image-project launcher-public --machine-type f1-micro
 ```
+
+## Useful Cypher queries
+
+### Updating study weights for a resource
+
+```
+MATCH (n:Resource)-[:IS_RESOURCE]->(s:Source) WHERE n.name CONTAINS "<XXX>" SET s.weight = 5
+```

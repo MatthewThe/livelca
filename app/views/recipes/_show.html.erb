@@ -58,6 +58,8 @@
     <%= f.label :country_consumption %><br>
     <%= f.text_field :country_consumption_name, :value => @country_consumption_name, id: 'country-autocomplete-consumption', :required => true %>
   </div>
+  <%= f.hidden_field :url, value: @recipe.url %>
+  <%= f.hidden_field :instructions, value: @recipe.instructions %>
 <% else %> 
 
  <% if @country_consumption_name %>
@@ -198,7 +200,7 @@ drawDailyBudget(<%=@recipe.co2_equiv_per_serving%>);
 
 <h2>Instructions</h2>
 
-<% if @recipe.url %>
+<% if @recipe.url && @recipe.url.length > 0 %>
 <p>
   Source: <%= link_to @recipe.url, @recipe.url, target: "_blank" %>
 </p>
@@ -207,7 +209,11 @@ drawDailyBudget(<%=@recipe.co2_equiv_per_serving%>);
 <div class="instructions_pane">
   <ol>
   <% for row in @recipe.instructions.split("\n") %>
+    <% if row.start_with?('[') && row.end_with?(']') %>
+    <h4><%=row[1..-2]%></h4>
+    <% else %>
     <li><%=row%></li>
+    <% end %>
   <% end %>
   </ol>
 </div>
