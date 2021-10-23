@@ -166,8 +166,10 @@ class RecipesController < ApplicationController
       queries = []
       for row in recipe_ingredient_params[:ingredients_list].split("\n")
         weight, item = Ingredient.parse(row)
-        ingredients_table.push({ item_name: row.strip, weight: weight, country_name: "Unknown" })
-        Product.add_product_query(item, queries)
+        if row.strip.length > 0
+          ingredients_table.push({ item_name: row.strip, weight: weight, country_name: "Unknown" })
+          Product.add_product_query(item, queries)
+        end
       end
       
       results = Product.run_products_query(queries)

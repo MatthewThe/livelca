@@ -130,7 +130,7 @@ class Product
   end
   
   def self.add_product_query(item, queries)
-    search_term = item.strip().gsub(/[^0-9A-Za-z ]/, '').gsub(/\s+/, '~ ') + "~"
+    search_term = item.gsub(/[^0-9A-Za-z ]/, '').strip().gsub(/\s+/, '~ ') + "~"
     queries.append search_term
   end
   

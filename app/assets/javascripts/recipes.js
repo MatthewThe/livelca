@@ -146,6 +146,17 @@ function initRecipe(numIngredients) {
   calculateRecipeCO2e()
 }
 
+function allIngredientsInitialized() {
+  var numIngredients = ingredients.length;
+  var numInitializedIngredients = 0
+  for (let i = 0; i < numIngredients; i++) {
+    if (ingredients[i].value) {
+      numInitializedIngredients += 1
+    }
+  }
+  return numIngredients == numInitializedIngredients
+}
+
 function addIngredient() {
   var elem = $("#product-row-0").clone().appendTo("#product-rows");
   var idx = ingredients.length
@@ -183,9 +194,9 @@ function fixIds(elem, cntr) {
 
 function calculateRecipeCO2e() {
   var numIngredients = ingredients.length;
+  var update = false
   for (let i = 0; i < numIngredients; i++) {
     var idx = i.toString()
-    var update = (i == numIngredients - 1)
     updateIngredient(idx, update)
   }
 }
@@ -200,7 +211,7 @@ function updateIngredient(idx, update = true) {
   .done(function( data ) {
     $("#product-co2e-" + data.idx).html(data.value).css('background-color', data.color)
     ingredients[data.idx] = data
-    if (update) {
+    if (update || allIngredientsInitialized()) {
       updateRecipeTotalCO2e()
     }
   })
