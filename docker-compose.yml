@@ -19,7 +19,6 @@ services:
 #      - NEO4J_dbms_memory_heap_max__size=64m
 
   web:
-    # The root directory from which we're building.
     image: matthewthe/livelca:latest
     env_file: .env
 
@@ -37,3 +36,23 @@ services:
     
     environment:
       RAILS_ENV: production
+  
+  mariadb-matomo:
+    image: mariadb:10.6.4
+    command: --max-allowed-packet=64MB
+    restart: always
+    env_file: .env
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  
+  matomo:
+    image: matomo:4.5.0
+    restart: always
+    environment:
+      - MATOMO_DATABASE_HOST=mariadb-matomo
+    volumes:
+      - /var/www/html:/var/www/html
+    ports:
+      - 8080:80
