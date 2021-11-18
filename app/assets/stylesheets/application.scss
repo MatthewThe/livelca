@@ -91,26 +91,26 @@ table {
   border-collapse: separate; 
   border-spacing:0 5px;
 }
-table th:first-child{
+table.dataTable th:first-child{
   border-radius:10px 0 0 10px;
 }
 
-table th:last-child{
+table.dataTable th:last-child{
   border-radius:0 10px 10px 0;
 }
 
-table td {
+table.dataTable td {
   background-color: #fff;
   border-width: 3px 0;
   border-style: solid;
   border-color: #f6f6f6;
 }
 
-table td:first-child{
+table.dataTable td:first-child{
   border-radius:10px 0 0 10px;
 }
 
-table td:last-child{
+table.dataTable td:last-child{
   border-radius:0 10px 10px 0;
 }
 
@@ -118,7 +118,7 @@ table.dataTable td {
   font-size: 13px;
 }
 
-tbody:before {
+table.dataTable tbody:before {
     content:"@";
     display:block;
     line-height:10px;

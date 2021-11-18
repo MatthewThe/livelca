@@ -16,6 +16,19 @@ class ProductsController < ApplicationController
       @products = Product.all
     end
     
+    @product_count = Product.all.count
+    @resource_count = Resource.all.count
+    @study_count = Source.all.count
+    @recipe_count = Recipe.all.count
+    
+    @latest_blog = Blog.where_not(published_at: nil).order(:published_at).last
+    renderer = Redcarpet::Render::HTML.new(:link_attributes => Hash["target" => "_blank"], hard_wrap: true)
+    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
+    @latest_blog_wiki = markdown.render(@latest_blog.post)
+    
+    @random_product = Product.as('q').order("(id(q) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:proxy, :studies, :subcategories).limit(1).first
+    @random_recipe = Recipe.as('r').order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]]).limit(1).first
+    
     respond_to_format
   end
   

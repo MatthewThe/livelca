@@ -44,3 +44,49 @@
   margin-bottom:20px;
   margin-right:10px;
 }
+
+.card {
+  float:left;
+  width: 500px;
+  margin: 5px;
+  border-radius: 10px;
+  border: 1px #ccc solid;
+  background-color: #fff;
+}
+
+.card.narrow {
+  width: 300px;
+}
+
+.card.wide {
+  width: 700px;
+}
+
+.card h3 {
+  background-color: #4CAF50;
+  border-radius: 10px 10px 0px 0px;
+  padding: 8px 15px;
+  margin: 0px;
+  color: #fff;
+  font-size: 1.2em;
+}
+
+.card div.card-title {
+  margin: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.card div.card-text {
+  margin: 15px;
+  font-size: 16px;
+}
+
+.card div.card-graph {
+  margin: 7px;
+}
+
+.card table {
+  margin: 10px;
+  font-weight: bold;
+}

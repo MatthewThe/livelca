@@ -11,6 +11,10 @@ document.querySelector('meta[name="description"]').setAttribute("content", '<%= 
 if ($("#sources_table_wrapper").length == 0) {
   $('#sources_table').DataTable({
     "pageLength": 25,
-    "stateSave": true
+    "stateSave": true,
+    "order": [[ 4, "desc" ]],
+    "columnDefs": [ 
+      { "targets": 0, "orderable": false }
+    ]
   });
 }

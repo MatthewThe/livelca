@@ -24,7 +24,7 @@ $( document ).ready(function() {
          "loadingRecords": "Please wait - loading recipes..."
       },
       "columnDefs": [
-        { "width": "250px", "targets": 0 },
+        { "width": "230px", "targets": 0 },
         { "width": "80px", "targets": 1 }
       ]
     });
@@ -49,7 +49,7 @@ function displayIngredientPieChart(ingredients) {
   }
   
   // set the dimensions and margins of the graph
-  var width = 1000 - 280
+  var width = 1000 - 320
       height = 450
       margin = 40
 

@@ -5,28 +5,7 @@
 
 <%= form_for(@recipe) do |f| %>
 
-<div id="info_charts_box">
-  <button type="button" onclick="saveAsPDF()" class="green button no-print">Save as PDF</button>
-  <div class="space_16"></div>
-  CO2e total: <strong><span class="recipe-co2e-total"><%= @recipe.co2_equiv %></span> kg</strong><br />
-  Servings: 
-  <% if @csv_table %>
-    <%= f.select :servings, options_for_select(1..10, @recipe.servings.to_i), {}, :onchange=> "calculateRecipeCO2e();" %>
-  <% else %>
-    <strong><%= @recipe.servings %></strong>
-  <% end %>
-  <div id="co2_gauge" class="co2_chart">
-    <div class="front"></div><div class="back"></div>
-    <div class="co2_cell" id="co2_cell_gauge" style='display:inline-block; margin-right: 5px; background-color:<%= @recipe.co2_equiv_color %>'><span class="recipe-co2e-per-serving"><%= @recipe.co2_equiv_per_serving %></span></div><strong>kg CO2e / portion</strong>
-  </div>
-
-  <div id="daily_budget" class="daily_budget_chart">
-    <div class="daily-budget-chart"></div>
-    <div style="margin-bottom:3px;"><svg height="11" width="11"><rect class="rect" x="0" y="0" width="11" height="11" fill="rgb(153, 153, 153)"></rect></svg> = 0.1 portion of <%=@recipe.name%></div>
-    You can eat
-    <div class="co2_cell" id="co2_cell_daily_budget" style='display:inline-block; margin-right: 5px; background-color:<%= @recipe.co2_equiv_color %>'><%= (2.7 / @recipe.co2_equiv_per_serving).round(2) %></div> portions of <%=@recipe.name%> to exhaust your <a href="/blogs/75a697d4-fe34-4977-ae2f-b472f1ee02da" target="_blank">daily CO2e food budget</a>
-  </div>
-</div>
+<%= render partial: 'info_chart', locals: { recipe: @recipe } %>
 
 <% if user_signed_in? && current_user.admin? && !@csv_table %>
 <p>
@@ -35,7 +14,7 @@
 </p>
 <% end %>
 
-<svg id="ingredient_pie_chart"></svg>
+<%= render partial: 'pie_chart', locals: { recipe: @recipe } %>
 
 <% if user_signed_in? && current_user.admin? && @csv_table %>
   <% if @recipe.errors.any? %>
@@ -182,14 +161,6 @@ initRecipe(<%=@csv_table.length%>);
   <% end %>
   </tbody>
 </table>
-
-<script>
-var ingredients = <%=@recipe.ingredients.map{|i| {:label => i.product.name, :value => i.co2_equiv, :color => i.co2_equiv_color(@recipe.servings) }}.to_json.html_safe%>;
-
-displayIngredientPieChart(ingredients);
-drawGauge(<%=@recipe.co2_equiv_per_serving%>, '<%=@recipe.co2_equiv_color%>');
-drawDailyBudget(<%=@recipe.co2_equiv_per_serving%>);
-</script>
 
 <% end # form_for(@ingredient) do |i| %>
 

@@ -47,6 +47,7 @@ $( document ).ready(function() {
     $('#sources_table').DataTable({
       "pageLength": 25,
       "stateSave": true,
+      "order": [[ 4, "desc" ]],
       "columnDefs": [ 
         { "targets": 0, "orderable": false }
       ]

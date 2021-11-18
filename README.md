@@ -121,3 +121,21 @@ gcloud compute instances create neo4j-livelca --image neo4j-community-1-3-5-1-ap
 ```
 MATCH (n:Resource)-[:IS_RESOURCE]->(s:Source) WHERE n.name CONTAINS "<XXX>" SET s.weight = 5
 ```
+
+## Setup Matomo
+
+Matomo tracks visitors in a GDPR compliant way, without the need to ask for tracking permission.
+
+It's setup via ssl on `matomo.livelca.com` on the nginx server (redirected to the 8080 port over the 443 ssl port).
+
+Add the following lines to the General section in `/var/www/html/config/config.ini.php`.
+
+The `proxy_*` lines ensure that the right IP address is shown in the Matomo dashboard.
+
+```
+[General]
+trusted_hosts[] = "matomo.livelca.com"
+assume_secure_protocol=1
+proxy_client_headers[] = HTTP_X_FORWARDED_FOR
+proxy_host_headers[] = HTTP_X_FORWARDED_HOST
+```
