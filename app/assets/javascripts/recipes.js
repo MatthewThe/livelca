@@ -1,12 +1,6 @@
 $( document ).ready(function() {
   "use strict";
-  if ($("#ingredients_table_wrapper").length == 0) {
-    $('#ingredients_table').DataTable({
-      "order": [[ 0, "desc" ]],
-      "paging": false,
-      "searching": false
-    });
-  }
+  initIngredientsTable();
   if ($("#recipes_table_wrapper").length == 0) {
     $('#recipes_table').DataTable({
       "pageLength": 25,
@@ -25,11 +19,27 @@ $( document ).ready(function() {
       },
       "columnDefs": [
         { "width": "230px", "targets": 0 },
-        { "width": "80px", "targets": 1 }
+        { "width": "50px", "targets": 1 }
       ]
     });
   }
 })
+
+function initIngredientsTable() {
+  if ($("#ingredients_table_wrapper").length == 0) {
+    $('#ingredients_table').DataTable({
+      "order": [[ 0, "desc" ]],
+      "paging": false,
+      "searching": false,
+      "responsive": true,
+      "columnDefs": [
+        { "targets": 0, "responsivePriority" : 1 },
+        { "targets": 1, "responsivePriority" : 1 },
+        { "targets": 2, "responsivePriority" : 2 }
+      ]
+    });
+  }
+}
 
 function displayIngredientPieChart(ingredients) {
   var co2_sum = ingredients.reduce(function(a, b) { return a + b.value; }, 0);
@@ -41,20 +51,19 @@ function displayIngredientPieChart(ingredients) {
   small_items = ingredients.filter(function(item) { return item.value <= threshold && item.value > 0 });
   if (small_items.length > 0) {
     collected_value = { 
-        label: "Other (" + small_items.length + " items)",
+        label: small_items.length + " items",
         value: small_items.reduce(function(accumulator, item) { return accumulator + item.value }, 0), 
         color: "rgb(0,142,9)"
     }
     data.push(collected_value);
   }
   
-  // set the dimensions and margins of the graph
-  var width = 1000 - 320
-      height = 450
-      margin = 40
+  var width = d3.select("svg#ingredient_pie_chart").node().getBoundingClientRect().width;
+  var margin = Math.min(100, width / 4)
 
-  // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-  var radius = Math.min(width, height) / 2;
+  // The radius of the pieplot is half the width minus a margin for the text boxes
+  var radius = width / 2 - margin;
+  var height = radius * 2;
   
   var svg_frame = d3.select("svg#ingredient_pie_chart")
       .attr("width", width)

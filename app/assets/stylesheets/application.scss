@@ -91,12 +91,25 @@ table {
   border-collapse: separate; 
   border-spacing:0 5px;
 }
+
+/* BEGIN overwrite datatables defaults */
+
+table.dataTable {
+  padding-top: 10px; 
+}
 table.dataTable th:first-child{
   border-radius:10px 0 0 10px;
 }
 
 table.dataTable th:last-child{
   border-radius:0 10px 10px 0;
+}
+
+table.dataTable th {
+  background-color: #27AD05;
+  border: 0px;
+  border-bottom: 1px solid #111;
+  color: #fff;
 }
 
 table.dataTable td {
@@ -124,6 +137,49 @@ table.dataTable tbody:before {
     line-height:10px;
     text-indent:-99999px;
 }
+
+
+table.dataTable thead .sorting .DataTables_sort_icon {
+  background-position: 0;
+  margin-right: 4px;
+}
+
+table.dataTable thead .sorting .DataTables_sort_icon.ui-icon-caret-2-n-s {
+  background-image: image_url("sort_both.png");
+}
+
+table.dataTable thead .sorting .DataTables_sort_icon.ui-icon-triangle-1-s {
+  background-image: image_url("sort_asc.png");
+}
+
+table.dataTable thead .sorting .DataTables_sort_icon.ui-icon-triangle-1-n {
+  background-image: image_url("sort_desc.png");
+}
+
+.dataTables_wrapper .ui-widget-header {
+  background: transparent;
+  border: 0px;
+}
+
+.dataTables_wrapper .ui-toolbar {
+  padding: 0px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  background-color: #fff;
+  border-radius: 0px;
+  padding: 0px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  background-color: #fff;
+  border-radius: 2px;
+  border-color: rgb(118, 118, 118);
+  padding: 2px 2px;
+  margin-left: 0.5em;
+}
+
+/* END overwrite datatables defaults */
 
 label {
   display:inline-block;

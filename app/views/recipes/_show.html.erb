@@ -5,7 +5,13 @@
 
 <%= form_for(@recipe) do |f| %>
 
+<div class="pie_chart">
+<%= render partial: 'pie_chart', locals: { recipe: @recipe } %>
+</div>
+
 <%= render partial: 'info_chart', locals: { recipe: @recipe } %>
+
+<div class="clear"></div>
 
 <% if user_signed_in? && current_user.admin? && !@csv_table %>
 <p>
@@ -13,8 +19,6 @@
   <%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>
 </p>
 <% end %>
-
-<%= render partial: 'pie_chart', locals: { recipe: @recipe } %>
 
 <% if user_signed_in? && current_user.admin? && @csv_table %>
   <% if @recipe.errors.any? %>

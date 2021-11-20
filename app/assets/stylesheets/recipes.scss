@@ -9,6 +9,14 @@
 #ingredient_pie_chart {
   border: 3px solid #27AD05;
   border-radius: 20px;
+  width: calc(100% - 6px);
+}
+
+.pie_chart {
+  width: calc(100% - 300px);
+  min-width: 400px;
+  float:left;
+  display:block;
 }
 
 .instructions_pane {
@@ -17,4 +25,11 @@
 
 .instructions_pane li {
   margin: 15px 0px;
+}
+
+@media (max-width: 410px) {
+  .pie_chart {
+    width: calc(100%);
+    min-width: auto;
+  }
 }
