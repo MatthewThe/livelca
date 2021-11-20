@@ -6,7 +6,7 @@ $( document ).ready(function() {
       "stateSave": true,
       "deferRender": true,
       "oLanguage": {
-         "sSearch": "Filter resources:"
+         "sSearch": "Filter:"
       },
       "ajax": {
         "url":'/resource_table.json',
@@ -17,9 +17,13 @@ $( document ).ready(function() {
       },
     });
   }
-  if ($("#sources_table_wrapper").length == 0) {
-    $('#sources_table').DataTable({
+  initSourcesTable();
+})
+
+function initSourcesTable() {
+  if ($("#sources_product_table_wrapper").length == 0) {
+    $('#sources_product_table').DataTable({
       "pageLength": 25
     });
   }
-})
+}

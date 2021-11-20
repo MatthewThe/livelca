@@ -12,8 +12,6 @@ class ProductsController < ApplicationController
       if @products.count == 1
         redirect_to @products[0]
       end
-    else
-      @products = Product.all
     end
     
     @product_count = Product.all.count

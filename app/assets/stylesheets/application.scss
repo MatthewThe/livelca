@@ -64,6 +64,17 @@ div#navbar{
   display: none;
 }
 
+#table-toggle {
+  // Hides the checkbox
+  position: absolute;
+  opacity: 0;
+  display: none;
+}
+
+#table-toggle ~ label {
+  display: none;
+}
+
 h1 { line-height: 1em; font-size: 28px; }
 h2 { font-size: 1.5em; }
 
@@ -132,12 +143,11 @@ table.dataTable td {
 }
 
 table.dataTable tbody:before {
-    content:"@";
-    display:block;
-    line-height:10px;
-    text-indent:-99999px;
+  content:"@";
+  display:block;
+  line-height:10px;
+  text-indent:-99999px;
 }
-
 
 table.dataTable thead .sorting .DataTables_sort_icon {
   background-position: 0;
@@ -385,6 +395,10 @@ input[type=submit] {
   margin-right:35px;
 }
 
+.table_button {
+  margin-bottom: 16px;
+}
+
 .content_pane {
   display: block;
   overflow: hidden;
@@ -620,7 +634,6 @@ input[type=submit] {
     background-color: #666;
     z-index: 1;
     padding-top: 10px;
-
     height: 100%;
     width: 250px;
   }
@@ -650,8 +663,50 @@ input[type=submit] {
   .content_pane {
     min-width: 240px;
   }
+  
+  #table-toggle ~ label {
+    display: block;
+    background-color: #45A32E;
+    color: #FFF;
+    padding: 8px 0;
+    margin: 10px 0px;
+    border-radius: 3px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+  }
+  #table-toggle ~ label .show {
+    display: block;
+  }
+  #table-toggle ~ label .hide {
+    display: none;
+  }
+  
+  #table-toggle:checked ~ label .show {
+    display: none;
+  }
+  #table-toggle:checked ~ label .hide {
+    display: block;
+  }
+  
+  #table-toggle:checked ~ .table_pane {
+    max-height: 2000px;
+  }
+  #table-toggle ~ .table_pane {
+    transition-timing-function: cubic-bezier(.38,.52,.37,1.27);
+  }
+  
   .table_pane {
+    max-height: 0px;
+    overflow: hidden;
+    transition: all .5s ease-in-out;
     margin-right: 0px;
+  }
+  .table_pane h1 {
+    text-align: center;
+  }
+  .table_button {
+    text-align: center;
   }
   /*div#header{ 
     height: calc(40vw / 4.1); 

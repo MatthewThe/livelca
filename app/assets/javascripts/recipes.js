@@ -159,7 +159,7 @@ function allIngredientsInitialized() {
   var numIngredients = ingredients.length;
   var numInitializedIngredients = 0
   for (let i = 0; i < numIngredients; i++) {
-    if (ingredients[i].value) {
+    if (ingredients[i].label) {
       numInitializedIngredients += 1
     }
   }

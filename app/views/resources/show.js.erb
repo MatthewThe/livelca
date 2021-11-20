@@ -6,10 +6,6 @@ $('html,body').animate({ scrollTop: $("#current_resource").offset().top }, 'slow
 $("#current_resource").html("<%= escape_javascript(render partial: 'resources/show', locals: { resource: @resource, notes: @notes } ) %>");
 
 document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'
+document.querySelector('meta[name="description"]').setAttribute("content", '<%= content_for?(:meta_description) ? j(yield(:meta_description)) : default_meta_description %>');
 
-if ($("#sources_table_wrapper").length == 0) {
-  $('#sources_table').DataTable({
-    "pageLength": 25,
-    "stateSave": true
-  });
-}
+initSourcesTable();

@@ -3,7 +3,7 @@
   <div class="space_16"></div>
   CO2e total: <strong><span class="recipe-co2e-total"><%= recipe.co2_equiv %></span> kg</strong><br />
   Servings: 
-  <% if @csv_table %>
+  <% if csv_table %>
     <%= f.select :servings, options_for_select(1..10, recipe.servings.to_i), {}, :onchange=> "calculateRecipeCO2e();" %>
   <% else %>
     <strong><%= recipe.servings %></strong>

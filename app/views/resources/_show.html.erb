@@ -1,4 +1,5 @@
 <% content_for(:html_title) { @resource.name } %>
+<% content_for(:meta_description) { @resource.name + " (" + @resource.url + ")" } %>
 
 <h1>
   <%= @resource.name %>
@@ -28,7 +29,7 @@
 <div class="space_16"></div>
 <% end %>
 
-<table id="sources_table" class="stripe">
+<table id="sources_product_table">
   <thead>
     <tr>
       <th>Product</th>

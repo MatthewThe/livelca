@@ -1,8 +1,12 @@
+<input type="checkbox" id="table-toggle">
+<label for="table-toggle">
+  <span class="toggle-words show">Show Recipes &#9660;</span>
+  <span class="toggle-words hide">Hide Recipes &#9650;</span>
+</label>
 <div class="table_pane no-print">
   <h1>Recipes</h1>
   
-  <%= link_to 'Calculate CO2e for my recipe', new_recipe_path, class: "green button", remote: true %>
-  <div class="space_16"></div>
+  <div class="table_button"><%= link_to 'Calculate CO2e for my recipe', new_recipe_path, class: "green button", remote: true %></div>
 
   <table id="recipes_table" class="stripe">
     <thead>

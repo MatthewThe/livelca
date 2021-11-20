@@ -9,7 +9,7 @@
 <%= render partial: 'pie_chart', locals: { recipe: @recipe } %>
 </div>
 
-<%= render partial: 'info_chart', locals: { recipe: @recipe } %>
+<%= render partial: 'info_chart', locals: { recipe: @recipe, f: f, csv_table: @csv_table } %>
 
 <div class="clear"></div>
 

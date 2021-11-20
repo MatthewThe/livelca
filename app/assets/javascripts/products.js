@@ -20,13 +20,9 @@ $( document ).ready(function() {
          "loadingRecords": "Please wait - loading products..."
       },
       "columnDefs": [
-        { "width": "180px", "targets": 0 },
-        { "width": "65px", "targets": 1 },
-        { "type": 'num', "width": "65px", 
-          "render": {
-            "sort" : function ( data, type, row, meta ) {
-              return data.split(" ")[0];
-            }}, "targets": 2 }
+        { "width": "200px", "targets": 0 },
+        { "width": "100px", "targets": 1 },
+        { "type": 'num', "width": "30px", "targets": 2 }
       ]
     });
   }
