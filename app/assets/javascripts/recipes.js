@@ -3,7 +3,8 @@ $( document ).ready(function() {
   initIngredientsTable();
   if ($("#recipes_table_wrapper").length == 0) {
     $('#recipes_table').DataTable({
-      "pageLength": 25,
+      "pageLength": 20,
+      "lengthMenu": [[10, 20, 50], [10, 20, 50]],
       "order": [[ 1, "desc" ]],
       "stateSave": true,
       "deferRender": true,
@@ -260,7 +261,7 @@ function saveAsPDF() {
   
   var height = $(document).height();
   var width = $(document).width();
-  width = Math.min(1024, width)
+  width = Math.min(1084, width) // 1024 + 30*2 (30px margin left and right for div#content)
   
   var orientation = 'portrait'
   if (height < width) {
