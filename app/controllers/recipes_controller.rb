@@ -32,6 +32,7 @@ class RecipesController < ApplicationController
   # GET /recipes/new
   def new
     @recipe = Recipe.new
+    @recipe.servings = 4
     @country_consumption_name = ""
     if current_user
       @country_consumption_name = current_user.country.name

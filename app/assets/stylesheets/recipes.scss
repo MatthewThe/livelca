@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 #recipes_table_wrapper {
-  max-width: 500px;
+  max-width: 380px;
 }
 
 #ingredient_pie_chart {
@@ -31,5 +31,11 @@
   .pie_chart {
     width: calc(100%);
     min-width: auto;
+  }
+}
+
+.print {
+  .pie_chart {
+    width: auto;
   }
 }

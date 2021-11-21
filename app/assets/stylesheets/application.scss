@@ -193,6 +193,7 @@ table.dataTable thead .sorting .DataTables_sort_icon.ui-icon-triangle-1-n {
 
 label {
   display:inline-block;
+  font-weight: bold;
 }
 
 #header {
@@ -362,6 +363,17 @@ label {
 #content a:hover {
   color:#333;
   background-color: inherit;
+}
+
+input, select, textarea {
+  padding: 5px;
+  border-radius: 5px;
+  border: solid 1px #666;
+  background-color: #fff;
+}
+
+select {
+  padding: 4px;
 }
 
 input[type=submit] {
@@ -548,27 +560,7 @@ input[type=submit] {
 .max_width_800 {max-width: 800px;}
 .max_width_1024 {max-width: 1024px;}
 
-@media print {    
-  .no-print, .no-print * {
-    display: none !important;
-  }
-  h1, h2 { 
-    margin-top: 100px;
-    page-break-before: always;
-  }
-  input {border:0;outline:0;}
-  div#header {
-    position: fixed;
-    background-color: #4CAF50;
-    width: 100%;
-  }
-  @page { size: A4 landscape; margin: 5mm; }
-  body {
-    -webkit-print-color-adjust: exact !important;
-  }
-}
-
-.print {    
+@mixin print-styles {
   .no-print, .no-print * {
     display: none !important;
   }
@@ -579,11 +571,7 @@ input[type=submit] {
     display: none;
   }
   h1 { 
-    margin-top: 100px;
-  }
-  h2 { 
-    padding-top: 50px;
-    page-break-before: always;
+    margin-top: 80px;
   }
   input, select {
     border:0;
@@ -597,6 +585,25 @@ input[type=submit] {
   }
 }
 
+@media print {
+  @include print-styles;
+  @page { size: A4 landscape; margin: 5mm; }
+  body {
+    -webkit-print-color-adjust: exact !important;
+  }
+  h1, h2 { 
+    margin-top: 100px;
+    page-break-before: always;
+  }
+  div#header {
+    width: 297mm;
+  }
+}
+
+.print {
+  @include print-styles;
+}
+
 @media (max-width: 410px) {
   h1 {
     margin: 5px;
@@ -604,6 +611,10 @@ input[type=submit] {
   div#header{
     width:calc(97% - 15px);
     padding-bottom: 0px;
+  }
+  
+  textarea {
+    width: calc(100% - 12px);
   }
   #nav-toggle ~ label {
     display: block;
@@ -638,14 +649,6 @@ input[type=submit] {
     width: 250px;
   }
   #navbar a, #navbar a:visited {
-    float: left;
-    display: block;
-    color:#fefefe;
-    text-shadow: 1px 1px 2px #000000;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 10px;
     width: 250px;
   }
   #navbar .search_box {

@@ -35,7 +35,8 @@ function initIngredientsTable() {
       "columnDefs": [
         { "targets": 0, "responsivePriority" : 1 },
         { "targets": 1, "responsivePriority" : 1 },
-        { "targets": 2, "responsivePriority" : 2 }
+        { "targets": 2, "responsivePriority" : 1 },
+        { "targets": 3, "responsivePriority" : 2 }
       ]
     });
   }
@@ -256,11 +257,21 @@ function updateRecipeTotalCO2e() {
 function saveAsPDF() {
   var source = document.body;
   source.classList.add('print');
+  
+  var height = $(document).height();
+  var width = $(document).width();
+  width = Math.min(1024, width)
+  
+  var orientation = 'portrait'
+  if (height < width) {
+    orientation = 'landscape'
+  }
+  
   html2pdf(source, {
        filename: $(document).find("title").text(),
        image: { type: 'jpeg', quality: 1 },
        html2canvas: { scale: 2 },
-       jsPDF: { unit: 'mm', format: 'A4', orientation: 'landscape', putOnlyUsedFonts: true }
+       jsPDF: { unit: 'px', format: [width, height], orientation: orientation, putOnlyUsedFonts: true }
   }).then(function(){
        source.classList.remove('print');
   });

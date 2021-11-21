@@ -1,6 +1,9 @@
 // adapted from https://www.freecodecamp.org/news/d3-and-canvas-in-3-steps-8505c8b27444/
 function drawDailyBudget(val) {
   var data = [];
+  if (val == 0) {
+    val = 27.0;
+  }
   var numBlocks = Math.ceil(2.7 / val / 0.1);
   d3.range(numBlocks).forEach(function(el) {
     data.push({ value: el }); 
