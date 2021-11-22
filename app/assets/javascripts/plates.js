@@ -24,7 +24,7 @@ function drawDailyBudgetPlates(val) {
   var outerRadius = cellSize / 2;
   
   var vertGroups = Math.floor(numBlocks / numBlocksPerGrid);
-  var vertWithinGroups = Math.floor(numBlocks % (numBlocksPerGrid / numBlocksPerRow)) + 1;
+  var vertWithinGroups = Math.floor(((numBlocks % numBlocksPerGrid) - 1) / numBlocksPerRow) + 1;
   var height = groupSpacing * vertGroups + (cellSpacing + cellSize) * (vertWithinGroups + vertGroups * (numGroupsPerGrid / numGroupsPerRow));
   
   var maxBlocksPerRow = Math.min(numBlocks, numBlocksPerRow)

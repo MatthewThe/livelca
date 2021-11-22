@@ -23,7 +23,7 @@ function drawDailyBudget(val) {
   var cellSize = Math.floor((width - (numGroupsPerRow + 1) * groupSpacing) / numBlocksPerRow) - cellSpacing;
   
   var vertGroups = Math.floor(numBlocks / numBlocksPerGrid);
-  var vertWithinGroups = Math.floor(numBlocks % (numBlocksPerGrid / numBlocksPerRow)) + 1;
+  var vertWithinGroups = Math.floor(((numBlocks % numBlocksPerGrid) - 1) / numBlocksPerRow) + 1;
   var height = groupSpacing * vertGroups + (cellSpacing + cellSize) * (vertWithinGroups + vertGroups * (numGroupsPerGrid / numGroupsPerRow));
   
   var maxBlocksPerRow = Math.min(numBlocks, numBlocksPerRow)
