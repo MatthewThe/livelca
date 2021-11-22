@@ -78,8 +78,8 @@
             <%= link_to content_tag(:span, source.resource.name, title: source.notes), source.resource %>
             </td>
         <td><div class='co2_cell' style='background-color:<%= source.co2_equiv_color %>;float:right;'><%= source.co2_equiv %></div></td>
-        <td><%= link_to source.country_origin_name, source.country_origin %></td>
-        <td><%= link_to source.country_consumption_name, source.country_consumption %></td>
+        <td><%= source.country_origin_name %></td>
+        <td><%= source.country_consumption_name %></td>
         <td><%= source.weight %></td>
       </tr>
     <% end %>
