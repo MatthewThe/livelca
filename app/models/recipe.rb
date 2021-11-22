@@ -13,6 +13,14 @@ class Recipe
   has_many :in, :ingredients, type: :IS_INGREDIENT, model_class: :Ingredient, dependent: :destroy
   has_one :out, :country_consumption, type: :CONSUMED_IN, model_class: :Country
   
+  def self.from_param(param)
+    param[-36...]
+  end
+  
+  def to_param
+    "#{self.name.downcase.parameterize[...50]}_#{self.id}"
+  end
+  
   def description
     description = "Recipe: " + name + "\n"\
        + "You can eat " + (2.7 / co2_equiv_per_serving).round(2).to_s + " servings of " + name + " to exhaust your daily CO2e food budget" + "\n"\

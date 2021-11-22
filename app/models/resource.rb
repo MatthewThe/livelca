@@ -7,6 +7,14 @@ class Resource
   
   has_many :out, :sources, type: :IS_RESOURCE, model_class: :Source, dependent: :destroy
   
+  def self.from_param(param)
+    param[-36...]
+  end
+  
+  def to_param
+    "#{self.name.downcase.parameterize[...50]}_#{self.id}"
+  end
+  
   def self.find_or_create(resource_name, resource_url, resource_default_weight)
     if resource_name.length > 0
       resource = find_by(name: resource_name)

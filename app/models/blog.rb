@@ -8,4 +8,12 @@ class Blog
   property :published_at, type: DateTime
   
   has_one :out, :user, type: :PUBLISHED_BY, model_class: :User
+  
+  def self.from_param(param)
+    param[-36...]
+  end
+  
+  def to_param
+    "#{self.title.downcase.parameterize[...50]}_#{self.id}"
+  end
 end

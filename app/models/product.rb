@@ -11,6 +11,14 @@ class Product
   has_many :in, :subcategories, type: :IS_SUBCATEGORY_OF, model_class: :Product
   has_one :out, :proxy, type: :USE_AS_PROXY, model_class: :Product
   
+  def self.from_param(param)
+    param[-36...]
+  end
+  
+  def to_param
+    "#{self.name.downcase.parameterize[...50]}_#{self.id}"
+  end
+  
   def description
     description = "Product: " + name + "\n"\
        + "Category: " + (category ? category.name : "-") + "\n"\
