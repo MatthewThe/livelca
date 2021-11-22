@@ -251,7 +251,7 @@ function updateRecipeTotalCO2e() {
     displayIngredientPieChart(ingredients)
     
     $(".daily-budget-chart").children('svg').remove();
-    drawDailyBudget(perServingCO2e);
+    drawDailyBudgetPlates(perServingCO2e);
   })
 }
 

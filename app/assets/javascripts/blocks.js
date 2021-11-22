@@ -23,12 +23,12 @@ function drawDailyBudget(val) {
   var cellSize = Math.floor((width - (numGroupsPerRow + 1) * groupSpacing) / numBlocksPerRow) - cellSpacing;
   
   var vertGroups = Math.floor(numBlocks / numBlocksPerGrid);
-  var vertWithinGroups = Math.floor(numBlocks % numBlocksPerGrid / numBlocksPerRow) + 1;
+  var vertWithinGroups = Math.floor(numBlocks % (numBlocksPerGrid / numBlocksPerRow)) + 1;
   var height = groupSpacing * vertGroups + (cellSpacing + cellSize) * (vertWithinGroups + vertGroups * (numGroupsPerGrid / numGroupsPerRow));
   
   var maxBlocksPerRow = Math.min(numBlocks, numBlocksPerRow)
   var maxGroupsPerRow = Math.ceil(maxBlocksPerRow / numBlocksPerGroup)
-  var trueWidth = maxBlocksPerRow * (cellSpacing + cellSize) + groupSpacing * (maxGroupsPerRow + 1)
+  var trueWidth = maxBlocksPerRow * (cellSpacing + cellSize) + groupSpacing * (maxGroupsPerRow - 1)
   
   var el = d3.select('.daily-budget-chart')  
   
@@ -53,6 +53,7 @@ function drawDailyBudget(val) {
     .attr('width', 0)  
     .attr('height', 0);
   
+  /* resize and color all blocks */
   join.merge(enterSel)
     .transition()  
     .attr('width', cellSize)  
