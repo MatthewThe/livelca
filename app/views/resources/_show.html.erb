@@ -1,4 +1,5 @@
 <% content_for(:html_title) { @resource.name } %>
+<% content_for(:meta_description) { @resource.name + " (" + @resource.url + ")" } %>
 
 <h1>
   <%= @resource.name %>
@@ -28,7 +29,7 @@
 <div class="space_16"></div>
 <% end %>
 
-<table id="sources_table" class="stripe">
+<table id="sources_product_table">
   <thead>
     <tr>
       <th>Product</th>
@@ -45,8 +46,8 @@
             <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
             <% end %>
             <%= link_to source.product_name, source.product %></td>
-        <td><%= link_to source.country_origin_name, source.country_origin %></td>
-        <td><%= link_to source.country_consumption_name, source.country_consumption %></td>
+        <td><%= source.country_origin_name %></td>
+        <td><%= source.country_consumption_name %></td>
     </tr>
   <% end %>
   </tbody>

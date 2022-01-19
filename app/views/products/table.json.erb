@@ -3,9 +3,9 @@
 <% cache(@products) do %>
 <% @products.each_with_index do |product, i| %>
     <%= "," if i > 0 %>
-    [  "<%= (link_to product.name, product, class: product.reliability_class, remote: true).gsub('"', '\"').html_safe %>",
+    [  "<%= (link_to product.name, product, class: product.reliability_class, remote: true).gsub('"', '\"').html_safe %><% if product.proxy && product.study_count == 0 %> (proxy: <%= (link_to product.proxy.name, product.proxy).gsub('"', '\"').html_safe %>)<% end %>",
        "<div class='co2_cell' style='background-color:<%= product.co2_equiv_color %>;float:right;'><%= product.co2_equiv %></div>",
-       "<%= product.study_count %><% if product.proxy && product.study_count == 0 %> (proxy: <%= (link_to product.proxy.name, product.proxy).gsub('"', '\"').html_safe %>)<% end %>"
+       "<%= product.study_count %>"
     ]
 <% end %>
 <% end %>

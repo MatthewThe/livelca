@@ -4,7 +4,7 @@
 
 
 #products_table_wrapper {
-  max-width: 500px;
+  max-width: 380px;
 }
 
 #product_graph {
@@ -22,7 +22,9 @@
 }
 
 .co2_chart {
-  text-align: center; 
+  text-align: center;
+  width: 280px;
+  margin: 0 auto;
   //border: 1px solid #000;
   //padding-bottom: 10px;
 }
@@ -35,12 +37,80 @@
   text-align: center; 
   float: right;
   display: block;
-  width: 280px;
 }
 
 .daily_budget_chart {
   margin-top:20px;
-  margin-left:5px;
+  margin-left:auto;
   margin-bottom:20px;
-  margin-right:10px;
+  margin-right:auto;
+  width: 260px;
+}
+
+.card {
+  float:left;
+  width: 500px;
+  margin: 5px;
+  border-radius: 10px;
+  border: 1px #ccc solid;
+  background-color: #fff;
+}
+
+.card.narrow {
+  width: 300px;
+}
+
+.card.wide {
+  width: 700px;
+}
+
+.card h3 {
+  background-color: #4CAF50;
+  border-radius: 10px 10px 0px 0px;
+  padding: 8px 15px;
+  margin: 0px;
+  color: #fff;
+  font-size: 1.2em;
+}
+
+.card div.card-title {
+  margin: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.card div.card-subtitle {
+  margin: 15px;
+}
+
+.card div.card-text {
+  margin: 15px;
+  font-size: 16px;
+}
+
+.card div.card-graph {
+  margin: 7px;
+}
+
+.card table {
+  margin: 10px;
+  font-weight: bold;
+}
+
+@media (max-width: 410px) {
+  .card.narrow {
+    width: calc(100% - 12px);
+  }
+  
+  .card.wide {
+    width: calc(100% - 12px);
+  }
+  
+  .card div.card-subtitle {
+    margin: 0px 0px 10px 15px;
+  }
+  
+  #info_charts_box {
+    width: 100%;
+  }
 }

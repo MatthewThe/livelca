@@ -1,15 +1,10 @@
 $( document ).ready(function() {
   "use strict";
-  if ($("#ingredients_table_wrapper").length == 0) {
-    $('#ingredients_table').DataTable({
-      "order": [[ 0, "desc" ]],
-      "paging": false,
-      "searching": false
-    });
-  }
+  initIngredientsTable();
   if ($("#recipes_table_wrapper").length == 0) {
     $('#recipes_table').DataTable({
-      "pageLength": 25,
+      "pageLength": 20,
+      "lengthMenu": [[10, 20, 50], [10, 20, 50]],
       "order": [[ 1, "desc" ]],
       "stateSave": true,
       "deferRender": true,
@@ -24,12 +19,29 @@ $( document ).ready(function() {
          "loadingRecords": "Please wait - loading recipes..."
       },
       "columnDefs": [
-        { "width": "250px", "targets": 0 },
-        { "width": "80px", "targets": 1 }
+        { "width": "230px", "targets": 0 },
+        { "width": "50px", "targets": 1 }
       ]
     });
   }
 })
+
+function initIngredientsTable() {
+  if ($("#ingredients_table_wrapper").length == 0) {
+    $('#ingredients_table').DataTable({
+      "order": [[ 0, "desc" ]],
+      "paging": false,
+      "searching": false,
+      "responsive": true,
+      "columnDefs": [
+        { "targets": 0, "responsivePriority" : 1 },
+        { "targets": 1, "responsivePriority" : 1 },
+        { "targets": 2, "responsivePriority" : 1 },
+        { "targets": 3, "responsivePriority" : 2 }
+      ]
+    });
+  }
+}
 
 function displayIngredientPieChart(ingredients) {
   var co2_sum = ingredients.reduce(function(a, b) { return a + b.value; }, 0);
@@ -41,20 +53,19 @@ function displayIngredientPieChart(ingredients) {
   small_items = ingredients.filter(function(item) { return item.value <= threshold && item.value > 0 });
   if (small_items.length > 0) {
     collected_value = { 
-        label: "Other (" + small_items.length + " items)",
+        label: small_items.length + " items",
         value: small_items.reduce(function(accumulator, item) { return accumulator + item.value }, 0), 
         color: "rgb(0,142,9)"
     }
     data.push(collected_value);
   }
   
-  // set the dimensions and margins of the graph
-  var width = 1000 - 280
-      height = 450
-      margin = 40
+  var width = d3.select("svg#ingredient_pie_chart").node().getBoundingClientRect().width;
+  var margin = Math.min(100, width / 4)
 
-  // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-  var radius = Math.min(width, height) / 2;
+  // The radius of the pieplot is half the width minus a margin for the text boxes
+  var radius = width / 2 - margin;
+  var height = radius * 2;
   
   var svg_frame = d3.select("svg#ingredient_pie_chart")
       .attr("width", width)
@@ -150,7 +161,7 @@ function allIngredientsInitialized() {
   var numIngredients = ingredients.length;
   var numInitializedIngredients = 0
   for (let i = 0; i < numIngredients; i++) {
-    if (ingredients[i].value) {
+    if (ingredients[i].label) {
       numInitializedIngredients += 1
     }
   }
@@ -240,18 +251,28 @@ function updateRecipeTotalCO2e() {
     displayIngredientPieChart(ingredients)
     
     $(".daily-budget-chart").children('svg').remove();
-    drawDailyBudget(perServingCO2e);
+    drawDailyBudgetPlates(perServingCO2e);
   })
 }
 
 function saveAsPDF() {
   var source = document.body;
   source.classList.add('print');
+  
+  var height = $(document).height();
+  var width = $(document).width();
+  width = Math.min(1084, width) // 1024 + 30*2 (30px margin left and right for div#content)
+  
+  var orientation = 'portrait'
+  if (height < width) {
+    orientation = 'landscape'
+  }
+  
   html2pdf(source, {
        filename: $(document).find("title").text(),
        image: { type: 'jpeg', quality: 1 },
        html2canvas: { scale: 2 },
-       jsPDF: { unit: 'mm', format: 'A4', orientation: 'landscape', putOnlyUsedFonts: true }
+       jsPDF: { unit: 'px', format: [width, height], orientation: orientation, putOnlyUsedFonts: true }
   }).then(function(){
        source.classList.remove('print');
   });

@@ -9,7 +9,6 @@ class ResourcesController < ApplicationController
   end
   
   def table
-    expires_in 24.hours, :public => true
     @resources = Resource.all
     respond_to do |format|
       format.json
@@ -68,8 +67,16 @@ class ResourcesController < ApplicationController
           if !row[:product_category].nil? && @source.product.category.nil?
             @source.product.category = Product.find_or_create(row[:product_category])
           end
-          @source.country_origin_id = Country.find_or_create("Unknown")
-          @source.country_consumption_id = Country.find_or_create("Unknown")
+          if !row[:country_origin].nil?
+            @source.country_origin_id = Country.find_or_create(row[:country_origin])
+          else
+            @source.country_origin_id = Country.find_or_create("Unknown")
+          end
+          if !row[:country_consumption].nil?
+            @source.country_consumption_id = Country.find_or_create(row[:country_consumption])
+          else
+            @source.country_consumption_id = Country.find_or_create("Unknown")
+          end
           @source.save
         end
       end
@@ -92,7 +99,7 @@ class ResourcesController < ApplicationController
       require 'csv'
       queries = []
       CSV.foreach(file,{:headers=>:first_row, :col_sep => "\t"}) do |row|
-        product_table.push({ product_name: row[0], co2_emission: row[1], notes: row[2], product_category: row[3] })
+        product_table.push({ product_name: row[0], co2_emission: row[1], notes: row[2], product_category: row[3], country_origin: row[4], country_consumption: row[5] })
         #Product.add_product_query(row[0], queries)
       end
     end
@@ -138,7 +145,7 @@ class ResourcesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_resource
-      @resource = Resource.find(params[:id])
+      @resource = Resource.find(Resource.from_param(params[:id]))
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -8,9 +8,4 @@ $("#current_product").html("<%= escape_javascript(render partial: 'products/show
 document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'
 document.querySelector('meta[name="description"]').setAttribute("content", '<%= content_for?(:meta_description) ? j(yield(:meta_description)) : default_meta_description %>');
 
-if ($("#sources_table_wrapper").length == 0) {
-  $('#sources_table').DataTable({
-    "pageLength": 25,
-    "stateSave": true
-  });
-}
+initSourceTable()

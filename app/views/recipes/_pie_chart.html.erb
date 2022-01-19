@@ -1,7 +1,7 @@
 <svg id="ingredient_pie_chart"></svg>
 
 <script>
-var ingredients = <%=@recipe.ingredients.map{|i| {:label => i.product.name, :value => i.co2_equiv, :color => i.co2_equiv_color(@recipe.servings) }}.to_json.html_safe%>;
+var ingredients = <%=recipe.ingredients.map{|i| {:label => i.product.name, :value => i.co2_equiv, :color => i.co2_equiv_color(recipe.servings) }}.to_json.html_safe%>;
 
 displayIngredientPieChart(ingredients);
 </script>

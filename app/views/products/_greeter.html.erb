@@ -13,3 +13,51 @@
 <p>
   By making LiveLCA publicly available, we hope that people will be able to make more conscious choices when buying products and potentially decrease their personal emissions.
 </p>
+
+<div class="card wide">
+  <h3>Latest blog</h3>
+  <div class="card-title"><%= link_to @latest_blog.title, @latest_blog %></div>
+  <div class="card-text">
+    <%= truncate(strip_tags(@latest_blog_wiki), length: 400, separator: ' ', omission: ' ... ').html_safe %>
+    <%= link_to '[Read more]', @latest_blog %>
+  </div>
+</div>
+
+<div class="card narrow">
+  <h3>Statistics</h3>
+  <table>
+    <tr>
+      <td width="220">Products</td>
+      <td><%=@product_count%></td>
+    </tr>
+    <tr>
+      <td>Resources</td>
+      <td><%=@resource_count%></td>
+    </tr>
+    <tr>
+      <td>Emission factors</td>
+      <td><%=@study_count%></td>
+    </tr>
+    <tr>
+      <td>Recipes</td>
+      <td><%=@recipe_count%></td>
+    </tr>
+  </table>
+</div>
+
+<div class="clear"></div>
+
+<div class="card narrow">
+  <h3>Product of the day</h3>
+  <div class="card-title"><strong><%= link_to @random_product.name, @random_product, remote: true %></strong></div>
+  <div class="card-graph"><%= render partial: 'info_chart', locals: { product: @random_product } %></div>
+  <div class="card-text">Studies: <%= @random_product.study_count %><% if @random_product.proxy && @random_product.study_count == 0 %> (proxy: <%= (link_to @random_product.proxy.name, @random_product.proxy).gsub('"', '\"').html_safe %>)<% end %></div>
+</div>
+
+<div class="card wide">
+  <h3>Recipe of the day</h3>
+  <div class="card-title float"><strong><%= link_to @random_recipe.name, @random_recipe %></strong></div>
+  <div class="card-subtitle float"><div class="co2_cell" style='display:inline-block; margin: 0px 5px; background-color:<%= @random_recipe.co2_equiv_color %>'><%= @random_recipe.co2_equiv_per_serving %></div><strong>kg CO2e / portion</strong></div>
+  <div class="card-graph"><%= render partial: 'recipes/pie_chart', locals: { recipe: @random_recipe } %></div>
+</div>
+

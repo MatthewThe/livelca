@@ -11,6 +11,14 @@ class Product
   has_many :in, :subcategories, type: :IS_SUBCATEGORY_OF, model_class: :Product
   has_one :out, :proxy, type: :USE_AS_PROXY, model_class: :Product
   
+  def self.from_param(param)
+    param[-36...]
+  end
+  
+  def to_param
+    "#{self.name.downcase.parameterize[...50]}_#{self.id}"
+  end
+  
   def description
     description = "Product: " + name + "\n"\
        + "Category: " + (category ? category.name : "-") + "\n"\
@@ -22,7 +30,9 @@ class Product
   def study_count
     count = 0
     studies.each do |s|
-      count += 1
+      if s.weight > 0
+        count += 1
+      end
     end
     count
   end
@@ -103,7 +113,7 @@ class Product
   end
   
   def get_graph_nodes(supercategories)
-    products_plus = ([self] + subcategories + supercategories).map{|sc| {:product => sc.attributes.merge(:co2_equiv_color => sc.co2_equiv_color)}}
+    products_plus = ([self] + subcategories.with_associations(:studies, :proxy => [:studies]) + supercategories).map{|sc| {:product => sc.attributes.merge(:co2_equiv_color => sc.co2_equiv_color)}}
     
     product_tree = []
     supercategories.each_with_index do |sc, i|

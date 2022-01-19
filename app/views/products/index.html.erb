@@ -1,12 +1,16 @@
+<input type="checkbox" id="table-toggle">
+<label for="table-toggle" class="no-print">
+  <span class="toggle-words show">Show Products &#9660;</span>
+  <span class="toggle-words hide">Hide Products &#9650;</span>
+</label>
 <div class="table_pane">
   <h1>Products</h1>
 
   <% if user_signed_in? && current_user.admin? %>
-    <%= link_to 'Add Product', new_product_path, class: "green button" %>
-    <div class="space_16"></div>
+    <div class="table_button"><%= link_to 'Add Product', new_product_path, class: "green button" %></div>
   <% end %>
 
-  <table id="products_table">
+  <table id="products_table" style="width:100%">
     <thead>
       <tr>
         <th>Product</th>

@@ -10,7 +10,7 @@ $( document ).ready(function() {
       "deferRender": true,
       "order": [[ 2, "desc" ]],
       "oLanguage": {
-         "sSearch": "Filter products:"
+         "sSearch": "Filter:"
       },
       "ajax": {
         "url":'/product_table.json',
@@ -20,13 +20,9 @@ $( document ).ready(function() {
          "loadingRecords": "Please wait - loading products..."
       },
       "columnDefs": [
-        { "width": "250px", "targets": 0 },
-        { "width": "80px", "targets": 1 },
-        { "type": 'num', "width": "80px", 
-          "render": {
-            "sort" : function ( data, type, row, meta ) {
-              return data.split(" ")[0];
-            }}, "targets": 2 }
+        { "width": "200px", "targets": 0 },
+        { "width": "100px", "targets": 1 },
+        { "type": 'num', "width": "30px", "targets": 2 }
       ]
     });
   }
@@ -43,15 +39,8 @@ $( document ).ready(function() {
       });
     }
   }
-  if ($("#sources_table_wrapper").length == 0) {
-    $('#sources_table').DataTable({
-      "pageLength": 25,
-      "stateSave": true,
-      "columnDefs": [ 
-        { "targets": 0, "orderable": false }
-      ]
-    });
-  }
+  
+  initSourceTable();
   
   if ($("#editor").length > 0) {
     const editor = new toastui.Editor({
@@ -69,6 +58,22 @@ $( document ).ready(function() {
     }
   }
 })
+
+function initSourceTable() {
+  if ($("#sources_table_wrapper").length == 0) {
+    $('#sources_table').DataTable({
+      "pageLength": 25,
+      "responsive": true,
+      "stateSave": true,
+      "order": [[ 4, "desc" ]],
+      "columnDefs": [
+        { "targets": 0, "responsivePriority" : 1 },
+        { "targets": 1, "responsivePriority" : 1 },
+        { "targets": 4, "responsivePriority" : 2 }
+      ]
+    });
+  }
+}
 
 function getNodeColor(node) {
   return node.co2_equiv
