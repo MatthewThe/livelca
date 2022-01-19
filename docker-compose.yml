@@ -46,6 +46,7 @@ services:
     env_file: .env
     volumes:
       - /var/lib/mysql:/var/lib/mysql
+      - ${PWD}/matomo_config/mariadb_custom.cnf:/etc/mysql/conf.d/mariadb_custom.cnf
     ports:
       - "3306:3306"
   
@@ -54,9 +55,9 @@ services:
     restart: always
     environment:
       - MATOMO_DATABASE_HOST=mariadb-matomo
-      - PHP_MEMORY_LIMIT=32M
+      - PHP_MEMORY_LIMIT=16M
     volumes:
       - /var/www/html:/var/www/html
-      - ${PWD}/apache_config/mpm_prefork.conf:/etc/apache2/mods-enabled/mpm_prefork.conf
+      - ${PWD}/matomo_config/mpm_prefork.conf:/etc/apache2/mods-enabled/mpm_prefork.conf
     ports:
       - 8080:80
