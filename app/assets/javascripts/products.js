@@ -202,12 +202,15 @@ function displayProductGraph(tree, products, minWidth) {
     .enter().append('circle')
       .attr('r', 10)
       .attr('fill', getNodeColor)
+      .style("cursor", "move")
       .call(dragDrop)
       .on("mouseover", function(d) {
-        d3.select("#label-node-" + d.idx).attr("font-weight", "bold");
+        d3.select("#label-node-" + d.idx).attr("font-weight", "bold").style("font-size", 16);
+        $(this).attr('stroke-width', 4).attr("stroke", "rgba(50, 50, 50, 0.2)")
       })
       .on("mouseout", function(d) {
-        d3.select("#label-node-" + d.idx).attr("font-weight", "normal");
+        d3.select("#label-node-" + d.idx).attr("font-weight", "normal").style("font-size", 12);
+        $(this).attr('stroke-width', 0)
       });
   
   var labelNode = container.append("g").attr("class", "labelNodes")
@@ -219,7 +222,14 @@ function displayProductGraph(tree, products, minWidth) {
         .style("opacity", "0.6")
         .style("font-family", "Arial")
         .style("font-size", 12)
-        .style("pointer-events", "none"); // to prevent mouseover/drag capture
+        //.style("pointer-events", "none") // to prevent mouseover/drag capture
+        .style("cursor", "pointer")
+        .on("mouseover", function(d) {
+          d3.select("#label-node-" + d.node.idx).attr("font-weight", "bold").style("font-size", 16);
+        })
+        .on("mouseout", function(d) {
+          d3.select("#label-node-" + d.node.idx).attr("font-weight", "normal").style("font-size", 12);
+        });
 
   svg.call(
       d3.zoom()

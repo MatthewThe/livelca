@@ -17,11 +17,11 @@ class SourcesController < ApplicationController
   def new
     @source = Source.new
     if params[:product_id]
-      @source.product = Product.find_by(id: params[:product_id])
+      @source.product = Product.find(Product.from_param(params[:product_id]))
     end
     
     if params[:resource_id].present?
-      @source.resource = Resource.find_by(id: params[:resource_id])
+      @source.resource = Resource.find(Resource.from_param(params[:resource_id]))
       @source.weight = @source.resource.default_weight
     else
       @source.resource = Resource.new

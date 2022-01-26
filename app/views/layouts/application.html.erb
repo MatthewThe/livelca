@@ -38,7 +38,10 @@
       
       <div class="no-print">
         <input type="checkbox" id="nav-toggle">
-        <label for="nav-toggle"><span class="toggle-words">Menu</span></label>
+        <label for="nav-toggle">
+            <span class="toggle-words show">&#9776;</span>
+            <span class="toggle-words hide">&times;</span>
+        </label>
         <div id="navbar">
           <%= nav_link "Products", products_path %>
           <%= nav_link "Blog", blogs_path %>

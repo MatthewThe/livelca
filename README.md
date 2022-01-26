@@ -122,6 +122,12 @@ gcloud compute instances create neo4j-livelca --image neo4j-community-1-3-5-1-ap
 MATCH (n:Resource)-[:IS_RESOURCE]->(s:Source) WHERE n.name CONTAINS "<XXX>" SET s.weight = 5
 ```
 
+### Deleting all sources for a resource
+
+```
+MATCH (n:Resource)-[:IS_RESOURCE]->(s:Source) WHERE n.name CONTAINS "<XXX>" DETACH DELETE s
+```
+
 ## Setup Matomo
 
 Matomo tracks visitors in a GDPR compliant way, without the need to ask for tracking permission.
