@@ -6,6 +6,7 @@ services:
   database:
     image: neo4j:3.5.14
     env_file: .env
+    restart: always
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -21,6 +22,7 @@ services:
   web:
     image: matthewthe/livelca:latest
     env_file: .env
+    restart: always
 
     # The command to be run when we run "docker-compose up".
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
@@ -44,6 +46,7 @@ services:
     env_file: .env
     volumes:
       - /var/lib/mysql:/var/lib/mysql
+      - ${PWD}/matomo_config/mariadb_custom.cnf:/etc/mysql/conf.d/mariadb_custom.cnf
     ports:
       - "3306:3306"
   
@@ -52,7 +55,9 @@ services:
     restart: always
     environment:
       - MATOMO_DATABASE_HOST=mariadb-matomo
+      - PHP_MEMORY_LIMIT=16M
     volumes:
       - /var/www/html:/var/www/html
+      - ${PWD}/matomo_config/mpm_prefork.conf:/etc/apache2/mods-enabled/mpm_prefork.conf
     ports:
       - 8080:80
