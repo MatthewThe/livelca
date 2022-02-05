@@ -20,6 +20,4 @@
 <% end %>
 
 
-<div class="tui-editor-contents">
-  <%= @wiki.html_safe %>
-</div>
+<%= render partial: 'layouts/wiki', locals: { wiki: @wiki } %>

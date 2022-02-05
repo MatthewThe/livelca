@@ -17,10 +17,8 @@ class ResourcesController < ApplicationController
   
   # GET /resources/1
   # GET /resources/1.json
-  def show    
-    renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
-    @notes = markdown.render(@resource.notes)
+  def show
+    @notes = markdown(@resource.notes)
     
     respond_to_format
   end

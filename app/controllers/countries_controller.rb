@@ -15,9 +15,7 @@ class CountriesController < ApplicationController
   # GET /countries/1
   # GET /countries/1.json
   def show
-    renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
-    @wiki = markdown.render(@country.wiki)
+    @wiki = markdown(@country.wiki)
   end
 
   # GET /countries/new

@@ -20,9 +20,7 @@ class ProductsController < ApplicationController
     @recipe_count = Recipe.all.count
     
     @latest_blog = Blog.where_not(published_at: nil).order(:published_at).last
-    renderer = Redcarpet::Render::HTML.new(:link_attributes => Hash["target" => "_blank"], hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
-    @latest_blog_wiki = markdown.render(@latest_blog.post)
+    @latest_blog_wiki = markdown(@latest_blog.post)
     
     @random_product = Product.as('q').order("(id(q) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:proxy, :studies, :subcategories).limit(1).first
     @random_recipe = Recipe.as('r').order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]]).limit(1).first
@@ -69,9 +67,7 @@ class ProductsController < ApplicationController
   # GET /products/1.json
   def show
     @supercategories = @product.get_super_categories
-    renderer = Redcarpet::Render::HTML.new(:link_attributes => Hash["target" => "_blank"], hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
-    @wiki = markdown.render(@product.wiki)
+    @wiki = markdown(@product.wiki)
     
     @products, @product_tree = @product.get_graph_nodes(@supercategories)
     

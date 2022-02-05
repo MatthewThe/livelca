@@ -19,9 +19,7 @@ class BlogsController < ApplicationController
 
   # GET /blogs/1 or /blogs/1.json
   def show
-    renderer = Redcarpet::Render::HTML.new(:link_attributes => Hash["target" => "_blank"], hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, extensions = {})
-    @wiki = markdown.render(@blog.post)
+    @wiki = markdown(@blog.post)
     
     respond_to_format
   end

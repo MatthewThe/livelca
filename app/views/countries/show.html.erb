@@ -2,9 +2,8 @@
   <%= @country.name %>
 </h1>
 
-<p>
-  <%= @wiki.html_safe %>
-</p>
+<%= render partial: 'layouts/wiki', locals: { wiki: @wiki } %>
+
 
 <% if user_signed_in? && current_user.admin? %>
 <%= link_to 'Edit', edit_country_path(@country) %> |

@@ -29,9 +29,7 @@
 </p>
 <% end %>
 
-<p>
-  <%= @wiki.html_safe %>
-</p>
+<%= render partial: 'layouts/wiki', locals: { wiki: @wiki } %>
 
 <% if @product.subcategories_count > 0 %>
 <p>

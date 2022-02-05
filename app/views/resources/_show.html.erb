@@ -10,7 +10,8 @@
 <% end %>
 
 <p>
-  Notes:<br/><%= @notes.html_safe %>
+  Notes:
+  <%= render partial: 'layouts/wiki', locals: { wiki: @notes } %>
 </p>
 
 <p>
