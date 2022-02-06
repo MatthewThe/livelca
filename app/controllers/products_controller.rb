@@ -43,7 +43,12 @@ class ProductsController < ApplicationController
   
   def graph_json
     @product_tree = Product.get_product_tree
-    @products = Product.all.with_associations(:studies, :proxy).to_json(:methods => :co2_equiv_color)
+    
+    root = Product.find_by(name: "Food")
+    products_in_graph = Product.traverse_tree(root, 2)
+    @products = root.get_graph_nodes(products_in_graph)
+    
+    #@products = Product.all.with_associations(:studies, :proxy).to_json(:only => :name, :methods => [:co2_equiv_color, :co2_equiv, :to_param])
     
     # tree with depth 1
     #@product = Product.find_by(name: "Food")
@@ -69,7 +74,9 @@ class ProductsController < ApplicationController
     @supercategories = @product.get_super_categories
     @wiki = markdown(@product.wiki)
     
-    @products, @product_tree = @product.get_graph_nodes(@supercategories)
+    products_in_graph = [@product] + @product.subcategories.with_associations(:studies, :proxy => [:studies]) + @supercategories
+    @products = @product.get_graph_nodes(products_in_graph)
+    @product_tree = @product.get_graph_tree(@supercategories)
     
     respond_to_format
   end

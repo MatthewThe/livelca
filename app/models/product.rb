@@ -112,22 +112,49 @@ class Product
     end
   end
   
-  def get_graph_nodes(supercategories)
-    products_plus = ([self] + subcategories.with_associations(:studies, :proxy => [:studies]) + supercategories).map{|sc| {:product => sc.attributes.merge(:co2_equiv_color => sc.co2_equiv_color)}}
-    
+  def with_name
+    attributes.slice("name")
+  end
+  
+  def self.traverse_tree(root, levels=2)
+    products = [root]
+    products_current_level = [root]
+    for level in 1..levels
+        products_next_level = []
+        for product in products_current_level
+            products_next_level.concat product.subcategories
+            products.concat product.subcategories
+        end
+        products_current_level = products_next_level
+    end
+    products
+  end
+  
+  def get_graph_node_info
+    with_name.merge({:co2_equiv_color => co2_equiv_color, 
+                     :co2_equiv => co2_equiv,
+                     :to_param => to_param})
+  end
+  
+  def get_graph_tree(supercategories)
     product_tree = []
-    supercategories.each_with_index do |sc, i|
-      if i == 0
-        product_tree.push({:product => sc.attributes.merge(:subcategories => [attributes])})
-      else
-        product_tree.push({:product => sc.attributes.merge(:subcategories => [supercategories[i-1].attributes])})
+    supercategories.each_with_index do |p, i|
+      if i == 0 
+        # the direct parent of the current product
+        product_tree.push({:product => p.with_name.merge(:subcategories => [with_name])})
+      else 
+        # higher-level parents
+        product_tree.push({:product => p.with_name.merge(:subcategories => [supercategories[i-1].with_name])})
       end
     end
-    product_tree.push({:product => attributes.merge(:subcategories => subcategories.map{|p| p.attributes})})
-    
-    products_plus2 = products_plus.to_json()
-    product_tree = product_tree.to_json()
-    return products_plus2, product_tree
+    # the subcategories of the current product
+    product_tree.push({:product => with_name.merge(:subcategories => subcategories.map{|p| p.with_name})})
+    product_tree.to_json()
+  end
+  
+  def get_graph_nodes(products)
+    products_with_co2 = products.map{|p| {:product => p.get_graph_node_info} }
+    products_with_co2.to_json()
   end
   
   def self.name_from_id(product_id)
@@ -165,7 +192,8 @@ class Product
   end
   
   def self.get_product_tree
-    results = self.all.with_associations(:subcategories).to_json(:include => :subcategories)
+    #results = self.all.with_associations(:subcategories).to_json(:include => :subcategories)
+    results = ([self.find_by(name: "Food")] + self.find_by(name: "Food").subcategories.with_associations(:subcategories)).to_json(:include => :subcategories)
   end
   
   def proxy_name

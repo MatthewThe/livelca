@@ -76,7 +76,7 @@ function initSourceTable() {
 }
 
 function getNodeColor(node) {
-  return node.co2_equiv
+  return node.co2_equiv_color
 }
 
 function updateLink(link) {
@@ -108,8 +108,16 @@ function fixna(x) {
 
 function displayProductGraph(tree, products, minWidth) {
   var nodes = [], rels = [], names = [];
+  console.log(tree)
+  console.log(products)
   products.forEach(function(res, idx) {
-    var pr = {id: res.product.name, idx: idx, label: 'product', size: 10, co2_equiv: res.product.co2_equiv_color};
+    var pr = { id: res.product.name, 
+               idx: idx, 
+               label: 'product', 
+               size: 10, 
+               co2_equiv_color: res.product.co2_equiv_color,
+               co2_equiv: res.product.co2_equiv,
+               link: "/products/" + res.product.to_param };
     var target = _.findIndex(names, {id: res.product.name});
     nodes.push(pr);
     names.push({id: res.product.name});
@@ -205,32 +213,86 @@ function displayProductGraph(tree, products, minWidth) {
       .style("cursor", "move")
       .call(dragDrop)
       .on("mouseover", function(d) {
-        d3.select("#label-node-" + d.idx).attr("font-weight", "bold").style("font-size", 16);
+        highlightNodeText(d);
         $(this).attr('stroke-width', 4).attr("stroke", "rgba(50, 50, 50, 0.2)")
       })
       .on("mouseout", function(d) {
-        d3.select("#label-node-" + d.idx).attr("font-weight", "normal").style("font-size", 12);
+        unhighlightNodeText(d);
         $(this).attr('stroke-width', 0)
       });
   
   var labelNode = container.append("g").attr("class", "labelNodes")
-      .selectAll("text")
+      .selectAll("g")
       .data(label.nodes)
-      .enter().append("text")
-        .attr("id", function(d, i) { return i % 2 == 0 ? "" : "label-node-" + d.node.idx; })
+      .enter().append("g")
+      .attr("id", function(d, i) { return i % 2 == 0 ? "" : "label-node-" + d.node.idx; })
+  
+  var labelTextNode = labelNode.append("text")
+        .attr("id", function(d, i) { return i % 2 == 0 ? "" : "label-node-text-" + d.node.idx; })
         .text(function(d, i) { return i % 2 == 0 ? "" : d.node.id; })
         .style("opacity", "0.6")
         .style("font-family", "Arial")
         .style("font-size", 12)
-        //.style("pointer-events", "none") // to prevent mouseover/drag capture
         .style("cursor", "pointer")
         .on("mouseover", function(d) {
-          d3.select("#label-node-" + d.node.idx).attr("font-weight", "bold").style("font-size", 16);
+          highlightNodeText(d.node);
         })
         .on("mouseout", function(d) {
-          d3.select("#label-node-" + d.node.idx).attr("font-weight", "normal").style("font-size", 12);
+          unhighlightNodeText(d.node);
+        })
+        .on("click", function(d) {
+          window.location = d.node.link;
         });
-
+  
+  labelTextNode.append("tspan")
+          .text(function (d) { return d.node.co2_equiv + " CO2e / kg"; })
+          .attr("x", 0)
+          .attr("dx", 0)
+          .attr("dy", 15)
+          .attr("font-weight", "normal")
+          .style("font-size", 12)
+          .style("visibility", "hidden")
+  
+  function highlightNodeText(node) {
+      var label = d3.select("#label-node-text-" + node.idx)
+          .attr("font-weight", "bold")
+          .style("font-size", 16)
+          .style("fill", "#fff")
+          .style("opacity", 1.0)
+      
+      label.select("tspan")
+        .style("visibility", "visible")
+      
+      var bbox = label.node().getBBox();
+      
+      d3.select("#label-node-" + node.idx).raise();
+      
+      d3.select("#label-node-" + node.idx)
+          .append("rect")
+          .lower()
+          .attr("id", function(d, i) { return "label-node-rect-" + d.node.idx; })
+          .attr('fill', function(d) { return getNodeColor(d.node) })
+          .attr('stroke', 'white')
+          .attr("rx", 6)
+          .attr("ry", 6)
+          .attr("x", function(d, i) { if (d.x > d.node.x) { return -7; } else { return -7 - bbox.width; } })
+          .attr("y", function(d, i) { return -19.5; })
+          .style("width", function(d, i) { return bbox.width + 14; })
+          .style("height", function(d, i) { return bbox.height + 10; });
+  }
+  
+  function unhighlightNodeText(node) {
+      d3.select("#label-node-text-" + node.idx)
+          .attr("font-weight", "normal")
+          .style("font-size", 12)
+          .style("fill", "#444")
+          .select("tspan")
+            .style("visibility", "hidden");
+      
+      d3.select("#label-node-rect-" + node.idx)
+          .remove()
+  }
+  
   svg.call(
       d3.zoom()
           .scaleExtent([.1, 4])
