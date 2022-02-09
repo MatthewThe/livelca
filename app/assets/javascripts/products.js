@@ -34,7 +34,7 @@ $( document ).ready(function() {
         success: function(data) {
           d3.select('svg').select("#product_graph_loader").remove();
           
-          displayProductGraph(data.tree, data.products, $("#content").width());
+          displayProductGraph(data.tree, data.products, $("#content").width(), $("#content").width());
         }
       });
     }
@@ -64,12 +64,12 @@ function initSourceTable() {
     $('#sources_table').DataTable({
       "pageLength": 25,
       "responsive": true,
-      "stateSave": true,
-      "order": [[ 4, "desc" ]],
+      "order": [[ 5, "desc" ]],
       "columnDefs": [
         { "targets": 0, "responsivePriority" : 1 },
-        { "targets": 1, "responsivePriority" : 1 },
-        { "targets": 4, "responsivePriority" : 2 }
+        { "targets": 1, "className" : "none" }, // notes
+        { "targets": 2, "responsivePriority" : 1 },
+        { "targets": 5, "responsivePriority" : 2 }
       ]
     });
   }
@@ -106,10 +106,8 @@ function fixna(x) {
   return 0;
 }
 
-function displayProductGraph(tree, products, minWidth) {
+function displayProductGraph(tree, products, minWidth, maxWidth=1200) {
   var nodes = [], rels = [], names = [];
-  console.log(tree)
-  console.log(products)
   products.forEach(function(res, idx) {
     var pr = { id: res.product.name, 
                idx: idx, 
@@ -139,7 +137,7 @@ function displayProductGraph(tree, products, minWidth) {
   //console.log("#graph nodes: " + nodes.length);
   //console.log("#graph rels: " + rels.length);
 
-  const width = Math.max(Math.min(Math.ceil(Math.sqrt(nodes.length)) * 60, 960), minWidth);
+  const width = Math.min(Math.max(Math.ceil(Math.sqrt(nodes.length)) * 60, minWidth), maxWidth);
   const height = width;
 
   const svg = d3.select('#product_graph')

@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   
   get 'product_table' => 'products#table'
   get 'resource_table' => 'resources#table'
+  get 'resource_product_table' => 'resources#product_table'
   get 'recipe_table' => 'recipes#table'
   get 'blog_table' => 'blogs#table'
   

@@ -34,23 +34,10 @@
   <thead>
     <tr>
       <th>Product</th>
+      <th>Notes</th>
       <th>Country origin</th>
       <th>Country consumption</th>
     </tr>
   </thead>
-  
-  <tbody>
-  <% @resource.sources.with_associations(:product, :country_origin, :country_consumption).each_with_index do |source, i| %>
-    <tr>
-        <td><% if user_signed_in? && current_user.admin? %>
-            <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
-            <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
-            <% end %>
-            <%= link_to source.product_name, source.product %></td>
-        <td><%= source.country_origin_name %></td>
-        <td><%= source.country_consumption_name %></td>
-    </tr>
-  <% end %>
-  </tbody>
 </table>
 

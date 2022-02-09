@@ -191,9 +191,9 @@ class Product
       RETURN node", p1_name: name, p2_name: other_product_name)
   end
   
-  def self.get_product_tree
+  def self.get_product_tree(root)
     #results = self.all.with_associations(:subcategories).to_json(:include => :subcategories)
-    results = ([self.find_by(name: "Food")] + self.find_by(name: "Food").subcategories.with_associations(:subcategories)).to_json(:include => :subcategories)
+    results = ([self.find_by(name: root)] + self.find_by(name: root).subcategories.with_associations(:subcategories)).to_json(:include => :subcategories)
   end
   
   def proxy_name

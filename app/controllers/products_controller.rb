@@ -42,7 +42,7 @@ class ProductsController < ApplicationController
   end
   
   def graph_json
-    @product_tree = Product.get_product_tree
+    @product_tree = Product.get_product_tree("Food")
     
     root = Product.find_by(name: "Food")
     products_in_graph = Product.traverse_tree(root, 2)

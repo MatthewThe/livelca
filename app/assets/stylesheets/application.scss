@@ -137,8 +137,8 @@ table.dataTable td:last-child{
   border-radius:0 10px 10px 0;
 }
 
-table.dataTable td {
-  font-size: 13px;
+table.dataTable td, table.dataTable ul {
+  font-size: 14px;
 }
 
 table.dataTable tbody:before {

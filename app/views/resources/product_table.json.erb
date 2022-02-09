@@ -1,0 +1,12 @@
+{
+  "data": [
+<% @resource.sources.with_associations(:product, :country_origin, :country_consumption).each_with_index do |source, i| %>
+    <%= "," if i > 0 %>
+    [  "<% if user_signed_in? && current_user.admin? %> <%= (link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source)).gsub('"', '\"').html_safe %> <%= (link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' }).gsub('"', '\"').html_safe %><% end %> <%= (link_to source.product_name, source.product).gsub('"', '\"').html_safe %>",
+       "<%= source.notes.gsub(/[\r\n]+/, '<br>').gsub('"', '\"').html_safe %>",
+       "<%= source.country_origin_name %>",
+       "<%= source.country_consumption_name %>"
+    ]
+<% end %>
+  ]
+}

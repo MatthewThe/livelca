@@ -6,6 +6,6 @@ if ($("#product_graph_container").length == 0) {
   var products = <%=@products.html_safe%>;
   
   var minWidth = 240;
-  displayProductGraph(tree, products, minWidth);
+  displayProductGraph(tree, products, minWidth, $("#content").width()-6);
 }
 </script>

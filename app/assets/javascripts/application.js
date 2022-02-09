@@ -16,6 +16,7 @@
 //= require lodash
 //= require_tree .
 //= require jquery-ui/widgets/autocomplete
+//= require jquery-ui/widgets/tooltip
 //= require jquery.dataTables.min
 //= require blocks
 //= require plates

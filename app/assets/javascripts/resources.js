@@ -2,7 +2,8 @@ $( document ).ready(function() {
   "use strict";
   if ($("#resources_table_wrapper").length == 0) {
     $('#resources_table').DataTable({
-      "pageLength": 25,
+      "pageLength": 20,
+      "lengthMenu": [[10, 20, 50], [10, 20, 50]],
       "stateSave": true,
       "deferRender": true,
       "oLanguage": {
@@ -23,7 +24,23 @@ $( document ).ready(function() {
 function initSourcesTable() {
   if ($("#sources_product_table_wrapper").length == 0) {
     $('#sources_product_table').DataTable({
-      "pageLength": 25
+      "pageLength": 25,
+      "responsive": true,
+      "oLanguage": {
+         "sSearch": "Filter:"
+      },
+      "ajax": {
+        "url":'/resource_product_table.json',
+        "data": function ( d ) {
+            d.id = window.location.pathname.split("/").pop();
+        }
+      },
+      "language": {
+         "loadingRecords": "Please wait - loading products..."
+      },
+      "columnDefs": [
+        { "targets": 1, "className" : "none" }
+      ]
     });
   }
 }

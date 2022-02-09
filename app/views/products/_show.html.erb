@@ -59,6 +59,7 @@
   <thead>
     <tr>
       <th>Source</th>
+      <th>Notes</th>
       <th>CO2e</th>
       <th>Country origin</th>
       <th>Country consumption</th>
@@ -73,8 +74,9 @@
             <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), edit_source_path(source) %>
             <%= link_to image_tag("erase.png", size: "12x12", alt: "Delete"), source, method: :delete, data: { confirm: 'Are you sure?' } %>
             <% end %>
-            <%= link_to content_tag(:span, source.resource.name, title: source.notes), source.resource %>
-            </td>
+            <%= link_to source.resource.name, source.resource %>
+        </td>
+        <td><%= source.notes.gsub(/[\r\n]+/, '<br>').html_safe %></td>
         <td><div class='co2_cell' style='background-color:<%= source.co2_equiv_color %>;float:right;'><%= source.co2_equiv %></div></td>
         <td><%= source.country_origin_name %></td>
         <td><%= source.country_consumption_name %></td>
