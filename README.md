@@ -128,6 +128,12 @@ MATCH (n:Resource)-[:IS_RESOURCE]->(s:Source) WHERE n.name CONTAINS "<XXX>" SET 
 MATCH (n:Resource)-[:IS_RESOURCE]->(s:Source) WHERE n.name CONTAINS "<XXX>" DETACH DELETE s
 ```
 
+### Find orphaned products
+
+```
+MATCH (p:Product) WHERE NOT (p)-[:IS_SUBCATEGORY_OF]->(:Product) RETURN p
+```
+
 ## Setup Matomo
 
 Matomo tracks visitors in a GDPR compliant way, without the need to ask for tracking permission.

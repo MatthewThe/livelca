@@ -30,3 +30,8 @@ $(document).on('click', 'a[data-remote=true]', function(e) {
 $(window).on('popstate', function () {
   $.get(document.location.href)
 });
+
+jQuery.loadCSS = function(url) {
+    if (!$('link[href="' + url + '"]').length)
+        $('head').append('<link rel="stylesheet" type="text/css" href="' + url + '">');
+}

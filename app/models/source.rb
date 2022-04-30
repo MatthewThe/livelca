@@ -6,7 +6,7 @@ class Source
   property :ch4_emission, type: Float
   property :n2o_emission, type: Float
   property :co2_equiv, type: Float
-  property :notes, type: String
+  property :notes, type: String, default: ""
   property :weight, type: Integer
 
   has_one :out, :country_origin, type: :PRODUCED_IN, model_class: :Country
