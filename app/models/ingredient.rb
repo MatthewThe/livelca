@@ -37,9 +37,8 @@ class Ingredient
     mult = -1
     item = ""
     
-    m = /([0-9\/.\s]*)?\s*(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|kg|gr|g|dl|ml|l)?(?:[s]+\s+)?(.*)/.match(s.downcase.strip.gsub('.', ''))
+    m = /([0-9\/.\s]*)?\s*(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]+\s+)?(.*)/.match(s.downcase.strip.gsub('.', ''))
     if m and m.length >= 3
-      puts m[3]
       if m[1].length > 0
         amount = mixed_number_to_rational(m[1])
       end
@@ -79,6 +78,12 @@ class Ingredient
         mult = 0.001
       elsif /\boil\b/.match(m[3])
         mult = 0.015
+      elsif /\bbay lea(f|ves)?\b/.match(m[3])
+        mult = 0.001
+      elsif /\bcan[s]?\b/.match(m[3])
+        mult = 0.4
+      elsif /^(pinch)$/.match(m[2])
+        mult = 0.001
       end
       item = m[3]
     end
