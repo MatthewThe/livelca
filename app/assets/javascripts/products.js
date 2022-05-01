@@ -4,14 +4,14 @@ $( document ).ready(function() {
   "use strict";
   if ($("#products_table_wrapper").length == 0) {
     $('#products_table').DataTable({
-      "pageLength": 20,
-      "lengthMenu": [[10, 20, 50], [10, 20, 50]],
+      "pageLength": 10,
       "stateSave": true,
       "deferRender": true,
       "order": [[ 2, "desc" ]],
       "oLanguage": {
-         "sSearch": "Filter:"
+         "search": "Search:"
       },
+      "bLengthChange" : false,
       "ajax": {
         "url":'/product_table.json',
         "cache": true,

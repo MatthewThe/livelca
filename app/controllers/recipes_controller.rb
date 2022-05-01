@@ -7,7 +7,8 @@ class RecipesController < ApplicationController
   # GET /recipes
   # GET /recipes.json
   def index
-    new
+    @recipe = Recipe.new
+    @random_recipe = Recipe.get_random
   end
   
   def table
@@ -47,9 +48,25 @@ class RecipesController < ApplicationController
   
   # POST /recipes
   # POST /recipes.json
-  def create    
-    if recipe_ingredient_params[:ingredients_list]
-      @csv_table = parse_ingredients
+  def create
+    if recipe_params[:url]
+      uri = URI(request.protocol + request.host + ':5000/recipes/')
+      params = { :url => recipe_params[:url] }
+      uri.query = URI.encode_www_form(params)
+
+      res = Net::HTTP.get_response(uri)
+      if res.is_a?(Net::HTTPSuccess)
+        response_body = JSON.parse(res.body)
+        ingredients_list = response_body['ingredients'].join("\n")
+        @csv_table = parse_ingredients(ingredients_list)
+        @country_consumption_name = recipe_name_params[:country_consumption_name]
+        @recipe = Recipe.new({:name => response_body['title'], :servings => response_body['servings'], :instructions => "", :url => recipe_params[:url]})
+        @recipe.user = current_user
+        
+        respond_to_format
+      end
+    elsif recipe_ingredient_params[:ingredients_list]
+      @csv_table = parse_ingredients(recipe_ingredient_params[:ingredients_list])
       @country_consumption_name = recipe_name_params[:country_consumption_name]
       @recipe = Recipe.new(recipe_params)
       @recipe.user = current_user
@@ -162,12 +179,13 @@ class RecipesController < ApplicationController
       expire_page :action => [:table], :format => 'json'
     end
     
-    def parse_ingredients
+    def parse_ingredients(ingredients_list)
       ingredients_table = []
       queries = []
-      for row in recipe_ingredient_params[:ingredients_list].split("\n")
+      for row in ingredients_list.split("\n")
         weight, item = Ingredient.parse(row)
         if row.strip.length > 0
+          puts row.strip
           ingredients_table.push({ item_name: row.strip, weight: weight, country_name: "Unknown" })
           Product.add_product_query(item, queries)
         end

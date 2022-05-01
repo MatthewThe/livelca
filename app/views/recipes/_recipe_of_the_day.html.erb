@@ -1,0 +1,6 @@
+<div class="card wide">
+  <h3>Recipe of the day</h3>
+  <div class="card-title float"><strong><%= link_to @random_recipe.name, @random_recipe %></strong></div>
+  <div class="card-subtitle float"><div class="co2_cell" style='display:inline-block; margin: 0px 5px; background-color:<%= @random_recipe.co2_equiv_color %>'><%= @random_recipe.co2_equiv_per_serving %></div><strong>kg CO2e / portion</strong></div>
+  <div class="card-graph"><%= render partial: 'recipes/pie_chart', locals: { recipe: @random_recipe } %></div>
+</div>

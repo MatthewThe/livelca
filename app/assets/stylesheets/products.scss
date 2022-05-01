@@ -65,12 +65,16 @@
 }
 
 .card h3 {
-  background-color: #4CAF50;
+  background-color: #BBB;
   border-radius: 10px 10px 0px 0px;
   padding: 8px 15px;
   margin: 0px;
   color: #fff;
   font-size: 1.2em;
+}
+
+.card h3.green {
+  background-color: #4CAF50;
 }
 
 .card div.card-title {

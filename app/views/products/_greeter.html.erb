@@ -1,18 +1,8 @@
 <% content_for(:html_title) { 'Products' } %>
 
 <h1>Welcome to LiveLCA</h1>
-  
-<p>
-  LiveLCA is a platform for all people to get a view into their daily CO2 spendings. The platform provides data on food in various food groups and the database keeps growing.
-</p>
 
-<p>
-  You can use LiveLCA to calculate the CO2 emissions from recipes, settle disputes with your friends or simply as a reference work.
-</p>
-
-<p>
-  By making LiveLCA publicly available, we hope that people will be able to make more conscious choices when buying products and potentially decrease their personal emissions.
-</p>
+<%= render partial: 'recipes/form_simple' %>
 
 <div class="card wide">
   <h3>Latest blog</h3>
@@ -54,11 +44,5 @@
   <div class="card-text">Studies: <%= @random_product.study_count %><% if @random_product.proxy && @random_product.study_count == 0 %> (proxy: <%= (link_to @random_product.proxy.name, @random_product.proxy).gsub('"', '\"').html_safe %>)<% end %></div>
 </div>
 
-<div class="card wide">
-  <h3>Recipe of the day</h3>
-  <div class="card-title float"><strong><%= link_to @random_recipe.name, @random_recipe %></strong></div>
-  <div class="card-subtitle float"><div class="co2_cell" style='display:inline-block; margin: 0px 5px; background-color:<%= @random_recipe.co2_equiv_color %>'><%= @random_recipe.co2_equiv_per_serving %></div><strong>kg CO2e / portion</strong></div>
-  <div class="card-graph"><%= render partial: 'recipes/pie_chart', locals: { recipe: @random_recipe } %></div>
-  <div class="card-text"><div class="table_button"><%= link_to 'Calculate emissions for my recipe!', new_recipe_path, class: "green button" %></div></div>
-</div>
+<%= render partial: 'recipes/recipe_of_the_day' %>
 

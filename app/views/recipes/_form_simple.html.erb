@@ -1,0 +1,24 @@
+<div class="card wide">
+  <h3 class="green">Calculate CO2e emissions for my recipe</h3>
+  <div class="card-text">
+
+  <%= form_for(@recipe) do |f| %>
+  <% if @recipe.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+
+      <ul>
+      <% @recipe.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+    <%= f.text_field :url, size: "64", placeholder: 'e.g. https://www.allrecipes.com/recipe/158968/spinach-and-feta-turkey-burgers/' %>
+    <%= f.submit "Calculate!", class: "green button" %>
+    <div class="space_8"></div>
+    <strong><%= link_to "... or fill in your own ingredients", new_recipe_path, remote: controller.controller_name == "recipes" %></strong>
+  <% end %>
+  </div>
+</div>

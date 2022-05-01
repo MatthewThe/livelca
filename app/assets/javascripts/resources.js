@@ -2,13 +2,13 @@ $( document ).ready(function() {
   "use strict";
   if ($("#resources_table_wrapper").length == 0) {
     $('#resources_table').DataTable({
-      "pageLength": 20,
-      "lengthMenu": [[10, 20, 50], [10, 20, 50]],
+      "pageLength": 10,
       "stateSave": true,
       "deferRender": true,
       "oLanguage": {
-         "sSearch": "Filter:"
+         "search": "Search:"
       },
+      "bLengthChange" : false,
       "ajax": {
         "url":'/resource_table.json',
         "cache": true,

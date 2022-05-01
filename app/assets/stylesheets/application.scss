@@ -116,7 +116,7 @@ table.dataTable th:last-child{
 }
 
 table.dataTable th {
-  background-color: #27AD05;
+  background-color: #999;
   border: 0px;
   border-bottom: 1px solid #111;
   color: #fff;
@@ -369,6 +369,7 @@ input, select, textarea {
   border-radius: 5px;
   border: solid 1px #666;
   background-color: #fff;
+  max-width: 98%;
 }
 
 select {
@@ -550,6 +551,28 @@ input[type=submit] {
 
 #content .button.blue:active{
   background: #269CE9;
+}
+
+
+.profile-picture {
+    position:relative;
+    overflow:hidden;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+}
+
+.profile-picture img {
+    position:absolute;
+    height: auto;
+    width: auto;    
+    max-width:100%;
+}
+
+.centered img {
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
 }
 
 .hidden   {display:none;}

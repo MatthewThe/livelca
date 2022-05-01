@@ -23,7 +23,9 @@ class ProductsController < ApplicationController
     @latest_blog_wiki = markdown(@latest_blog.post)
     
     @random_product = Product.as('q').order("(id(q) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:proxy, :studies, :subcategories).limit(1).first
-    @random_recipe = Recipe.as('r').order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]]).limit(1).first
+    @random_recipe = Recipe.get_random
+    
+    @recipe = Recipe.new
     
     respond_to_format
   end

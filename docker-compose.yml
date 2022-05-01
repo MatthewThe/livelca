@@ -39,6 +39,12 @@ services:
     environment:
       RAILS_ENV: production
   
+  recipe-scraper:
+    image: matthewthe/recipe-scrapers-rest-api:latest
+    restart: always
+    ports:
+      - "5000:5000"
+  
   mariadb-matomo:
     image: mariadb:10.6.4
     command: --max-allowed-packet=64MB
