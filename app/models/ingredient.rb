@@ -37,55 +37,64 @@ class Ingredient
     mult = -1
     item = ""
     
-    m = /([0-9\/.\s]*)?\s*(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]+\s+)?(.*)/.match(s.downcase.strip.gsub('.', ''))
-    if m and m.length >= 3
+    # use https://regex101.com/ for testing this regex
+    m = /([0-9\/.\s]*)?\s*[(x]?([0-9\/.\s]*)?(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]+\s+)?[(]?[)]?(.*)/.match(s.downcase.strip.gsub('.', ''))
+    if m and m.length >= 4
+      puts "hello"
+      puts m[2]
       if m[1].length > 0
         amount = mixed_number_to_rational(m[1])
       end
       
+      if m[2].length > 0
+        amount *= mixed_number_to_rational(m[2])
+      end
+      
+      unit = m[3]
+      item = m[4]
       # regex cheatsheet: "^": start of line, "$": end of line, "\b": word boundary (space or new line)
-      if /^(kg|l)$/.match(m[2])
+      if /^(kg|l)$/.match(unit)
         mult = 1.0
-      elsif /^(dl)$/.match(m[2])
+      elsif /^(dl)$/.match(unit)
         mult = 0.1
-      elsif /^(gr|g|ml)$/.match(m[2])
+      elsif /^(gr|g|ml)$/.match(unit)
         mult = 0.001
-      elsif /^(tbsp|tablespoon[s]?)$/.match(m[2])
+      elsif /^(tbsp|tablespoon[s]?)$/.match(unit)
         mult = 0.015
-      elsif /^(tsp|teaspoon[s]?)$/.match(m[2])
+      elsif /^(tsp|teaspoon[s]?)$/.match(unit)
         mult = 0.005
-      elsif /^(lb|pound[s]?)$/.match(m[2])
+      elsif /^(lb|pound[s]?)$/.match(unit)
         mult = 0.450
-      elsif /^(oz|ounce[s]?)$/.match(m[2])
+      elsif /^(oz|ounce[s]?)$/.match(unit)
         mult = 0.028
-      elsif /^(cup[s]?)$/.match(m[2])
+      elsif /^(cup[s]?)$/.match(unit)
         mult = 0.2
-      elsif /^(clove[s]?)$/.match(m[2])
+      elsif /^(clove[s]?)$/.match(unit)
         mult = 0.015
-      elsif /^(slice[s]?)$/.match(m[2])
+      elsif /^(slice[s]?)$/.match(unit)
         mult = 0.012
-      elsif /^(can[s]?)$/.match(m[2])
+      elsif /^(can[s]?)$/.match(unit)
         mult = 0.4
-      elsif /\bonion[s]?\b/.match(m[3])
+      elsif /\bonion[s]?\b/.match(item)
         mult = 0.2
-      elsif /\bcarrot[s]?\b/.match(m[3])
+      elsif /\bcarrot[s]?\b/.match(item)
         mult = 0.07
-      elsif /\begg[s]?\b/.match(m[3])
+      elsif /\begg[s]?\b/.match(item)
         mult = 0.06
-      elsif /\bsalt\b/.match(m[3])
+      elsif /\bsalt\b/.match(item)
         mult = 0.001
-      elsif /\bpepper\b/.match(m[3])
+      elsif /\bpepper\b/.match(item)
         mult = 0.001
-      elsif /\boil\b/.match(m[3])
+      elsif /\boil\b/.match(item)
         mult = 0.015
-      elsif /\bbay lea(f|ves)?\b/.match(m[3])
+      elsif /\bbay lea(f|ves)?\b/.match(item)
         mult = 0.001
-      elsif /\bcan[s]?\b/.match(m[3])
+      elsif /\bcan[s]?\b/.match(item)
         mult = 0.4
-      elsif /^(pinch)$/.match(m[2])
+      elsif /^(pinch)$/.match(unit)
         mult = 0.001
       end
-      item = m[3]
+      
     end
     
     if amount == -1
