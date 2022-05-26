@@ -24,6 +24,7 @@
 - CONSTRAINT ON ( recipe:Recipe ) ASSERT recipe.uuid IS UNIQUE
 - CONSTRAINT ON ( resource:Resource ) ASSERT resource.uuid IS UNIQUE
 - CONSTRAINT ON ( source:Source ) ASSERT source.uuid IS UNIQUE
+- CONSTRAINT ON ( tag:Tag ) ASSERT tag.uuid IS UNIQUE
 - CONSTRAINT ON ( user:User ) ASSERT user.uuid IS UNIQUE
 :indexes:
 - INDEX ON :User(email)
@@ -44,3 +45,4 @@
 - '20191216215034'
 - '20191216215613'
 - '20210315203755'
+- '20220526074851'

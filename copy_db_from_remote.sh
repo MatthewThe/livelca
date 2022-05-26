@@ -1,7 +1,7 @@
 remote=hetzner
 #remote=neo4j-livelca.us-east1-b.vibrant-tree-238320
 
-rake neo4j:stop
+bundle exec rake neo4j:stop
 cd db/neo4j/development/data/databases/
 ssh ${remote} ~/livelca/pack_graph_db.sh
 scp ${remote}:~/graph_db.zip ./
@@ -10,4 +10,4 @@ sudo mv graph.db/ graph.db.bak
 sudo unzip graph_db.zip
 sudo chown matthewt:matthewt -R graph.db
 cd ../../../../../
-rake neo4j:start
+bundle exec rake neo4j:start

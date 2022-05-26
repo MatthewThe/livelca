@@ -12,6 +12,7 @@ class Recipe
   has_one :out, :user, type: :IS_OWNED, model_class: :User
   has_many :in, :ingredients, type: :IS_INGREDIENT, model_class: :Ingredient, dependent: :destroy
   has_one :out, :country_consumption, type: :CONSUMED_IN, model_class: :Country
+  has_many :out, :tags, type: :HAS_TAG, model_class: :Tag
   
   def self.from_param(param)
     param[-36...]

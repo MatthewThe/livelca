@@ -49,6 +49,7 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
+    save_relations
     if recipe_ingredient_params[:ingredients_list]
       @csv_table = parse_ingredients(recipe_ingredient_params[:ingredients_list])
       @country_consumption_name = recipe_name_params[:country_consumption_name]
@@ -133,9 +134,12 @@ class RecipesController < ApplicationController
 
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
-  def update    
+  def update
     respond_to do |format|
+      save_relations
       if @recipe.update(recipe_params)
+        p "Hello" + @recipe.tags.map{ |s| s.name }.to_s
+        p recipe_params
         expire_cache
         format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: @recipe }
@@ -166,11 +170,12 @@ class RecipesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_recipe
       @recipe = Recipe.where(id: Recipe.from_param(params[:id])).with_associations(:country_consumption, :ingredients => [:country_origin, :product => [:studies, :proxy => [:studies]]]).first
+      p "Hell2o" + @recipe.tags.map{ |s| s.name }.to_s
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def recipe_params
-      params.require(:recipe).permit(:name, :servings, :instructions, :url)
+      params.require(:recipe).permit(:name, :servings, :instructions, :url, :tags => [])
     end
     
     def recipe_name_params
@@ -187,6 +192,10 @@ class RecipesController < ApplicationController
     
     def expire_cache
       expire_page :action => [:table], :format => 'json'
+    end
+    
+    def save_relations
+      @recipe.tags = recipe_params[:tags].map{ |tag_name| Tag.find(tag_name) }
     end
     
     def parse_ingredients(ingredients_list)

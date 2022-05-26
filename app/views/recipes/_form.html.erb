@@ -24,6 +24,10 @@
     <%= f.label :country_consumption %><br>
     <%= f.text_field :country_consumption_name, :value => @country_consumption_name, id: 'country-autocomplete-consumption', :required => true %>
   </div>
+  <div class="field" style="clear:both;">
+    <%= f.label :tags %><br>
+    <%= f.select :tags, options_from_collection_for_select(Tag.order(:name), :id, :name, @recipe.tags.map{ |s| s.id }), {:include_hidden => false}, {multiple: true} %>
+  </div>
 <% end %>
   <% if action_name != "edit" %>
   <div class="field" style="clear:both;">
