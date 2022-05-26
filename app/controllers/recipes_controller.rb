@@ -49,7 +49,6 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
-    save_relations
     if recipe_ingredient_params[:ingredients_list]
       @csv_table = parse_ingredients(recipe_ingredient_params[:ingredients_list])
       @country_consumption_name = recipe_name_params[:country_consumption_name]
@@ -120,6 +119,7 @@ class RecipesController < ApplicationController
       end
       
       respond_to do |format|
+        save_relations
         if @recipe.save
           expire_cache
           format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
@@ -138,8 +138,6 @@ class RecipesController < ApplicationController
     respond_to do |format|
       save_relations
       if @recipe.update(recipe_params)
-        p "Hello" + @recipe.tags.map{ |s| s.name }.to_s
-        p recipe_params
         expire_cache
         format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: @recipe }
@@ -170,7 +168,6 @@ class RecipesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_recipe
       @recipe = Recipe.where(id: Recipe.from_param(params[:id])).with_associations(:country_consumption, :ingredients => [:country_origin, :product => [:studies, :proxy => [:studies]]]).first
-      p "Hell2o" + @recipe.tags.map{ |s| s.name }.to_s
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -195,7 +192,11 @@ class RecipesController < ApplicationController
     end
     
     def save_relations
-      @recipe.tags = recipe_params[:tags].map{ |tag_name| Tag.find(tag_name) }
+      if recipe_params[:tags]
+        @recipe.tags = recipe_params[:tags].map{ |tag_name| Tag.find(tag_name) }
+      else
+        @recipe.tags = []
+      end
     end
     
     def parse_ingredients(ingredients_list)

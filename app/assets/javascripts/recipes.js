@@ -1,6 +1,7 @@
 $( document ).ready(function() {
   "use strict";
   initIngredientsTable();
+  initChosen()
   if ($("#recipes_table_wrapper").length == 0) {
     $('#recipes_table').DataTable({
       "pageLength": 10,
@@ -25,6 +26,14 @@ $( document ).ready(function() {
     });
   }
 })
+
+function initChosen() {
+  $('.chosen-select').chosen({
+    allow_single_deselect: true,
+    no_results_text: 'No results matched',
+    width: '200px'
+  })
+}
 
 function initIngredientsTable() {
   if ($("#ingredients_table_wrapper").length == 0) {

@@ -6,7 +6,7 @@
   <% if csv_table %>
     <%= f.select :servings, options_for_select(1..10, recipe.servings.to_i), {}, :onchange=> "calculateRecipeCO2e();" %>
   <% else %>
-    <strong><%= recipe.servings %></strong>
+    <strong><%= recipe.servings.to_i %></strong>
   <% end %>
   <div id="co2_gauge" class="co2_chart">
     <div class="front"></div><div class="back"></div>

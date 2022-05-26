@@ -18,6 +18,7 @@
 //= require jquery-ui/widgets/autocomplete
 //= require jquery-ui/widgets/tooltip
 //= require jquery.dataTables.min
+//= require chosen-jquery
 //= require blocks
 //= require plates
 //= require html2pdf.bundle.min

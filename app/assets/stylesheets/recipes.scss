@@ -19,6 +19,15 @@
   display: block;
 }
 
+.tag {
+  font-size: 16px;
+  padding:5px 7px;
+  margin:0 2px;
+  color: white;
+  display: block; 
+  border-radius: 5px;
+}
+
 .instructions_pane {
   max-width: 600px;
 }

@@ -3,6 +3,15 @@
 
 <h1><%= @recipe.name %></h1>
 
+<% if @recipe.tags.any? %>
+    <div>
+        <% @recipe.tags.each do |tag| %>
+            <div class="tag" style="float:left; background-color:<%= tag.color %>"><%= tag.name %></div>
+        <% end %>
+    </div>
+    <div class="clear space_16"></div>
+<% end %>
+
 <%= form_for(@recipe) do |f| %>
 
 <div class="pie_chart">
@@ -43,7 +52,7 @@
   </div>
   <div class="field">
     <%= f.label :tags %><br>
-    <%= f.select :tags, options_from_collection_for_select(Tag.order(:name), :name, :name, @recipe.tags), {}, {multiple: true} %>
+    <%= f.select :tags, options_from_collection_for_select(Tag.order(:name), :id, :name, @recipe.tags.map{ |s| s.id }), {:include_hidden => false}, {multiple: true, class: 'chosen-select', data: {placeholder: 'Add tags'}} %>
   </div>
   <%= f.hidden_field :url, value: @recipe.url %>
   <%= f.hidden_field :instructions, value: @recipe.instructions %>
@@ -53,7 +62,7 @@
   <p>
     Country of consumption: <%= @country_consumption_name %>
   </p>
- <% end %>
+ <% end %>  
 <% end %>
  
 <div class="space_4"></div>

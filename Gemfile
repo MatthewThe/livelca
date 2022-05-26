@@ -68,3 +68,6 @@ gem 'lodash-rails'
 gem 'actionpack-page_caching'
 
 gem 'exception_handler'
+
+# better interface for multiple select
+gem 'chosen-rails'
