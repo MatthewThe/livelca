@@ -22,6 +22,8 @@
   <% if controller.action_name == "index" %>
     <%= render 'new_simple' %>
     <%= render 'recipe_of_the_day' %>
+  <% elsif controller.action_name == "create" %>
+    <%= render "show" %>
   <% else %>
     <%= render controller.action_name %>
   <% end %>

@@ -5,7 +5,7 @@ $( document ).ready(function() {
   if ($("#recipes_table_wrapper").length == 0) {
     $('#recipes_table').DataTable({
       "pageLength": 10,
-      "order": [[ 1, "desc" ]],
+      "order": [[ 0, "asc" ]],
       "stateSave": true,
       "deferRender": true,
       "oLanguage": {
