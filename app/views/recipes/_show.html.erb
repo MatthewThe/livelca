@@ -1,12 +1,17 @@
 <% content_for(:html_title) { @recipe.name } %>
 <% content_for(:meta_description) { @recipe.description } %>
 
-<h1><%= @recipe.name %></h1>
+<h1><%= @recipe.name %>
+<% if user_signed_in? && current_user.admin? && !@csv_table %>
+  <%= link_to image_tag("modify.png", size: "18x18", alt: "Edit"), edit_recipe_path(@recipe) %>
+  <%= link_to image_tag("erase.png", size: "18x18", alt: "Remove"), @recipe, method: :delete, data: { confirm: 'Are you sure?' } %>
+<% end %>
+</h1>
 
 <% if @recipe.tags.any? %>
     <div>
         <% @recipe.tags.each do |tag| %>
-            <div class="tag" style="float:left; background-color:<%= tag.color %>"><%= tag.name %></div>
+            <div class="tag float" style="background-color:<%= tag.color %>"><%=link_to tag.name, recipes_tag_path(tag), remote: true %></div>
         <% end %>
     </div>
     <div class="clear space_16"></div>
@@ -21,13 +26,6 @@
 <%= render partial: 'info_chart', locals: { recipe: @recipe, f: f, csv_table: @csv_table } %>
 
 <div class="clear"></div>
-
-<% if user_signed_in? && current_user.admin? && !@csv_table %>
-<p>
-  <%= link_to 'Edit recipe', edit_recipe_path(@recipe), class: "green button" %>
-  <%= link_to 'Delete', @recipe, method: :delete, data: { confirm: 'Are you sure?' }, class: "green button" %>
-</p>
-<% end %>
 
 <% if user_signed_in? && current_user.admin? && @csv_table %>
   <% if @recipe.errors.any? %>

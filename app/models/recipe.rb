@@ -14,16 +14,16 @@ class Recipe
   has_one :out, :country_consumption, type: :CONSUMED_IN, model_class: :Country
   has_many :out, :tags, type: :HAS_TAG, model_class: :Tag
   
+  def to_param
+    "#{self.name.downcase.parameterize[...50]}_#{self.id}"
+  end
+  
   def self.from_param(param)
     param[-36...]
   end
   
   def self.get_random
     self.as('r').order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]]).limit(1).first
-  end
-  
-  def to_param
-    "#{self.name.downcase.parameterize[...50]}_#{self.id}"
   end
   
   def description

@@ -22,10 +22,20 @@
 .tag {
   font-size: 16px;
   padding:5px 7px;
-  margin:0 2px;
+  margin-right: 4px;
+  margin-bottom: 4px;
   color: white;
   display: block; 
   border-radius: 5px;
+}
+
+#content .tag a, #content .tag a:visited {   
+  color: #fff;
+  text-decoration: none;
+}
+
+#content .tag a:hover {
+  color: #eee;
 }
 
 .instructions_pane {

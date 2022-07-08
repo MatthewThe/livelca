@@ -3,15 +3,13 @@
 
 <h1>
   <%= @product.name %>
+<% if user_signed_in? && current_user.admin? %>
+  <%= link_to image_tag("modify.png", size: "18x18", alt: "Edit"), edit_product_path(@product) %>
+  <%= link_to image_tag("merge.png", size: "18x18", alt: "Merge"), merge_product_path(@product) %>
+<% end %>
 </h1>
 
 <%= render partial: 'info_chart', locals: { product: @product } %>
-
-<% if user_signed_in? && current_user.admin? %>
-<p>
-  <%= link_to 'Edit article', edit_product_path(@product), class: "green button" %> <%= link_to 'Merge article', merge_product_path(@product), class: "green button" %>
-</p>
-<% end %>
 
 <% if @supercategories.count > 0 %>
 <p>

@@ -163,6 +163,12 @@ class RecipesController < ApplicationController
     render json: {:color => Recipe.co2_equiv_color_compute(params[:co2_equiv_kg].to_f)}
   end
   
+  def tag
+    @tag = Tag.from_param(params[:tag])
+    @recipes = @tag.recipes.where(is_public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+    respond_to_format
+  end
+  
 
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -19,13 +19,11 @@
 </div>
 
 <div id="current_recipe" class="content_pane max_width_1024">
-  <% if @recipe and @recipe.name %>
-  <%= render 'show' %>
-  <% elsif controller.action_name == "new" %>
-  <%= render 'new' %>
+  <% if controller.action_name == "index" %>
+    <%= render 'new_simple' %>
+    <%= render 'recipe_of_the_day' %>
   <% else %>
-  <%= render 'new_simple' %>
-  <%= render 'recipe_of_the_day' %>
+    <%= render controller.action_name %>
   <% end %>
 </div>
 
