@@ -1,0 +1,23 @@
+<table id="tags_table" class="dataTable no-footer max_width_1024">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Color</th>
+      <th>Category</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tags.each do |tag| %>
+      <tr>
+        <td>
+            <div class="tag float" style="background-color:<%= tag.color %>"><%= link_to tag.name, recipes_tag_path(tag) %></div>
+            <%= link_to image_tag("modify.png", size: "16x16", alt: "Edit"), edit_tag_path(tag) %>
+            <%= link_to image_tag("erase.png", size: "16x16", alt: "Remove"), tag, method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
+        <td><%= tag.color %></td>
+        <td><%= tag.category %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

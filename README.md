@@ -93,6 +93,16 @@ docker pull matthewthe/livelca
 docker-compose up -d --no-deps --build web
 ```
 
+4. If there was a change to the database (e.g. a migration after adding a new model), find the docker container id for matthewthe/livelca and run
+```
+docker exec -it <livelca_docker_container_id> /bin/bash
+$ bin/rake db:migrate RAILS_ENV=production
+```
+you might have to redeploy 
+```
+docker-compose up -d --no-deps --force-recreate --build web
+```
+
 ## Deployment instructions local
 
 ```

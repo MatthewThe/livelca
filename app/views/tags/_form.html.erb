@@ -26,7 +26,15 @@
     <%= form.text_field :category %>
   </div>
 
-  <div class="actions">
-    <%= form.submit %>
+  <div class="float actions">
+    <%= form.submit "Submit", class: "green button" %>
   </div>
+  
+  <%= link_to 'Back', tags_path, class: "green button" %>
 <% end %>
+
+<div class="space_16"></div>
+<div class="space_16"></div>
+<div class="space_16"></div>
+
+<%= render 'table' %>

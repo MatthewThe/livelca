@@ -14,10 +14,12 @@ class TagsController < ApplicationController
   # GET /tags/new
   def new
     @tag = Tag.new
+    @tags = Tag.all
   end
 
   # GET /tags/1/edit
   def edit
+    @tags = Tag.all
   end
 
   # POST /tags or /tags.json
