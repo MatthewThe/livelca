@@ -19,6 +19,7 @@
     <%= f.label :servings %><br>
     <%= f.select :servings, options_for_select(1..12, f.object.servings.to_i) %>
   </div>
+
 <% if user_signed_in? && current_user.admin? %>
   <div class="field" style="float:left; margin-left: 10px;">
     <%= f.label :country_consumption %><br>
@@ -30,7 +31,8 @@
     <%= link_to 'Create new tag', new_tag_path %>
   </div>
 <% end %>
-  <% if action_name != "edit" %>
+
+<% if action_name != "edit" %>
   <div class="field" style="clear:both;">
     <p>Paste your list of ingredients below. You can add more ingredients on the next page if you forget any here.</p>
     <%= f.label :ingredients_id, 'Ingredients' %><br>
@@ -43,7 +45,8 @@
 2 cloves garlic, crushed
 etc.' %>
   </div>
-  <% end %>
+<% end %>
+
 <% if user_signed_in? && current_user.admin? %>
   <div class="field" style="clear:both;">
     <%= f.label :url %><br>
@@ -54,11 +57,14 @@ etc.' %>
     <%= f.text_area :instructions, cols: "80", rows: "15", placeholder: 'e.g.
 Fry the onions for 10 minutes
 Add the minced meat and fry for 5 minutes
-Add the red wine and let it reduce' 
-%>
+Add the red wine and let it reduce' %>
+  </div>
+  <div class="field" style="clear:both;">
+    <%= check_box_tag :expire_cache, 'yes', true %> Expire cache
   </div>
 <% end %>
+
   <div class="actions">
     <%= f.submit "Calculate CO2e emissions", class: "green button" %>
   </div>
-<% end %>
+<% end # form_for(@recipe) %>

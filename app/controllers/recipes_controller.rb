@@ -50,38 +50,9 @@ class RecipesController < ApplicationController
   # POST /recipes.json
   def create
     if recipe_ingredient_params[:ingredients_list]
-      @csv_table = parse_ingredients(recipe_ingredient_params[:ingredients_list])
-      @country_consumption_name = recipe_name_params[:country_consumption_name]
-      @recipe = Recipe.new(recipe_params)
-      @recipe.user = current_user
-      
-      respond_to_format
+      fill_form_from_ingredients_list
     elsif recipe_params[:url] && !ingredient_params[:product_name]
-      uri = URI(request.protocol + request.host + ':5000/recipes/')
-      params = { :url => recipe_params[:url] }
-      uri.query = URI.encode_www_form(params)
-
-      res = Net::HTTP.get_response(uri)
-      if res.is_a?(Net::HTTPSuccess) 
-        response_body = JSON.parse(res.body)
-        if response_body.size > 0
-          ingredients_list = response_body['ingredients'].join("\n")
-          @csv_table = parse_ingredients(ingredients_list)
-          @country_consumption_name = "Unknown"
-          if current_user
-            @country_consumption_name = current_user.country.name
-          end
-          @recipe = Recipe.new({:name => response_body['title'], :servings => response_body['servings'], :instructions => "", :url => recipe_params[:url]})
-          @recipe.user = current_user
-          respond_to_format
-          return
-        end
-      end
-      
-      @recipe = Recipe.new
-      flash.now[:alert] = "Could not parse the ingredients from the specified URL"
-      @random_recipe = Recipe.get_random
-      respond_to_format
+      fill_form_from_url
     else
       @recipe = Recipe.new(recipe_params)
       @recipe.country_consumption = Country.find_or_create(recipe_name_params[:country_consumption_name])
@@ -121,7 +92,9 @@ class RecipesController < ApplicationController
       respond_to do |format|
         save_relations
         if @recipe.save
-          expire_cache
+          if params[:expire_cache]
+            expire_cache
+          end
           format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
           format.json { render :show, status: :created, location: @recipe }
         else
@@ -138,7 +111,9 @@ class RecipesController < ApplicationController
     respond_to do |format|
       save_relations
       if @recipe.update(recipe_params)
-        expire_cache
+        if params[:expire_cache]
+          expire_cache
+        end
         format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: @recipe }
       else
@@ -203,6 +178,44 @@ class RecipesController < ApplicationController
       else
         @recipe.tags = []
       end
+    end
+    
+    def fill_form_from_ingredients_list
+      @csv_table = parse_ingredients(recipe_ingredient_params[:ingredients_list])
+      @country_consumption_name = recipe_name_params[:country_consumption_name]
+      @recipe = Recipe.new(recipe_params)
+      @recipe.user = current_user
+      
+      respond_to_format
+    end
+    
+    def fill_form_from_url
+      uri = URI(request.protocol + request.host + ':5000/recipes/')
+      params = { :url => recipe_params[:url] }
+      uri.query = URI.encode_www_form(params)
+
+      res = Net::HTTP.get_response(uri)
+      if res.is_a?(Net::HTTPSuccess) 
+        response_body = JSON.parse(res.body)
+        if response_body.size > 0
+          ingredients_list = response_body['ingredients'].join("\n")
+          @csv_table = parse_ingredients(ingredients_list)
+          @country_consumption_name = "Unknown"
+          if current_user
+            @country_consumption_name = current_user.country.name
+          end
+          @recipe = Recipe.new({:name => response_body['title'], :servings => response_body['servings'], :instructions => "", :url => recipe_params[:url]})
+          @recipe.user = current_user
+          respond_to_format
+          return
+        end
+      end
+      
+      @recipe = Recipe.new
+      flash.now[:alert] = "Could not parse the ingredients from the specified URL"
+      @random_recipe = Recipe.get_random
+      
+      respond_to_format
     end
     
     def parse_ingredients(ingredients_list)

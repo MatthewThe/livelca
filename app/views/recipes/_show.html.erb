@@ -52,6 +52,7 @@
     <%= f.label :tags %><br>
     <%= f.select :tags, options_from_collection_for_select(Tag.order(:name), :id, :name, @recipe.tags.map{ |s| s.id }), {:include_hidden => false}, {multiple: true, class: 'chosen-select', data: {placeholder: 'Add tags'}} %>
   </div>
+  
   <%= f.hidden_field :url, value: @recipe.url %>
   <%= f.hidden_field :instructions, value: @recipe.instructions %>
 <% else %> 
@@ -112,6 +113,11 @@ initRecipe(<%=@csv_table.length%>);
 <div class="space_16"></div>
 
 <% if user_signed_in? && current_user.admin? %>
+
+<div class="field" style="clear:both;">
+  <%= check_box_tag :expire_cache, 'yes', true %> Expire cache
+</div>
+
 <div class="actions">
   <%= f.submit class: "green button" %>
 </div>
