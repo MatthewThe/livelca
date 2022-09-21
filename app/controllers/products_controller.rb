@@ -9,8 +9,14 @@ class ProductsController < ApplicationController
   def index
     if params[:search]
       @products = Product.search(params[:search])
-      if @products.count == 1
+      if @products.empty?
+        flash.now[:alert] = "Could not find a product matching \"#{params[:search]}\""
+      elsif @products.count == 1
         redirect_to @products[0]
+        return
+      elsif @products.count > 1
+        redirect_to @products[0], notice: "Found multiple matches for \"#{params[:search]}\", redirected to first hit: #{@products[0].name}"    
+        return
       end
     end
     
