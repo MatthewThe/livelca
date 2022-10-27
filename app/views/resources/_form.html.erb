@@ -20,8 +20,32 @@
     <%= f.url_field :url %>
   </div>
   <div class="field">
-    <%= f.label :default_weight %><br>
-    <%= f.number_field :default_weight, step: 1 %>
+    <%= f.label :peer_reviewed %><br>
+    <%= f.select :peer_reviewed, options_for_select(Resource.peer_revieweds.map {|key, value| [key.to_s.titleize, Resource.peer_revieweds.key(value)]}, @resource.peer_reviewed) %>
+  </div>
+  <div class="field">
+    <%= f.label :num_products %><br>
+    <%= f.select :num_products, options_for_select(Resource.num_products.map {|key, value| [key.to_s.titleize, Resource.num_products.key(value)]}, @resource.num_products) %>
+  </div>
+  <div class="field">
+    <%= f.label :meta_study %><br>
+    <%= f.select :meta_study, options_for_select(Resource.meta_studies.map {|key, value| [key.to_s.titleize, Resource.meta_studies.key(value)]}, @resource.meta_study) %>
+  </div>
+  <div class="field">
+    <%= f.label :commissioned %><br>
+    <%= f.select :commissioned, options_for_select(Resource.commissioneds.map {|key, value| [key.to_s.titleize, Resource.commissioneds.key(value)]}, @resource.commissioned) %>
+  </div>
+  <div class="field">
+    <%= f.label :year_of_study %><br>
+    <%= f.select :year_of_study, options_for_select(Resource.year_of_studies.map {|key, value| [key.to_s.titleize, Resource.year_of_studies.key(value)]}, @resource.year_of_study) %>
+  </div>
+  <div class="field">
+    <%= f.label :methodology_described %><br>
+    <%= f.select :methodology_described, options_for_select(Resource.methodology_describeds.map {|key, value| [key.to_s.titleize, Resource.methodology_describeds.key(value)]}, @resource.methodology_described) %>
+  </div>
+  <div class="field">
+    <%= f.label :source_reputation %><br>
+    <%= f.select :source_reputation, options_for_select(Resource.source_reputations.map {|key, value| [key.to_s.titleize, Resource.source_reputations.key(value)]}, @resource.source_reputation) %>
   </div>
   <div class="field">
     <%= f.label :notes %><br>

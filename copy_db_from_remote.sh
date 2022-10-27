@@ -5,6 +5,7 @@ bundle exec rake neo4j:stop
 cd db/neo4j/development/data/databases/
 ssh ${remote} ~/livelca/pack_graph_db.sh
 scp ${remote}:~/graph_db.zip ./
+cp graph_db.zip ~/Dropbox/databases/livelca/
 sudo rm -rf graph.db.bak
 sudo mv graph.db/ graph.db.bak
 sudo unzip graph_db.zip

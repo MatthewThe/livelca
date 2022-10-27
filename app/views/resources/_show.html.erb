@@ -22,6 +22,15 @@
   Default weight: <%= @resource.default_weight %>
 </p>
 
+<p>
+  Peer reviewed: <%= @resource.peer_reviewed.to_s.titleize %> <%= @resource.peer_reviewed_penalty_string %><br />
+  Number of products: <%= @resource.num_products.to_s.titleize %> <%= @resource.num_products_penalty_string %><br />
+  Meta study: <%= @resource.meta_study.to_s.titleize %> <%= @resource.meta_study_penalty_string %><br />
+  Commissioned: <%= @resource.commissioned.to_s.titleize %> <%= @resource.commissioned_penalty_string %><br />
+  Year of study: <%= @resource.year_of_study.to_s.titleize %> <%= @resource.year_of_study_penalty_string %><br />
+  Methodology described: <%= @resource.methodology_described.to_s.titleize %> <%= @resource.methodology_described_penalty_string %><br />
+  Reputation of source: <%= @resource.source_reputation.to_s.titleize %> <%= @resource.source_reputation_penalty_string %><br />
+</p>
 
 <h2>Products</h2>
 
