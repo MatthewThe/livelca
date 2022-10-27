@@ -56,12 +56,50 @@ class ResourcesController < ApplicationController
       end
     end
   end
+
+  # PATCH/PUT /resources/1
+  # PATCH/PUT /resources/1.json
+  def update
+    save_table
+    
+    respond_to do |format|
+      if @resource.update(resource_params)
+        format.html { redirect_to @resource, notice: 'Resource was successfully updated.' }
+        format.json { render :show, status: :ok, location: @resource }
+      else
+        format.html { render :edit }
+        format.json { render json: @resource.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /resources/1
+  # DELETE /resources/1.json
+  def destroy
+    @resource.destroy
+    respond_to do |format|
+      format.html { redirect_to resources_url, notice: 'Resource was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+  
+  def calculate_default_weight
+    default_weight = 10
+    
+    if @resource.peer_reviewed_no?
+      p "hello"
+      default_weight -= 2
+    end
+    
+    p "Default weight"
+    p default_weight
+  end
   
   def save_table
     if table_params[:table]
       @csv_table = upload
       
-       Neo4j::ActiveBase.current_session.transaction do |tx|
+      Neo4j::ActiveBase.current_session.transaction do |tx|
         @csv_table.each_with_index do |row, i|
           @source = Source.new
           @source.resource = @resource
@@ -105,46 +143,10 @@ class ResourcesController < ApplicationController
       queries = []
       CSV.foreach(file,{:headers=>:first_row, :col_sep => "\t"}) do |row|
         product_table.push({ product_name: row[0], co2_emission: row[1], notes: row[2], product_category: row[3], country_origin: row[4], country_consumption: row[5] })
-        #Product.add_product_query(row[0], queries)
       end
     end
     
-    #results = Product.run_products_query(queries)
-    #product_table.zip(results).each_with_index do |z, i|
-    #  row, result = z
-    #  product_name = ""
-    #  if result.count > 0
-    #    product_name = result.first['p.name']
-    #  end
-    #  product_table[i][:product_name] = product_name
-    #end
     product_table
-  end
-
-  # PATCH/PUT /resources/1
-  # PATCH/PUT /resources/1.json
-  def update
-    save_table
-    
-    respond_to do |format|
-      if @resource.update(resource_params)
-        format.html { redirect_to @resource, notice: 'Resource was successfully updated.' }
-        format.json { render :show, status: :ok, location: @resource }
-      else
-        format.html { render :edit }
-        format.json { render json: @resource.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /resources/1
-  # DELETE /resources/1.json
-  def destroy
-    @resource.destroy
-    respond_to do |format|
-      format.html { redirect_to resources_url, notice: 'Resource was successfully destroyed.' }
-      format.json { head :no_content }
-    end
   end
 
   private
@@ -155,7 +157,9 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:name, :url, :default_weight, :notes)
+      params.require(:resource).permit(:name, :url, :notes, 
+        :peer_reviewed, :num_products, :meta_study, :commissioned, 
+        :year_of_study, :methodology_described, :source_reputation)
     end
     
     def table_params
