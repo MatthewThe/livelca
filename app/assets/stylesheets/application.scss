@@ -98,6 +98,13 @@ body, p, ol, ul, td, textarea {
   font-family: 'DM Sans', sans-serif;
 }
 
+sup { 
+  vertical-align: top; 
+  position: relative;
+  left: 0.1em;
+  font-size: 0.7em;
+}
+
 table {
   border-collapse: separate; 
   border-spacing:0 5px;
