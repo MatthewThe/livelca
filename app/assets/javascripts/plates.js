@@ -26,10 +26,12 @@ function drawDailyBudgetPlates(val) {
   var vertGroups = Math.floor(numBlocks / numBlocksPerGrid);
   var vertWithinGroups = Math.floor(((numBlocks % numBlocksPerGrid) - 1) / numBlocksPerRow) + 1;
   var height = groupSpacing * vertGroups + (cellSpacing + cellSize) * (vertWithinGroups + vertGroups * (numGroupsPerGrid / numGroupsPerRow));
+  var height = Math.max(0, height);
   
   var maxBlocksPerRow = Math.min(numBlocks, numBlocksPerRow)
   var maxGroupsPerRow = Math.ceil(maxBlocksPerRow / numBlocksPerGroup)
   var trueWidth = maxBlocksPerRow * (cellSpacing + cellSize) + groupSpacing * (maxGroupsPerRow - 1)
+  var trueWidth = Math.max(0, trueWidth);
   
   var el = d3.select('.daily-budget-chart')  
   
