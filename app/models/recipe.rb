@@ -1,6 +1,6 @@
 class Recipe 
   include Neo4j::ActiveNode
-  before_save :update_instructions, :compute_co2_equiv
+  before_save :update_instructions, :set_co2_equiv
   
   property :name, type: String
   property :servings, type: Float
@@ -39,12 +39,16 @@ class Recipe
        + "Emissions per serving: " + co2_equiv_per_serving.to_s + " kg CO2e"
   end
   
+  def set_co2_equiv
+    self.co2_equiv = compute_co2_equiv
+  end
+  
   def compute_co2_equiv
     co2_sum = 0.0
     for p in ingredients
       co2_sum += p.weight * p.product.co2_equiv
     end
-    self.co2_equiv = co2_sum.round(3)
+    co2_sum.round(3)
   end
   
   def co2_equiv_per_serving
@@ -52,10 +56,11 @@ class Recipe
   end
   
   def co2_equiv_color
-    co2_equiv_color_compute(co2_equiv_per_serving)
+    self.class.co2_equiv_color_compute(co2_equiv_per_serving)
   end
   
-  def co2_equiv_color_compute(co2_equiv_per_serving)
+  # class method
+  def self.co2_equiv_color_compute(co2_equiv_per_serving)
     co2_equiv_scaled = [0, [co2_equiv_per_serving / 5, 1].min].max
     green = [0,142,9]
     yellow = [255,191,0]
