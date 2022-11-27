@@ -16,6 +16,11 @@
       </tr>
     </thead>
   </table>
+
+<% if user_signed_in? && current_user.admin? %>
+  <div class="space_16"></div>
+  <div class="table_button"><%= link_to 'Recalculate CO2e for all recipes', recipes_update_all_path, class: "green button", method: :patch, data: { confirm: 'Are you sure?' } %></div>
+<% end %>
 </div>
 
 <div id="current_recipe" class="content_pane max_width_1024">

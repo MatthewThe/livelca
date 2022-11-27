@@ -11,8 +11,9 @@ class RecipesController < ApplicationController
     @random_recipe = Recipe.get_random
   end
   
+  # GET /recipes_table
   def table
-    @recipes = Recipe.where(is_public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+    @recipes = Recipe.where(is_public: true)
     respond_to do |format|
       format.json
     end
@@ -121,6 +122,12 @@ class RecipesController < ApplicationController
         format.json { render json: @recipe.errors, status: :unprocessable_entity }
       end
     end
+  end
+  
+  # PATCH/PUT /recipes_update_all
+  def update_all
+    Recipe.find_each(&:save)
+    expire_cache
   end
 
   # DELETE /recipes/1

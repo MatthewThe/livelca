@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   get 'recipe_color_json' => 'recipes#get_color'
   
   patch 'sources' => 'sources#duplicate'
+  patch 'recipe_update_all' => 'recipes#update_all', as: :recipes_update_all
   
   get 'products/:id/merge' => 'products#merge', as: :merge_product
   get 'blogs/:id/publish' => 'blogs#publish', as: :publish_blog

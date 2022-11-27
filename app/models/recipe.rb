@@ -1,10 +1,11 @@
 class Recipe 
   include Neo4j::ActiveNode
-  before_save :update_instructions
+  before_save :update_instructions, :compute_co2_equiv
   
   property :name, type: String
   property :servings, type: Float
   property :is_public, type: Boolean, default: true
+  property :co2_equiv, type: Float, default: -1.0
   
   property :url, type: String
   property :instructions, type: String, default: ""
@@ -15,15 +16,21 @@ class Recipe
   has_many :out, :tags, type: :HAS_TAG, model_class: :Tag
   
   def to_param
-    "#{self.name.downcase.parameterize[...50]}_#{self.id}"
+    "#{name.downcase.parameterize[...50]}_#{id}"
   end
   
+  # class method
   def self.from_param(param)
     param[-36...]
   end
   
+  # class method
   def self.get_random
-    self.as('r').order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]]).limit(1).first
+    self.as('r')
+        .order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013")
+        .with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+        .limit(1)
+        .first
   end
   
   def description
@@ -32,12 +39,12 @@ class Recipe
        + "Emissions per serving: " + co2_equiv_per_serving.to_s + " kg CO2e"
   end
   
-  def co2_equiv
+  def compute_co2_equiv
     co2_sum = 0.0
     for p in ingredients
       co2_sum += p.weight * p.product.co2_equiv
     end
-    co2_sum.round(3)
+    self.co2_equiv = co2_sum.round(3)
   end
   
   def co2_equiv_per_serving
@@ -45,10 +52,10 @@ class Recipe
   end
   
   def co2_equiv_color
-    self.class.co2_equiv_color_compute(co2_equiv_per_serving)
+    co2_equiv_color_compute(co2_equiv_per_serving)
   end
   
-  def self.co2_equiv_color_compute(co2_equiv_per_serving)
+  def co2_equiv_color_compute(co2_equiv_per_serving)
     co2_equiv_scaled = [0, [co2_equiv_per_serving / 5, 1].min].max
     green = [0,142,9]
     yellow = [255,191,0]
@@ -74,7 +81,7 @@ class Recipe
   end
   
   def update_instructions
-    if self.instructions
+    if instructions
       instruction_list = []
       for row in self.instructions.split("\n")
         line = row.strip
