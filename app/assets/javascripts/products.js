@@ -137,8 +137,9 @@ function displayProductGraph(tree, products, minWidth, maxWidth=1200) {
   //console.log("#graph nodes: " + nodes.length);
   //console.log("#graph rels: " + rels.length);
 
-  const width = Math.min(Math.max(Math.ceil(Math.sqrt(nodes.length)) * 60, minWidth), maxWidth);
-  const height = width;
+  const widthEstimate = Math.ceil(Math.sqrt(nodes.length)) * 60;
+  const width = Math.min(maxWidth, Math.max(minWidth, widthEstimate));
+  const height = Math.min(width, window.innerHeight - 150); // 85 height of the header + 65 height of footer
 
   const svg = d3.select('#product_graph')
     .attr('width', width)
