@@ -9,6 +9,9 @@ class RecipesController < ApplicationController
   def index
     @recipe = Recipe.new
     @random_recipe = Recipe.get_random
+    @tags = Tag.all.sort_by(&:weight).reverse.take(8) 
+    # If all tags have a weight in the database, this is better:
+    # @tags = Tag.order(weight: :desc).take(8)
   end
   
   # GET /recipes_table

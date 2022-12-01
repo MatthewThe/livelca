@@ -10,7 +10,7 @@
 
 <% if @recipe.tags.any? %>
     <div>
-        <% @recipe.tags.each do |tag| %>
+        <% @recipe.tags.sort_by(&:weight).reverse.each do |tag| %>
             <div class="tag float" style="background-color:<%= tag.color %>"><%=link_to tag.name, recipes_tag_path(tag), remote: true %></div>
         <% end %>
     </div>
@@ -180,7 +180,7 @@ initRecipe(<%=@csv_table.length%>);
       <% if user_signed_in? && current_user.admin? %>
       <td>
         <%= link_to image_tag("modify.png", size: "12x12", alt: "Edit"), params.permit(:edit_ingredient).merge(edit_ingredient: ingredient), remote: true %>
-        <%= link_to image_tag("erase.png", size: "12x12", alt: "Remove"), ingredient, method: :delete, data: { confirm: 'Are you sure?' }, remote: true %>
+        <%= link_to image_tag("erase.png", size: "12x12", alt: "Remove"), ingredient, method: :delete, data: { confirm: 'Are you sure?' } %>
       </td>
       <% end %>
     </tr>

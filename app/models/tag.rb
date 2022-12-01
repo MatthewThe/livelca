@@ -3,6 +3,7 @@ class Tag
   property :name, type: String
   property :color, type: String
   property :category, type: String
+  property :weight, type: Float, default: -1.0
 
   has_many :in, :recipes, type: :HAS_TAG, model_class: :Recipe
   

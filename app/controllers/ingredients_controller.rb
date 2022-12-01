@@ -61,11 +61,11 @@ class IngredientsController < ApplicationController
     recipe = @ingredient.recipe
     @ingredient.destroy
     respond_to do |format|
-      if recipe
+      if recipe.save
         format.html { redirect_to recipe, notice: 'Ingredient was successfully removed.' }
         format.json { head :no_content }
       else
-        format.html { redirect_to ingredients_path, notice: 'Ingredient was successfully removed.' }
+        format.html { redirect_to recipe, notice: 'An error occured while removing the ingredient.' }
         format.json { head :no_content }
       end
     end

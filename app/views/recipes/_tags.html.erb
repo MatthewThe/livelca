@@ -1,0 +1,9 @@
+<div class="card narrow">
+  <h3>Popular recipe tags</h3>
+  <div class="card-text">
+    <% @tags.each do |tag| %>
+        <div class="tag float" style="background-color:<%= tag.color %>"><%=link_to tag.name, recipes_tag_path(tag), remote: true %></div>
+    <% end %>
+  </div>
+  <div class="clear space_8"></div>
+</div>

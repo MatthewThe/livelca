@@ -6,7 +6,7 @@ $( document ).ready(function() {
 function initTagsTable() {
   if ($("#tags_table_wrapper").length == 0) {
     $('#tags_table').DataTable({
-      "order": [[ 0, "desc" ]],
+      "order": [[ 3, "desc" ]],
       "paging": true,
       "searching": true,
       "responsive": true

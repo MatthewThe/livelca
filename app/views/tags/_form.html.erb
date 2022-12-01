@@ -25,6 +25,12 @@
     <%= form.label :category %>
     <%= form.text_field :category %>
   </div>
+  
+  <div class="field">
+    <%= form.label :weight %>
+    <%= form.number_field :weight, step: 1 %>
+  </div>
+
 
   <div class="float actions">
     <%= form.submit "Submit", class: "green button" %>

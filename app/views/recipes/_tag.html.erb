@@ -1,6 +1,6 @@
 <% content_for(:html_title) { "Recipes tagged: " + @tag.name + "" } %>
 
-<h1>Tagged: "<%= @tag.name %>"</h1>
+<h1>Recipes tagged: "<%= @tag.name %>"</h1>
 
 <table id="tagged_recipes_table">
   <thead>
@@ -18,7 +18,7 @@
           <strong><%= link_to recipe.name, recipe, remote: true %></strong>
           </div>
           <div class="card-text">
-          <% recipe.tags.each do |tag| %>
+          <% recipe.tags.sort_by(&:weight).reverse.each do |tag| %>
               <div class="tag float" style="background-color:<%= tag.color %>"><%=link_to tag.name, recipes_tag_path(tag), remote: true %></div>
           <% end %>
           </div>
