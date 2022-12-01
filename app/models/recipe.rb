@@ -8,6 +8,7 @@ class Recipe
   property :co2_equiv, type: Float, default: -1.0
   
   property :url, type: String
+  property :description, type: String, default: ""
   property :instructions, type: String, default: ""
   
   has_one :out, :user, type: :IS_OWNED, model_class: :User
@@ -32,9 +33,10 @@ class Recipe
         .first
   end
   
-  def description
-    description = "Recipe: " + name + "\n"\
-       + "You can eat " + (2.7 / co2_equiv_per_serving).round(2).to_s + " servings of " + name + " to exhaust your daily CO2e food budget" + "\n"\
+  def meta_description
+    "Recipe: " + name + ' '\
+       + description + ' '\
+       + "You can eat " + (2.7 / co2_equiv_per_serving).round(2).to_s + " servings of " + name + " to exhaust your daily CO2e food budget" + ' '\
        + "Emissions per serving: " + co2_equiv_per_serving.to_s + " kg CO2e"
   end
   

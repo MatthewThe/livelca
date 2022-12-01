@@ -45,7 +45,7 @@ class IngredientsController < ApplicationController
   def update
     respond_to do |format|
       save_relations
-      if @ingredient.update(ingredient_params)
+      if @ingredient.update(ingredient_params) and @ingredient.recipe.save
         format.html { redirect_to @ingredient.recipe, notice: 'Ingredient was successfully updated.' }
         format.json { render :show, status: :ok, location: @ingredient }
       else

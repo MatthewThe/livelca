@@ -1,5 +1,5 @@
 <% content_for(:html_title) { @recipe.name } %>
-<% content_for(:meta_description) { @recipe.description } %>
+<% content_for(:meta_description) { @recipe.meta_description } %>
 
 <h1><%= @recipe.name %>
 <% if user_signed_in? && current_user.admin? && !@csv_table %>
@@ -14,7 +14,13 @@
             <div class="tag float" style="background-color:<%= tag.color %>"><%=link_to tag.name, recipes_tag_path(tag), remote: true %></div>
         <% end %>
     </div>
-    <div class="clear space_16"></div>
+    <div class="clear"></div>
+<% end %>
+
+<% if @recipe.description %>
+    <p>
+        <%= @recipe.description %>
+    </p>
 <% end %>
 
 <%= form_for(@recipe) do |f| %>
@@ -58,9 +64,9 @@
 <% else %> 
 
  <% if @country_consumption_name %>
-  <p>
+  <!--<p>
     Country of consumption: <%= @country_consumption_name %>
-  </p>
+  </p>-->
  <% end %>  
 <% end %>
  

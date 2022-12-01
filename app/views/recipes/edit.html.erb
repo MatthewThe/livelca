@@ -1,6 +1,6 @@
 <h1>Editing Recipe</h1>
 
-<%= render 'form' %>
+<%= link_to 'Back to recipe', @recipe, class: "green button" %>
+<div class="clear space_16"></div>
 
-<%= link_to 'Show', @recipe %> |
-<%= link_to 'Back', recipes_path %>
+<%= render 'form' %>
