@@ -102,6 +102,10 @@
 }
 
 @media (max-width: 410px) {
+  .card {
+    width: calc(100% - 12px);
+  }
+  
   .card.narrow {
     width: calc(100% - 12px);
   }

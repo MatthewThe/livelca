@@ -147,7 +147,7 @@ class RecipesController < ApplicationController
   
   def tag
     @tag = Tag.from_param(params[:tag])
-    @recipes = @tag.recipes.where(is_public: true).with_associations(:ingredients => [:product => [:studies, :proxy => [:studies]]])
+    @recipes = @tag.recipes.where(is_public: true)
     respond_to_format
   end
   

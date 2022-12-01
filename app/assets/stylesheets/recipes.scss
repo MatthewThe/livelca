@@ -46,15 +46,48 @@
   margin: 15px 0px;
 }
 
+.print {
+  .pie_chart {
+    width: auto;
+  }
+}
+
+#tagged_recipes_table {
+  padding-bottom: 5px;
+  padding-top: 0px;
+}
+
+#tagged_recipes_table thead {
+  display: none;
+}
+
+#tagged_recipes_table tr {
+  display: inline;
+  background-color: inherit;
+}
+
+#tagged_recipes_table td {
+  display: inline-block;
+  vertical-align: top;
+  background-color: inherit;
+  padding: 0;
+}
+
+#tagged_recipes_table .card {
+  margin: 0;
+}
+
 @media (max-width: 410px) {
   .pie_chart {
     width: calc(100%);
     min-width: auto;
   }
-}
-
-.print {
-  .pie_chart {
-    width: auto;
+  
+  #tagged_recipes_table td {
+    width: 99%;
+  }
+  
+  #tagged_recipes_table .card {
+    width: 100%;
   }
 }

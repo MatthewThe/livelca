@@ -7,3 +7,5 @@ $("#current_recipe").html("<%= escape_javascript(render partial: 'recipes/tag' )
 
 document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'
 document.querySelector('meta[name="description"]').setAttribute("content", '<%= content_for?(:meta_description) ? j(yield(:meta_description)) : default_meta_description %>');
+
+initTaggedRecipesTable();

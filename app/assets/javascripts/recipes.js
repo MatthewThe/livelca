@@ -1,7 +1,8 @@
 $( document ).ready(function() {
   "use strict";
   initIngredientsTable();
-  initChosen()
+  initChosen();
+  initTaggedRecipesTable();
   if ($("#recipes_table_wrapper").length == 0) {
     $('#recipes_table').DataTable({
       "pageLength": 10,
@@ -48,6 +49,24 @@ function initIngredientsTable() {
         { "targets": 2, "responsivePriority" : 1 },
         { "targets": 3, "responsivePriority" : 2 }
       ]
+    });
+  }
+}
+
+function initTaggedRecipesTable() {
+  if ($("#tagged_recipes_table_wrapper").length == 0) {
+    $('#tagged_recipes_table').DataTable({
+      "pageLength": 10,
+      "order": [[ 0, "asc" ]],
+      "stateSave": true,
+      "deferRender": true,
+      "oLanguage": {
+         "search": "Search:"
+      },
+      "bLengthChange" : false,
+      "language": {
+         "loadingRecords": "Please wait - loading recipes..."
+      }
     });
   }
 }
