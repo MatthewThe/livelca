@@ -101,26 +101,39 @@ class ResourcesController < ApplicationController
       
       Neo4j::ActiveBase.current_session.transaction do |tx|
         @csv_table.each_with_index do |row, i|
-          @source = Source.new
-          @source.resource = @resource
-          @source.co2_equiv = row[:co2_emission]
-          @source.notes = row[:notes]
-          @source.weight = @resource.default_weight
-          @source.product = Product.find_or_create(row[:product_name])
-          if !row[:product_category].nil? && @source.product.category.nil?
-            @source.product.category = Product.find_or_create(row[:product_category])
-          end
-          if !row[:country_origin].nil?
-            @source.country_origin_id = Country.find_or_create(row[:country_origin])
+          if row[:co2_emission].present?
+            @source = Source.new
+            @source.resource = @resource
+            @source.co2_equiv = row[:co2_emission]
+            @source.notes = row[:notes]
+            @source.weight = @resource.default_weight
+            @source.product = Product.find_or_create(row[:product_name])
+            if row[:product_category].present? && @source.product.category.blank?
+              @source.product.category = Product.find_or_create(row[:product_category])
+            end
+            if row[:country_origin].present?
+              @source.country_origin_id = Country.find_or_create(row[:country_origin])
+            else
+              @source.country_origin_id = Country.find_or_create("Unknown")
+            end
+            if row[:country_consumption].present?
+              @source.country_consumption_id = Country.find_or_create(row[:country_consumption])
+            else
+              @source.country_consumption_id = Country.find_or_create("Unknown")
+            end
+            @source.save
           else
-            @source.country_origin_id = Country.find_or_create("Unknown")
+            # lines without co2 emissions to just insert new categories; 
+            product = Product.find_or_create(row[:product_name])
+            if row[:product_category].present? && product.category.blank?
+              product.category = Product.find_or_create(row[:product_category])
+            end
+            # misuse the notes column to specify a proxy product
+            if row[:notes].present? && product.proxy.blank?
+              product.proxy = Product.find_or_create(row[:notes])
+            end
+            product.save
           end
-          if !row[:country_consumption].nil?
-            @source.country_consumption_id = Country.find_or_create(row[:country_consumption])
-          else
-            @source.country_consumption_id = Country.find_or_create("Unknown")
-          end
-          @source.save
         end
       end
     end
