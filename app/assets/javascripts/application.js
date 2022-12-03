@@ -36,3 +36,10 @@ jQuery.loadCSS = function(url) {
     if (!$('link[href="' + url + '"]').length)
         $('head').append('<link rel="stylesheet" type="text/css" href="' + url + '">');
 }
+
+$(document).ajaxStart(function() {
+  $("#loading_animation").height($(document).height());
+  $("#loading_animation").addClass("show");
+}).ajaxStop(function() {
+  $("#loading_animation").removeClass("show");
+});

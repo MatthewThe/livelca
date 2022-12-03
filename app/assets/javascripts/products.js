@@ -168,7 +168,7 @@ function displayProductGraph(tree, products, minWidth, maxWidth=1200) {
       .force("charge", d3.forceManyBody().strength(-30))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("x", d3.forceX(width / 2).strength(0.01))
-      .force("y", d3.forceY(height / 2).strength(0.01))
+      .force("y", d3.forceY(height / 2).strength(0.01*width/height))
       .force("link", d3.forceLink(rels).distance(5).strength(0.1))
       .force('collision', d3.forceCollide().radius(20))
       .on("tick", ticked);

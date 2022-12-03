@@ -6,3 +6,8 @@ $('html,body').animate({ scrollTop: $("#current_product").offset().top }, 'slow'
 $("#current_product").html("<%= escape_javascript(render partial: 'products/greeter') %>");
 
 document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'
+document.querySelector('meta[name="description"]').setAttribute("content", '<%= content_for?(:meta_description) ? j(yield(:meta_description)) : default_meta_description %>');
+
+_paq.push(['setCustomUrl', window.location.href]);
+_paq.push(['setDocumentTitle', document.title]);
+_paq.push(['trackPageView']);
