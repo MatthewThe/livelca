@@ -1,5 +1,5 @@
 class PurchasesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, :is_admin, only: [:show, :edit, :update, :destroy]
   before_action :set_purchase, only: [:show, :edit, :update, :destroy]
 
   # GET /purchases

@@ -1,5 +1,5 @@
 class BlogsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :edit, :publish, :unpublish, :update, :destroy]
+  before_action :authenticate_user!, :is_admin, only: [:new, :edit, :publish, :unpublish, :update, :destroy]
   before_action :set_blog, only: %i[ show edit update destroy publish unpublish ]
 
   # GET /blogs or /blogs.json

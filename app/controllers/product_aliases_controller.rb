@@ -1,4 +1,5 @@
 class ProductAliasesController < ApplicationController
+  before_action :authenticate_user!, :is_admin, only: [:show, :edit, :update, :destroy]
   before_action :set_product_alias, only: [:show, :edit, :update, :destroy]
 
   # GET /product_aliases
