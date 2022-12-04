@@ -36,4 +36,12 @@ class ApplicationController < ActionController::Base
     @markdown ||= Redcarpet::Markdown.new(renderer, @options)
     @markdown.render(content).html_safe
   end
+  
+  def expire_products_table_cache
+    expire_page :controller => :products, :action => [:table, :graph_json], :format => 'json'
+  end
+  
+  def expire_recipes_table_cache
+    expire_page :controller => :recipes, :action => [:table], :format => 'json'
+  end
 end

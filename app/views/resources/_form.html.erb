@@ -52,7 +52,7 @@
     <%= f.text_area :notes, cols: "80", rows: "20" %>
   </div>
   <div class="field">
-    <%= f.label "Upload table (tab separated file: Product | CO2e | Notes | Category | Country origin | Country consumption; the last 4 columns are optional)" %><br>
+    <%= f.label "Upload table (tab separated file: Product | CO2e | Notes | Category | Country origin | Country consumption | Weight | Proxy; the last 6 columns are optional)" %><br>
     <%= f.file_field :table, :accept => '.csv,.tsv' %>
   </div>
   <div class="actions">

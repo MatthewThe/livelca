@@ -1,6 +1,7 @@
 class ProductsController < ApplicationController
   before_action :authenticate_user!, :is_admin, only: [:new, :edit, :merge, :update, :destroy]
   before_action :set_product, only: [:show, :edit, :merge, :update, :destroy]
+  after_action :expire_products_table_cache, only: [:create, :update, :update_all, :destroy]
   
   caches_page :table, :graph_json
   
@@ -37,7 +38,7 @@ class ProductsController < ApplicationController
   end
   
   def table
-    @products = Product.all.with_associations(:studies, :proxy)
+    @products = Product.all
     respond_to do |format|
      format.json
     end
@@ -110,7 +111,6 @@ class ProductsController < ApplicationController
     
     respond_to do |format|
       if @product.save
-        expire_cache
         format.html { redirect_to @product, notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
@@ -126,7 +126,6 @@ class ProductsController < ApplicationController
     if product_merge_params[:merge_product_name]
       respond_to do |format|
         if @product.merge_with(product_merge_params[:merge_product_name])
-          expire_cache
           format.html { redirect_to @product, notice: 'Product was successfully merged.' }
           format.json { render :show, status: :ok, location: @product }
         else
@@ -139,7 +138,6 @@ class ProductsController < ApplicationController
       save_relations
       respond_to do |format|
         if @product.update(product_params)
-          expire_cache
           format.html { redirect_to @product, notice: 'Product was successfully updated.' }
           format.json { render :show, status: :ok, location: @product }
         else
@@ -149,20 +147,20 @@ class ProductsController < ApplicationController
       end
     end
   end
+  
+  # PATCH/PUT /recipes_update_all
+  def update_all
+    Product.find_each(&:save)
+  end
 
   # DELETE /products/1
   # DELETE /products/1.json
   def destroy
     @product.destroy
     respond_to do |format|
-      expire_cache
       format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
       format.json { head :no_content }
     end
-  end
-  
-  def expire_cache
-    expire_page :action => [:table, :graph_json], :format => 'json'
   end
   
   private

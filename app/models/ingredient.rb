@@ -1,5 +1,8 @@
 class Ingredient 
   include Neo4j::ActiveNode
+  
+  after_save :update_recipe_co2_equiv
+  
   property :weight, type: Float
   property :description, type: String, default: ""
 
@@ -9,6 +12,10 @@ class Ingredient
   
   def product_name
     product ? product.name : ""
+  end
+  
+  def update_recipe_co2_equiv
+    recipe.save # triggers recalculation of recipe's cached co2_equiv
   end
   
   def country_origin_name

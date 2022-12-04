@@ -1,6 +1,7 @@
 class SourcesController < ApplicationController
   before_action :authenticate_user!, :is_admin, only: [:new, :edit, :update, :destroy]
   before_action :set_source, only: [:show, :edit, :update, :destroy]
+  after_action :expire_products_table_cache, :expire_recipes_table_cache, only: [:create, :update, :destroy]
 
   # GET /sources
   # GET /sources.json

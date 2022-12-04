@@ -120,10 +120,6 @@ initRecipe(<%=@csv_table.length%>);
 
 <% if user_signed_in? && current_user.admin? %>
 
-<div class="field" style="clear:both;">
-  <%= check_box_tag :expire_cache, 'yes', true %> Expire cache
-</div>
-
 <div class="actions">
   <%= f.submit class: "green button" %>
 </div>
@@ -167,7 +163,7 @@ initRecipe(<%=@csv_table.length%>);
       <td><%= i.submit (@ingredient.product ? 'Update' : 'Add'), class: "green button" %></td>
     </tr>
   <% end %>
-  <% @recipe.ingredients.each_with_index do |ingredient, i| %>
+  <% @recipe.ingredients.each do |ingredient| %>
     <% if @ingredient != ingredient %> 
     <tr>
       <td>

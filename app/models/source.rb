@@ -1,5 +1,9 @@
 class Source 
   include Neo4j::ActiveNode
+  include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  
+  after_save :update_product_co2_equiv
+  
   property :name, type: String
   property :url, type: String
   property :co2_emission, type: Float
@@ -16,6 +20,10 @@ class Source
   
   def product_name
     product ? product.name : ""
+  end
+  
+  def update_product_co2_equiv
+    product.save # triggers recalculation of product's cached co2_equiv
   end
   
   def country_origin_name

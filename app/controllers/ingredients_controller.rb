@@ -1,6 +1,7 @@
 class IngredientsController < ApplicationController
   before_action :authenticate_user!, :is_admin, except: [:json]
   before_action :set_ingredient, only: [:show, :edit, :update, :destroy]
+  after_action :expire_recipes_table_cache, only: [:create, :update, :destroy]
 
   # GET /ingredients
   # GET /ingredients.json
@@ -27,6 +28,7 @@ class IngredientsController < ApplicationController
   def create
     @ingredient = Ingredient.new(ingredient_params)
     @ingredient.recipe = Recipe.find(ingredient_params[:recipe])
+    @ingredient.recipe.ingredients << @ingredient
     save_relations
     
     respond_to do |format|
@@ -45,7 +47,7 @@ class IngredientsController < ApplicationController
   def update
     respond_to do |format|
       save_relations
-      if @ingredient.update(ingredient_params) and @ingredient.recipe.save
+      if @ingredient.update(ingredient_params)
         format.html { redirect_to @ingredient.recipe, notice: 'Ingredient was successfully updated.' }
         format.json { render :show, status: :ok, location: @ingredient }
       else

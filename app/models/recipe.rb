@@ -1,5 +1,7 @@
 class Recipe 
   include Neo4j::ActiveNode
+  include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  
   before_save :update_instructions, :set_co2_equiv
   
   property :name, type: String
@@ -88,6 +90,7 @@ class Recipe
   
   def update_instructions
     if instructions
+      # remove empty lines
       instruction_list = []
       for row in self.instructions.split("\n")
         line = row.strip

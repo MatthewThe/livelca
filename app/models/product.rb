@@ -1,15 +1,21 @@
 class Product 
   include Neo4j::ActiveNode
-  
   include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  
+  before_save :set_co2_equiv
+  after_save :update_proxies_co2_equiv, :update_recipes_co2_equiv
   
   property :name, type: String
   property :wiki, type: String, default: ""
+  property :co2_equiv, type: Float, default: -1.0
 
   has_many :in, :studies, type: :STUDY_FOR, model_class: :Source, dependent: :destroy
   has_one :out, :category, type: :IS_SUBCATEGORY_OF, model_class: :Product
   has_many :in, :subcategories, type: :IS_SUBCATEGORY_OF, model_class: :Product
   has_one :out, :proxy, type: :USE_AS_PROXY, model_class: :Product
+  
+  has_many :in, :proxy_for, type: :USE_AS_PROXY, model_class: :Product
+  has_many :in, :ingredients, type: :IS_PRODUCT, model_class: :Ingredient
   
   def self.from_param(param)
     param[-36...]
@@ -17,6 +23,22 @@ class Product
   
   def to_param
     "#{self.name.downcase.parameterize[...50]}_#{self.id}"
+  end
+  
+  def set_co2_equiv
+    self.co2_equiv = compute_co2_equiv
+  end
+  
+  def update_proxies_co2_equiv
+    proxy_for.each do |p|
+      p.save
+    end
+  end
+  
+  def update_recipes_co2_equiv
+    ingredients.each do |i|
+      i.save # this will trigger the recipe.save method
+    end
   end
   
   def description
@@ -45,7 +67,7 @@ class Product
     count
   end
   
-  def co2_equiv
+  def compute_co2_equiv
     if study_count > 0
       weightSum = 0
       weightedSum = 0.0

@@ -1,6 +1,7 @@
 class RecipesController < ApplicationController
-  before_action :authenticate_user!, only: [:edit, :merge, :update, :destroy]
+  before_action :authenticate_user!, only: [:edit, :update, :destroy]
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
+  after_action :expire_cache, only: [:update, :update_all, :destroy]
   
   caches_page :table
   
@@ -68,7 +69,7 @@ class RecipesController < ApplicationController
           weight, item_name = Ingredient.parse(ingredient["item_name"])
           if ingredient["product_name"].length > 0 and not ingredient["product_name"] == "None"
             @ingredient = Ingredient.new({:weight => ingredient["weight"]})
-            #@ingredient.recipe = @recipe
+            @ingredient.recipe = @recipe
             @ingredient.description = ingredient["item_name"]
             @ingredient.product = Product.find_or_create(ingredient["product_name"])
             @ingredient.country_origin = Country.find_or_create(ingredient["country_origin_name"])
@@ -93,18 +94,20 @@ class RecipesController < ApplicationController
         end
       end
       
-      respond_to do |format|
-        save_relations
-        if @recipe.save
-          if params[:expire_cache]
-            expire_cache
-          end
-          format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
-          format.json { render :show, status: :created, location: @recipe }
-        else
-          format.html { render :new }
-          format.json { render json: @recipe.errors, status: :unprocessable_entity }
-        end
+      save
+    end
+  end
+  
+  def save
+    respond_to do |format|
+      save_relations
+      if @recipe.save
+        expire_cache # the create action is overloaded, so only expire cache upon saving the recipe
+        format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
+        format.json { render :show, status: :created, location: @recipe }
+      else
+        format.html { render :new }
+        format.json { render json: @recipe.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -115,9 +118,6 @@ class RecipesController < ApplicationController
     respond_to do |format|
       save_relations
       if @recipe.update(recipe_params)
-        if params[:expire_cache]
-          expire_cache
-        end
         format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: @recipe }
       else
@@ -130,7 +130,6 @@ class RecipesController < ApplicationController
   # PATCH/PUT /recipes_update_all
   def update_all
     Recipe.find_each(&:save)
-    expire_cache
   end
 
   # DELETE /recipes/1
@@ -138,7 +137,6 @@ class RecipesController < ApplicationController
   def destroy
     @recipe.destroy
     respond_to do |format|
-      expire_cache
       format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
       format.json { head :no_content }
     end

@@ -26,9 +26,9 @@ Rails.application.routes.draw do
     resources :users
   end
   
-  get '/country_autocomplete' => 'countries#autocomplete'
-  get '/product_autocomplete' => 'products#autocomplete'
-  get '/product_autocomplete_name' => 'products#autocomplete_name'
+  get 'country_autocomplete' => 'countries#autocomplete'
+  get 'product_autocomplete' => 'products#autocomplete'
+  get 'product_autocomplete_name' => 'products#autocomplete_name'
   
   get 'product_table' => 'products#table'
   get 'resource_table' => 'resources#table'
@@ -43,7 +43,8 @@ Rails.application.routes.draw do
   get 'recipe_color_json' => 'recipes#get_color'
   
   patch 'sources' => 'sources#duplicate'
-  patch 'recipe_update_all' => 'recipes#update_all', as: :recipes_update_all
+  patch 'recipes_update_all' => 'recipes#update_all', as: :recipes_update_all
+  patch 'products_update_all' => 'products#update_all', as: :products_update_all
   
   get 'products/:id/merge' => 'products#merge', as: :merge_product
   get 'blogs/:id/publish' => 'blogs#publish', as: :publish_blog
@@ -51,9 +52,9 @@ Rails.application.routes.draw do
   
   get 'recipes_tag/:tag' => 'recipes#tag', as: :recipes_tag
   
-  get "/pages/:page" => "pages#show"
+  get "pages/:page" => "pages#show"
   
-  get '/sitemap' => 'sitemaps#index'
+  get 'sitemap' => 'sitemaps#index'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

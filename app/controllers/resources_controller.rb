@@ -106,7 +106,6 @@ class ResourcesController < ApplicationController
             @source.resource = @resource
             @source.co2_equiv = row[:co2_emission]
             @source.notes = row[:notes]
-            @source.weight = @resource.default_weight
             @source.product = Product.find_or_create(row[:product_name])
             if row[:product_category].present? && @source.product.category.blank?
               @source.product.category = Product.find_or_create(row[:product_category])
@@ -121,6 +120,11 @@ class ResourcesController < ApplicationController
             else
               @source.country_consumption_id = Country.find_or_create("Unknown")
             end
+            if row[:weight].present?
+              @source.weight = row[:weight]
+            else
+              @source.weight = @resource.default_weight
+            end
             @source.save
           else
             # lines without co2 emissions to just insert new categories; 
@@ -128,9 +132,8 @@ class ResourcesController < ApplicationController
             if row[:product_category].present? && product.category.blank?
               product.category = Product.find_or_create(row[:product_category])
             end
-            # misuse the notes column to specify a proxy product
-            if row[:notes].present? && product.proxy.blank?
-              product.proxy = Product.find_or_create(row[:notes])
+            if row[:proxy].present? && product.proxy.blank?
+              product.proxy = Product.find_or_create(row[:proxy])
             end
             product.save
           end
@@ -155,7 +158,14 @@ class ResourcesController < ApplicationController
       require 'csv'
       queries = []
       CSV.foreach(file,{:headers=>:first_row, :col_sep => "\t"}) do |row|
-        product_table.push({ product_name: row[0], co2_emission: row[1], notes: row[2], product_category: row[3], country_origin: row[4], country_consumption: row[5] })
+        product_table.push({ product_name: row[0], 
+                             co2_emission: row[1], 
+                             notes: row[2], 
+                             product_category: row[3], 
+                             country_origin: row[4], 
+                             country_consumption: row[5],
+                             weight: row[6],
+                             proxy: row[7] })
       end
     end
     
