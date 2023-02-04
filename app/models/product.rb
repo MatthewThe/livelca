@@ -25,6 +25,15 @@ class Product
     "#{self.name.downcase.parameterize[...50]}_#{self.id}"
   end
   
+  # class method
+  def self.get_random
+    self.as('r')
+        .order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013")
+        .with_associations(:proxy, :studies, :subcategories)
+        .limit(1)
+        .first
+  end
+  
   def set_co2_equiv
     self.co2_equiv = compute_co2_equiv
   end

@@ -1,7 +1,7 @@
 class Ingredient 
   include Neo4j::ActiveNode
   
-  after_save :update_recipe_co2_equiv
+  after_update :update_recipe_co2_equiv
   
   property :weight, type: Float
   property :description, type: String, default: ""

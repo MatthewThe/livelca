@@ -29,7 +29,7 @@ class ProductsController < ApplicationController
     @latest_blog = Blog.where_not(published_at: nil).order(:published_at).last
     @latest_blog_wiki = markdown(@latest_blog.post)
     
-    @random_product = Product.as('q').order("(id(q) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013").with_associations(:proxy, :studies, :subcategories).limit(1).first
+    @random_product = Product.get_random
     @random_recipe = Recipe.get_random
     
     @recipe = Recipe.new
@@ -57,11 +57,6 @@ class ProductsController < ApplicationController
     products_in_graph = Product.traverse_tree(root, 2)
     @products = root.get_graph_nodes(products_in_graph)
     
-    #@products = Product.all.with_associations(:studies, :proxy).to_json(:only => :name, :methods => [:co2_equiv_color, :co2_equiv, :to_param])
-    
-    # tree with depth 1
-    #@product = Product.find_by(name: "Food")
-    #@products, @product_tree = @product.get_graph_nodes([])
     respond_to do |format|
      format.json
     end
@@ -83,7 +78,7 @@ class ProductsController < ApplicationController
     @supercategories = @product.get_super_categories
     @wiki = markdown(@product.wiki)
     
-    products_in_graph = [@product] + @product.subcategories.with_associations(:studies, :proxy => [:studies]) + @supercategories
+    products_in_graph = [@product] + @product.subcategories + @supercategories
     @products = @product.get_graph_nodes(products_in_graph)
     @product_tree = @product.get_graph_tree(@supercategories)
     
@@ -166,7 +161,7 @@ class ProductsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product
-      @product = Product.all.with_associations(:proxy, :studies, :subcategories).find(Product.from_param(params[:id]))
+      @product = Product.all.with_associations(:proxy, :category, :subcategories, :studies => [:country_origin, :country_consumption, :resource]).find(Product.from_param(params[:id]))
     end
     
     def save_relations

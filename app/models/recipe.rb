@@ -31,6 +31,7 @@ class Recipe
   def self.get_random
     self.as('r')
         .order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013")
+        .with_associations(:country_consumption, :ingredients => [:country_origin, :product => [:studies, :proxy => [:studies]]])
         .limit(1)
         .first
   end
