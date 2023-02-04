@@ -69,7 +69,6 @@ class RecipesController < ApplicationController
           weight, item_name = Ingredient.parse(ingredient["item_name"])
           if ingredient["product_name"].length > 0 and not ingredient["product_name"] == "None"
             @ingredient = Ingredient.new({:weight => ingredient["weight"]})
-            @ingredient.recipe = @recipe
             @ingredient.description = ingredient["item_name"]
             @ingredient.product = Product.find_or_create(ingredient["product_name"])
             @ingredient.country_origin = Country.find_or_create(ingredient["country_origin_name"])
@@ -232,7 +231,6 @@ class RecipesController < ApplicationController
       for row in ingredients_list.split("\n")
         weight, item = Ingredient.parse(row)
         if row.strip.length > 0
-          puts row.strip
           ingredients_table.push({ item_name: row.strip, weight: weight, country_name: "Unknown" })
           Product.add_product_query(item, queries)
         end

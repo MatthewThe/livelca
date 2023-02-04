@@ -87,12 +87,8 @@ class ResourcesController < ApplicationController
     default_weight = 10
     
     if @resource.peer_reviewed_no?
-      p "hello"
       default_weight -= 2
     end
-    
-    p "Default weight"
-    p default_weight
   end
   
   def save_table

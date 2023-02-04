@@ -15,7 +15,7 @@ class Ingredient
   end
   
   def update_recipe_co2_equiv
-    recipe.save # triggers recalculation of recipe's cached co2_equiv
+    recipe.update({}) # triggers recalculation of recipe's cached co2_equiv
   end
   
   def country_origin_name
@@ -47,8 +47,6 @@ class Ingredient
     # use https://regex101.com/ for testing this regex
     m = /([0-9\/.\s]*)?\s*[(x]?([0-9\/.\s]*)?(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]+\s+)?[(]?[)]?(.*)/.match(s.downcase.strip.gsub('.', ''))
     if m and m.length >= 4
-      puts "hello"
-      puts m[2]
       if m[1].length > 0
         amount = mixed_number_to_rational(m[1])
       end
