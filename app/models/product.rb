@@ -3,7 +3,7 @@ class Product
   include Neo4j::Timestamps # will give model created_at and updated_at timestamps
   
   before_save :set_co2_equiv
-  after_save :update_proxies_co2_equiv, :update_recipes_co2_equiv
+  after_update :update_proxies_co2_equiv, :update_recipes_co2_equiv
   
   property :name, type: String
   property :wiki, type: String, default: ""
@@ -40,13 +40,13 @@ class Product
   
   def update_proxies_co2_equiv
     proxy_for.each do |p|
-      p.save
+      p.update({})
     end
   end
   
   def update_recipes_co2_equiv
     ingredients.each do |i|
-      i.save # this will trigger the recipe.save method
+      i.update({}) # this will trigger the recipe.save method
     end
   end
   

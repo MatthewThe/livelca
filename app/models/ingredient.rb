@@ -45,13 +45,18 @@ class Ingredient
     item = ""
     
     # use https://regex101.com/ for testing this regex
-    m = /([0-9\/.\s]*)?\s*[(x]?([0-9\/.\s]*)?(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]+\s+)?[(]?[)]?(.*)/.match(s.downcase.strip.gsub('.', ''))
+    # 2 teaspoons turmeric
+    # 1 large potato
+    # 2 x 400g cans of tomatoes
+    # 2x400g cans of tomatoes
+    # 400ml can reduced-fat coconut milk
+    m = /([0-9\/.\s]*)?\s*[(x]?([0-9\/.\s]*)?(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]?\b)?\s+(.*)/.match(s.downcase.strip.gsub('.', ''))
     if m and m.length >= 4
       if m[1].length > 0
         amount = mixed_number_to_rational(m[1])
       end
       
-      if m[2].length > 0
+      if m[2].length > 0 # captures multiplication amount indicated by "x", e.g. 2 x 400g can of tomatoes
         amount *= mixed_number_to_rational(m[2])
       end
       
@@ -64,21 +69,21 @@ class Ingredient
         mult = 0.1
       elsif /^(gr|g|ml)$/.match(unit)
         mult = 0.001
-      elsif /^(tbsp|tablespoon[s]?)$/.match(unit)
+      elsif /^(tbsp|tablespoon)$/.match(unit)
         mult = 0.015
-      elsif /^(tsp|teaspoon[s]?)$/.match(unit)
+      elsif /^(tsp|teaspoon)$/.match(unit)
         mult = 0.005
-      elsif /^(lb|pound[s]?)$/.match(unit)
+      elsif /^(lb|pound)$/.match(unit)
         mult = 0.450
-      elsif /^(oz|ounce[s]?)$/.match(unit)
+      elsif /^(oz|ounce)$/.match(unit)
         mult = 0.028
-      elsif /^(cup[s]?)$/.match(unit)
+      elsif /^(cup)$/.match(unit)
         mult = 0.2
-      elsif /^(clove[s]?)$/.match(unit)
-        mult = 0.015
-      elsif /^(slice[s]?)$/.match(unit)
+      elsif /^(clove)$/.match(unit)
+        mult = 0.005
+      elsif /^(slice)$/.match(unit)
         mult = 0.012
-      elsif /^(can[s]?)$/.match(unit)
+      elsif /^(can)$/.match(unit)
         mult = 0.4
       elsif /\bonion[s]?\b/.match(item)
         mult = 0.2
@@ -99,7 +104,6 @@ class Ingredient
       elsif /^(pinch)$/.match(unit)
         mult = 0.001
       end
-      
     end
     
     if amount == -1
@@ -110,7 +114,7 @@ class Ingredient
         amount = 1.0
       end
     elsif mult == -1
-      mult = 1.0
+      mult = 0.1
     end
     
     return (amount*mult).round(3), item

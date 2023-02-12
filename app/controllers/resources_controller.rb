@@ -83,14 +83,6 @@ class ResourcesController < ApplicationController
     end
   end
   
-  def calculate_default_weight
-    default_weight = 10
-    
-    if @resource.peer_reviewed_no?
-      default_weight -= 2
-    end
-  end
-  
   def save_table
     if table_params[:table]
       @csv_table = upload
