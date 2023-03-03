@@ -45,12 +45,16 @@ class Ingredient
     item = ""
     
     # use https://regex101.com/ for testing this regex
-    # 2 teaspoons turmeric
-    # 1 large potato
-    # 2 x 400g cans of tomatoes
-    # 2x400g cans of tomatoes
-    # 400ml can reduced-fat coconut milk
-    m = /([0-9\/.\s]*)?\s*[(x]?([0-9\/.\s]*)?(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]?\b)?\s+(.*)/.match(s.downcase.strip.gsub('.', ''))
+=begin
+ 2 teaspoons turmeric
+ 1 large potato
+ 0.5 carrot
+ 2 x 400g cans of tomatoes
+ 2x400g cans of tomatoes
+ 400ml can reduced-fat coconut milk
+ salt
+=end
+    m = /([0-9\/.\s]*)?\s*[(x]?([0-9\/.\s]*)?(tablespoon|tbsp|teaspoon|tsp|pound|lb|oz|ounce|cup|can|slice|clove|pinch|kg|gr|g|dl|ml|l)?(?:[s]?\b)?\b(.*)/.match(s.downcase.strip.gsub('.', ''))
     if m and m.length >= 4
       if m[1].length > 0
         amount = mixed_number_to_rational(m[1])
