@@ -41,7 +41,7 @@
   <h3>Product of the day</h3>
   <div class="card-title"><strong><%= link_to @random_product.name, @random_product, remote: true %></strong></div>
   <div class="card-graph"><%= render partial: 'info_chart', locals: { product: @random_product } %></div>
-  <div class="card-text">Studies: <%= @random_product.study_count %><% if @random_product.proxy && @random_product.study_count == 0 %> (proxy: <%= (link_to @random_product.proxy.name, @random_product.proxy).gsub('"', '\"').html_safe %>)<% end %></div>
+  <div class="card-text">Studies: <%= @random_product.study_count %><% if @random_product.proxy && @random_product.study_count == 0 %> (proxy: <%= link_to @random_product.proxy.name, @random_product.proxy %>)<% end %></div>
 </div>
 
 <%= render partial: 'recipes/recipe_of_the_day' %>
