@@ -41,6 +41,7 @@ $( document ).ready(function() {
   }
   
   initSourceTable();
+  initRecipesTable();
   
   if ($("#editor").length > 0) {
     const editor = new toastui.Editor({
@@ -71,6 +72,27 @@ function initSourceTable() {
         { "targets": 2, "responsivePriority" : 1 },
         { "targets": 5, "responsivePriority" : 2 }
       ]
+    });
+  }
+}
+
+function initRecipesTable() {
+  if ($("#product_recipes_table_wrapper").length == 0) {
+    $('#product_recipes_table').DataTable({
+      "pageLength": 10,
+      "responsive": true,
+      "oLanguage": {
+         "sSearch": "Filter:"
+      },
+      "ajax": {
+        "url":'/product_recipe_table.json',
+        "data": function ( d ) {
+            d.id = window.location.pathname.split("/").pop();
+        }
+      },
+      "language": {
+         "loadingRecords": "Please wait - loading recipes..."
+      }
     });
   }
 }

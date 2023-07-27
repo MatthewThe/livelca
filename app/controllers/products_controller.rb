@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
   before_action :authenticate_user!, :is_admin, only: [:new, :edit, :merge, :update, :destroy]
-  before_action :set_product, only: [:show, :edit, :merge, :update, :destroy]
+  before_action :set_product, only: [:show, :edit, :merge, :update, :destroy, :recipe_table]
   after_action :expire_products_table_cache, only: [:create, :update, :update_all, :destroy]
   
   caches_page :table, :graph_json
@@ -155,6 +155,12 @@ class ProductsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def recipe_table
+    respond_to do |format|
+      format.json
     end
   end
   

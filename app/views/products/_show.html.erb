@@ -51,7 +51,7 @@
 
 <% if @product.study_count > 0 %>
 
-<div class="space_16"></div>
+<div class="space_8"></div>
 
 <table id="sources_table" class="stripe">
   <thead>
@@ -89,3 +89,16 @@
 </p>
 <% end %>
 
+<h2>Recipes</h2>
+
+<span style="color: gray">*only recipes with more than 50 grams of <%= @product.name %> are shown.</span>
+
+<div class="space_16"></div>
+
+<table id="product_recipes_table">
+  <thead>
+    <tr>
+      <th>Recipes</th>
+    </tr>
+  </thead>
+</table>

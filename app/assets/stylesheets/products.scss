@@ -12,6 +12,35 @@
   border-radius: 20px;
 }
 
+#product_recipes_table {
+  padding-bottom: 5px;
+  padding-top: 0px;
+}
+
+#product_recipes_table thead {
+  display: none;
+}
+
+#product_recipes_table tr {
+  display: inline;
+  background-color: inherit;
+}
+
+#product_recipes_table tr.odd {
+  margin-right: 4px;
+}
+
+#product_recipes_table td {
+  display: inline-block;
+  vertical-align: top;
+  background-color: inherit;
+  padding: 0;
+}
+
+#product_recipes_table .card {
+  margin: 0;
+}
+
 .co2_cell {
   width:45px;
   padding:0px 4px; 
@@ -90,6 +119,7 @@
 .card div.card-text {
   margin: 15px;
   font-size: 16px;
+  line-height: 150%;
 }
 
 .card div.card-graph {
@@ -120,6 +150,14 @@
   }
   
   #info_charts_box {
+    width: 100%;
+  }
+
+  #product_recipes_table td {
+    width: 99%;
+  }
+  
+  #product_recipes_table .card {
     width: 100%;
   }
 }

@@ -16,7 +16,6 @@ class ResourcesController < ApplicationController
   end
   
   def product_table
-    @resources = Resource.all
     respond_to do |format|
       format.json
     end
