@@ -1,23 +1,23 @@
 var updateWiki;
 
-$( document ).ready(function() {
+$(document).ready(function () {
   "use strict";
   if ($("#products_table_wrapper").length == 0) {
     $('#products_table').DataTable({
       "pageLength": 10,
       "stateSave": true,
       "deferRender": true,
-      "order": [[ 2, "desc" ]],
+      "order": [[2, "desc"]],
       "oLanguage": {
-         "search": "Search:"
+        "search": "Search:"
       },
-      "bLengthChange" : false,
+      "bLengthChange": false,
       "ajax": {
-        "url":'/product_table.json',
+        "url": '/product_table.json',
         "cache": true,
       },
       "language": {
-         "loadingRecords": "Please wait - loading products..."
+        "loadingRecords": "Please wait - loading products..."
       },
       "columnDefs": [
         { "width": "200px", "targets": 0 },
@@ -31,18 +31,18 @@ $( document ).ready(function() {
       $.ajax({
         url: '/product_graph_json.json',
         type: 'GET',
-        success: function(data) {
+        success: function (data) {
           d3.select('svg').select("#product_graph_loader").remove();
-          
+
           displayProductGraph(data.tree, data.products, $("#content").width(), $("#content").width());
         }
       });
     }
   }
-  
+
   initSourceTable();
   initRecipesTable();
-  
+
   if ($("#editor").length > 0) {
     const editor = new toastui.Editor({
       el: document.querySelector('#editor'),
@@ -51,10 +51,10 @@ $( document ).ready(function() {
       previewStyle: 'vertical',
       usageStatistics: false
     });
-    
+
     $('#wiki-editor').hide();
     editor.setMarkdown($('#wiki-editor').val())
-    updateWiki = function() {
+    updateWiki = function () {
       $('#wiki-editor').val(editor.getMarkdown());
     }
   }
@@ -65,12 +65,12 @@ function initSourceTable() {
     $('#sources_table').DataTable({
       "pageLength": 25,
       "responsive": true,
-      "order": [[ 5, "desc" ]],
+      "order": [[5, "desc"]],
       "columnDefs": [
-        { "targets": 0, "responsivePriority" : 1 },
-        { "targets": 1, "className" : "none" }, // notes
-        { "targets": 2, "responsivePriority" : 1 },
-        { "targets": 5, "responsivePriority" : 2 }
+        { "targets": 0, "responsivePriority": 1 },
+        { "targets": 1, "className": "none" }, // notes
+        { "targets": 2, "responsivePriority": 1 },
+        { "targets": 5, "responsivePriority": 2 }
       ]
     });
   }
@@ -82,16 +82,16 @@ function initRecipesTable() {
       "pageLength": 10,
       "responsive": true,
       "oLanguage": {
-         "sSearch": "Filter:"
+        "sSearch": "Filter:"
       },
       "ajax": {
-        "url":'/product_recipe_table.json',
-        "data": function ( d ) {
-            d.id = window.location.pathname.split("/").pop();
+        "url": '/product_recipe_table.json',
+        "data": function (d) {
+          d.id = window.location.pathname.split("/").pop();
         }
       },
       "language": {
-         "loadingRecords": "Please wait - loading recipes..."
+        "loadingRecords": "Please wait - loading recipes..."
       }
     });
   }
@@ -102,25 +102,25 @@ function getNodeColor(node) {
 }
 
 function updateLink(link) {
-  link.attr("x1", function(d) { return fixna(d.source.x); })
-      .attr("y1", function(d) { return fixna(d.source.y); })
-      .attr("x2", function(d) { return fixna(d.target.x); })
-      .attr("y2", function(d) { return fixna(d.target.y); });
+  link.attr("x1", function (d) { return fixna(d.source.x); })
+    .attr("y1", function (d) { return fixna(d.source.y); })
+    .attr("x2", function (d) { return fixna(d.target.x); })
+    .attr("y2", function (d) { return fixna(d.target.y); });
 }
 
 function updateNode(node) {
-  node.attr("transform", function(d) {
-      return "translate(" + fixna(d.x) + "," + fixna(d.y) + ")";
+  node.attr("transform", function (d) {
+    return "translate(" + fixna(d.x) + "," + fixna(d.y) + ")";
   })
-  .attr("text-anchor", function(d) {
-    if (d.node) {
-      if (d.x > d.node.x) {
-        return "start"
-      } else {
-        return "end"
+    .attr("text-anchor", function (d) {
+      if (d.node) {
+        if (d.x > d.node.x) {
+          return "start"
+        } else {
+          return "end"
+        }
       }
-    }
-  });
+    });
 }
 
 function fixna(x) {
@@ -128,34 +128,36 @@ function fixna(x) {
   return 0;
 }
 
-function displayProductGraph(tree, products, minWidth, maxWidth=1200) {
+function displayProductGraph(tree, products, minWidth, maxWidth = 1200) {
   var nodes = [], rels = [], names = [];
-  products.forEach(function(res, idx) {
-    var pr = { id: res.product.name, 
-               idx: idx, 
-               label: 'product', 
-               size: 10, 
-               co2_equiv_color: res.product.co2_equiv_color,
-               co2_equiv: res.product.co2_equiv,
-               link: "/products/" + res.product.to_param };
-    var target = _.findIndex(names, {id: res.product.name});
+  products.forEach(function (res, idx) {
+    var pr = {
+      id: res.product.name,
+      idx: idx,
+      label: 'product',
+      size: 10,
+      co2_equiv_color: res.product.co2_equiv_color,
+      co2_equiv: res.product.co2_equiv,
+      link: "/products/" + res.product.to_param
+    };
+    var target = _.findIndex(names, { id: res.product.name });
     nodes.push(pr);
-    names.push({id: res.product.name});
+    names.push({ id: res.product.name });
   });
 
-  Array.from(tree).forEach(function(res) {
-    var target = _.findIndex(names, {id: res.product.name});
+  Array.from(tree).forEach(function (res) {
+    var target = _.findIndex(names, { id: res.product.name });
     target = nodes[target];
 
-    res.product.subcategories.forEach(function(subcategory) {
-      var source = _.findIndex(names, {id: subcategory.name});
+    res.product.subcategories.forEach(function (subcategory) {
+      var source = _.findIndex(names, { id: subcategory.name });
       source = nodes[source];
-      
+
       //console.log(source, target);
-      rels.push({source: source, target: target})
+      rels.push({ source: source, target: target })
     })
   });
-  
+
   //console.log("#graph nodes: " + nodes.length);
   //console.log("#graph rels: " + rels.length);
 
@@ -168,47 +170,35 @@ function displayProductGraph(tree, products, minWidth, maxWidth=1200) {
     .attr('height', height)
 
   var label = {
-      'nodes': [],
-      'links': []
+    'nodes': [],
+    'links': []
   };
 
-  nodes.forEach(function(d, i) {
-      label.nodes.push({node: d});
-      label.nodes.push({node: d});
-      label.links.push({
-          source: i * 2,
-          target: i * 2 + 1
-      });
-      //d.label = label.nodes.slice(-1)[0];
+  nodes.forEach(function (d, i) {
+    label.nodes.push({ node: d });
   });
 
-  var labelLayout = d3.forceSimulation(label.nodes)
-      .force("charge", d3.forceManyBody().strength(-10))
-      .force("link", d3.forceLink(label.links).distance(5).strength(2));
-
   const simulation = d3.forceSimulation(nodes)
-      .force("charge", d3.forceManyBody().strength(-30))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("x", d3.forceX(width / 2).strength(0.01))
-      .force("y", d3.forceY(height / 2).strength(0.01*width/height))
-      .force("link", d3.forceLink(rels).distance(5).strength(0.1))
-      .force('collision', d3.forceCollide().radius(20))
-      .on("tick", ticked);
+    .force("charge", d3.forceManyBody().strength(-90))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("x", d3.forceX(width / 2).strength(0.01))
+    .force("y", d3.forceY(height / 2).strength(0.01 * width / height))
+    .force("link", d3.forceLink(rels).distance(5).strength(0.1))
+    .force('collision', d3.forceCollide().radius(35))
+    .on("tick", ticked);
 
   const dragDrop = d3.drag()
-    .on('start', function(node) {
+    .on('start', function (node) {
       node.fx = node.x
       node.fy = node.y
     })
-    .on('drag', function(node) {
-      labelLayout.alphaTarget(0.7).restart()
+    .on('drag', function (node) {
       simulation.alphaTarget(0.7).restart()
       node.fx = d3.event.x
       node.fy = d3.event.y
     })
-    .on('end', function(node) {
+    .on('end', function (node) {
       if (!d3.event.active) {
-        labelLayout.alphaTarget(0)
         simulation.alphaTarget(0)
       }
       node.fx = null
@@ -222,144 +212,174 @@ function displayProductGraph(tree, products, minWidth, maxWidth=1200) {
     .selectAll("line")
     .data(rels)
     .enter().append("line")
-      .attr("stroke-width", 2)
-	    .attr("stroke", "rgba(50, 50, 50, 0.2)")
+    .attr("stroke-width", 2)
+    .attr("stroke", "rgba(50, 50, 50, 0.2)")
 
   var nodeElements = container.append('g')
     .selectAll('circle')
     .data(nodes)
-    .enter().append('circle')
-      .attr('r', 10)
-      .attr('fill', getNodeColor)
-      .style("cursor", "move")
-      .call(dragDrop)
-      .on("mouseover", function(d) {
-        highlightNodeText(d);
-        $(this).attr('stroke-width', 4).attr("stroke", "rgba(50, 50, 50, 0.2)")
-      })
-      .on("mouseout", function(d) {
-        unhighlightNodeText(d);
-        $(this).attr('stroke-width', 0)
-      });
-  
-  var labelNode = container.append("g").attr("class", "labelNodes")
-      .selectAll("g")
-      .data(label.nodes)
-      .enter().append("g")
-      .attr("id", function(d, i) { return i % 2 == 0 ? "" : "label-node-" + d.node.idx; })
-  
-  var labelTextNode = labelNode.append("text")
-        .attr("id", function(d, i) { return i % 2 == 0 ? "" : "label-node-text-" + d.node.idx; })
-        .text(function(d, i) { return i % 2 == 0 ? "" : d.node.id; })
-        .style("opacity", "0.6")
-        .style("font-family", "Arial")
-        .style("font-size", 12)
-        .style("cursor", "pointer")
-        .on("mouseover", function(d) {
-          highlightNodeText(d.node);
-        })
-        .on("mouseout", function(d) {
-          unhighlightNodeText(d.node);
-        })
-        .on("click", function(d) {
-          window.location = d.node.link;
-        });
-  
+    .enter()
+    .append('g')
+    .attr("id", function (d) { return "label-node-" + d.idx; })
+    .style("cursor", "move")
+    .call(dragDrop)
+    .on("mouseenter", function (d) {
+      highlightNodeText(d);
+    })
+    .on("mouseleave", function (d) {
+      unhighlightNodeText(d);
+    })
+
+  nodeElements.append('circle')
+    .attr('r', 30)
+    .attr('fill', getNodeColor)
+
+
+  var labelTextNode = nodeElements
+    .append("text")
+    .text(function (d) { return d.id; })
+    .attr("class", "wrapme")
+    .attr("x", 0)
+    .attr("y", 4)
+    .attr("width", 60)
+    .attr("id", function (d) { return "label-node-text-" + d.idx; })
+    .style("font-family", "Arial")
+    .style("font-size", 12)
+    .style("fill", "#fff")
+    .attr("text-anchor", "middle")
+    .style("cursor", "pointer")
+    .on("click", function (d) {
+      var url = "/products?utf8=✓&search=" + d.id;
+      window.location = url;
+    });
+
+  function wrap(text) {
+    text.each(function () {
+      var text = d3.select(this);
+      var words = text.text().split(/\s+/).reverse();
+      var lineHeight = 16;
+      var width = parseFloat(text.attr('width'));
+      var y = parseFloat(text.attr('y'));
+      var x = text.attr('x');
+      var anchor = text.attr('text-anchor');
+
+      var tspan = text.text(null)
+        .append('tspan')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('text-anchor', anchor);
+      var lineNumber = 0;
+      var lineOffset = 0;
+      var line = [];
+      var word = words.pop();
+
+      while (word) {
+        line.push(word);
+        tspan.text(line.join(' '));
+        if (tspan.node().getComputedTextLength() > width && line.length > 1) {
+          lineNumber += 1;
+          lineOffset = 1
+          line.pop();
+          tspan.text(line.join(' '));
+          line = [word];
+          tspan = text.append('tspan')
+            .attr('x', x)
+            .attr('dy', y + lineOffset * lineHeight)
+            .attr('text-anchor', anchor)
+            .text(word);
+        }
+        word = words.pop();
+      }
+      text.attr('dy', fixna(-0.5 * lineNumber * lineHeight));
+    });
+  }
+  d3.selectAll('.wrapme').call(wrap)
+
   labelTextNode.append("tspan")
-          .text(function (d) { return d.node.co2_equiv + " CO2e / kg"; })
-          .attr("x", 0)
-          .attr("dx", 0)
-          .attr("dy", 15)
-          .attr("font-weight", "normal")
-          .style("font-size", 12)
-          .style("visibility", "hidden")
-  
+    .attr("id", function (d) { return "label-node-emissions-" + d.idx; })
+    .text(function (d) { return d3.format(".1f")(d.co2_equiv) + " CO2e/kg"; })
+    .attr("x", 0)
+    .attr("dx", 0)
+    .attr("dy", function (d) { return 20 + d3.select("#label-node-" + d.idx).attr('dy'); })
+    .attr("font-weight", "normal")
+    .style("font-size", 12)
+    .style("visibility", "hidden");
+
   function highlightNodeText(node) {
-      var label = d3.select("#label-node-text-" + node.idx)
-          .attr("font-weight", "bold")
-          .style("font-size", 16)
-          .style("fill", "#fff")
-          .style("opacity", 1.0)
-      
-      label.select("tspan")
-        .style("visibility", "visible")
-      
-      var bbox = label.node().getBBox();
-      
-      d3.select("#label-node-" + node.idx).raise();
-      
-      d3.select("#label-node-" + node.idx)
-          .append("rect")
-          .lower()
-          .attr("id", function(d, i) { return "label-node-rect-" + d.node.idx; })
-          .attr('fill', function(d) { return getNodeColor(d.node) })
-          .attr('stroke', 'white')
-          .attr("rx", 6)
-          .attr("ry", 6)
-          .attr("x", function(d, i) { if (d.x > d.node.x) { return -7; } else { return -7 - bbox.width; } })
-          .attr("y", function(d, i) { return -19.5; })
-          .style("width", function(d, i) { return bbox.width + 14; })
-          .style("height", function(d, i) { return bbox.height + 10; });
+    var label = d3.select("#label-node-text-" + node.idx)
+      .selectAll("tspan")
+      .attr("font-weight", "bold")
+      .style("font-size", 16)
+      .style("opacity", 1.0);
+
+    d3.select("#label-node-emissions-" + node.idx).style("visibility", "visible");
+
+    var bbox = d3.select("#label-node-text-" + node.idx).node().getBBox();
+    d3.select("#label-node-" + node.idx)
+      .append("rect")
+      .lower()
+      .attr("id", function (d) { return "label-node-rect-" + d.idx; })
+      .attr('fill', function (d) { return getNodeColor(d) })
+      .attr('stroke', 'white')
+      .attr("rx", 6)
+      .attr("ry", 6)
+      .attr("x", -1 * bbox.width / 2 - 7)
+      .attr("y", -1 * bbox.height / 2 - 5)
+      .attr('stroke-width', 1)
+      .attr("stroke", "rgba(20, 20, 20, 0.3)")
+      .style("width", bbox.width + 14)
+      .style("height", bbox.height + 10)
+      .style("cursor", "pointer")
+      .on("click", function (d) {
+        var url = "/products?utf8=✓&search=" + d.id;
+        window.location = url;
+      });
+
+    d3.select("#label-node-text-" + node.idx).select("tspan").attr('y', -4);
+
+    d3.select("#label-node-" + node.idx).raise();
+    d3.select("#label-node-rect-" + node.idx).raise();
+    d3.select("#label-node-text-" + node.idx).raise();
+
   }
-  
+
   function unhighlightNodeText(node) {
-      d3.select("#label-node-text-" + node.idx)
-          .attr("font-weight", "normal")
-          .style("font-size", 12)
-          .style("fill", "#444")
-          .select("tspan")
-            .style("visibility", "hidden");
-      
-      d3.select("#label-node-rect-" + node.idx)
-          .remove()
+    d3.select("#label-node-text-" + node.idx)
+      .selectAll("tspan")
+      .attr("font-weight", "normal")
+      .attr('stroke-width', 0)
+      .style("font-size", 12);
+
+    d3.select("#label-node-text-" + node.idx)
+      .select("tspan")
+      .attr('y', 4)
+
+    d3.select("#label-node-emissions-" + node.idx)
+      .style("visibility", "hidden");
+
+    d3.select("#label-node-rect-" + node.idx)
+      .remove()
   }
-  
+
   svg.call(
-      d3.zoom()
-          .scaleExtent([.1, 4])
-          .on("zoom", function() { container.attr("transform", d3.event.transform); })
+    d3.zoom()
+      .scaleExtent([.1, 4])
+      .on("zoom", function () { container.attr("transform", d3.event.transform); })
   );
-      
+
   function ticked() {
     nodeElements.call(updateNode);
     linkElements.call(updateLink);
-    
-    labelNode.each(function(d, i) {
-        if (i % 2 == 0) {
-            d.x = d.node.x;
-            d.y = d.node.y;
-        } else {
-            var b = this.getBBox();
-
-            var diffX = d.x - d.node.x;
-            var diffY = d.y - d.node.y;
-
-            var dist = Math.sqrt(diffX * diffX + diffY * diffY);
-
-            var shiftX = b.width * (diffX - dist) / (dist * 2);
-            shiftX = Math.max(-b.width, Math.min(0, shiftX));
-            var shiftY = 16;
-            this.setAttribute("transform", "translate(" + shiftX + "," + shiftY + ")");
-        }
-    });
-    labelNode.call(updateNode);
   }
-  
+
   var decay = 0;
   simulation.alphaDecay(decay);
-  
   simulation.tick(400);
-  
+
   nodeElements.call(updateNode);
   linkElements.call(updateLink);
-  labelNode.each(function(d, i) {
-      d.x = d.node.x;
-      d.y = d.node.y;
-  });
-  labelNode.call(updateNode);
-  
+
   decay = 1 - Math.pow(0.001, 1 / 100);
-  
+
   simulation.alphaDecay(decay);
-  labelLayout.alphaDecay(decay);
 }
