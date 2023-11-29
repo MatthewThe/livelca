@@ -9,6 +9,7 @@ class ProductsController < ApplicationController
   # GET /products.json
   def index
     if params[:search]
+      p params[:search]
       @products = Product.search(params[:search])
       if @products.empty?
         flash.now[:alert] = "Could not find a product matching \"#{params[:search]}\""

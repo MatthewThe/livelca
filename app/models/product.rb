@@ -127,7 +127,7 @@ class Product
   end
   
   def self.search(term)
-    where(name: /#{term}.*/i)
+    where(name: /#{Regexp.escape(term)}.*/i)
   end
   
   def self.find_or_create(product_name)
