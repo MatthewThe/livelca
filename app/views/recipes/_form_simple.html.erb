@@ -13,11 +13,10 @@
       </ul>
   <% end %>
   
-    <%= f.text_field :url, size: "64", placeholder: 'e.g. https://www.allrecipes.com/recipe/256885/lentil-bolognese/' %>
+    <%= f.text_field :url, size: "64", placeholder: 'e.g. https://www.bonappetit.com/recipe/white-pesto-pasta' %>
     <%= f.submit "Calculate!", class: "green button" %>
     <div class="space_8"></div>
     <strong>Examples:</strong> 
-    <%= link_to "Lentil bolognese", '#', :onclick => "document.getElementById('recipe_url').value='https://www.allrecipes.com/recipe/256885/lentil-bolognese/';return false;", :title => "AllRecipes.com" %>,
     <%= link_to "Mushroom risotto", '#', :onclick => "document.getElementById('recipe_url').value='https://www.bbcgoodfood.com/recipes/mushroom-risotto';return false;", :title => "BBC Good Food" %>,
     <%= link_to "White pesto pasta", '#', :onclick => "document.getElementById('recipe_url').value='https://www.bonappetit.com/recipe/white-pesto-pasta';return false;", :title => "Bon Appétit" %>
     <div class="space_8"></div>
