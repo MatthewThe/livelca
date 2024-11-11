@@ -107,14 +107,14 @@ docker-compose up -d --no-deps --force-recreate --build web
 
 ```
 rake neo4j:start
-rails server
+rails server -u webrick
 ```
 
 or to make it accessible from other computers in the network
 
 ```
 rake neo4j:start
-rails server -b 0.0.0.0
+rails server -b 0.0.0.0 -u webrick
 ```
 
 then use ip addr show to find your local ip address
@@ -160,4 +160,32 @@ trusted_hosts[] = "matomo.livelca.com"
 assume_secure_protocol=1
 proxy_client_headers[] = HTTP_X_FORWARDED_FOR
 proxy_host_headers[] = HTTP_X_FORWARDED_HOST
+```
+
+
+## Upgrading ruby and rails versions
+
+Compatibility table: https://www.fastruby.io/blog/ruby/rails/versions/compatibility-table.html
+
+### Installing new rubygems after problems with SSL certificate
+
+```
+wget -P /home/matthewt/.rbenv/versions/2.7.0/lib/ruby/2.7.0/rubygems/ssl_certs/rubygems.org/ https://raw.githubusercontent.com/rubygems/rubygems/master/lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
+gem update --system
+```
+
+### Upgrading ruby version
+
+```
+git -C ~/.rbenv/plugins/ruby-build pull
+rbenv install 3.0.0
+rbenv global 3.0.0
+
+gem install rails
+rbenv rehash
+```
+
+```
+sudo apt install openjdk-8-jre-headless
+sudo update-alternatives --config java # select Java 8
 ```

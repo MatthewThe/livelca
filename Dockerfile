@@ -1,6 +1,6 @@
-# Use the Ruby 2.7.1 image from Docker Hub
+# Use the Ruby 3.0.0 image from Docker Hub
 # as the base image (https://hub.docker.com/_/ruby)
-FROM ruby:2.7.1
+FROM ruby:3.0.0
 
 # Use a directory called /code in which to store
 # this application's files. (The directory name

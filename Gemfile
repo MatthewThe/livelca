@@ -27,6 +27,9 @@ gem 'sdoc', '~> 2.0.4', group: :doc
 # Use Unicorn as the app server
 # gem 'unicorn'
 
+# Use Webrick as the app server
+gem 'webrick', '~> 1.7'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -71,3 +74,6 @@ gem 'exception_handler'
 
 # better interface for multiple select
 gem 'chosen-rails'
+
+gem 'sorted_set'
+gem 'set', '1.0.1'
