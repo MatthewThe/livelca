@@ -1,6 +1,6 @@
 class Source 
-  include Neo4j::ActiveNode
-  include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  include ActiveGraph::Node
+  include ActiveGraph::Timestamps # will give model created_at and updated_at timestamps
   
   after_save :update_product_co2_equiv
   

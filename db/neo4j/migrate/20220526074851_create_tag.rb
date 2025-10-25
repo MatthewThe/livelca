@@ -1,4 +1,4 @@
-class CreateTag < Neo4j::Migrations::Base
+class CreateTag < ActiveGraph::Migrations::Base
   def up
     add_constraint :Tag, :uuid
   end

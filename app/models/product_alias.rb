@@ -1,5 +1,5 @@
 class ProductAlias 
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :name, type: String
 
   has_one :out, :country, type: :PURCHASED_IN, model_class: :Country

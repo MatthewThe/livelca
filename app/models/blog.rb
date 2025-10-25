@@ -1,6 +1,6 @@
 class Blog 
-  include Neo4j::ActiveNode
-  include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  include ActiveGraph::Node
+  include ActiveGraph::Timestamps # will give model created_at and updated_at timestamps
   
   property :title, type: String
   property :state, type: String, default: "draft"

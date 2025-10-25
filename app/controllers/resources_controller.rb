@@ -86,7 +86,7 @@ class ResourcesController < ApplicationController
     if table_params[:table]
       @csv_table = upload
       
-      Neo4j::ActiveBase.current_session.transaction do |tx|
+      ActiveGraph::Base.current_session.transaction do |tx|
         @csv_table.each_with_index do |row, i|
           if row[:co2_emission].present?
             @source = Source.new

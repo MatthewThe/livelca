@@ -1,6 +1,6 @@
 class Product 
-  include Neo4j::ActiveNode
-  include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  include ActiveGraph::Node
+  include ActiveGraph::Timestamps # will give model created_at and updated_at timestamps
   
   before_save :set_co2_equiv
   after_update :update_proxies_co2_equiv, :update_recipes_co2_equiv
@@ -203,7 +203,7 @@ class Product
   end
   
   def self.run_products_query(queries)
-    results = Neo4j::ActiveBase.current_session.queries do
+    results = ActiveGraph::Base.current_session.queries do
       queries.each do |query|
         append "CALL db.index.fulltext.queryNodes('productNames', {item})
           YIELD node AS productAlias
@@ -216,7 +216,7 @@ class Product
   end
   
   def merge_with(other_product_name)
-    Neo4j::ActiveBase.current_session.query("MATCH (p1:Product), (p2:Product)
+    ActiveGraph::Base.current_session.query("MATCH (p1:Product), (p2:Product)
       WHERE p1.name = {p1_name} AND p2.name = {p2_name}
       call apoc.refactor.mergeNodes([p2,p1]) YIELD node
       RETURN node", p1_name: name, p2_name: other_product_name)

@@ -1,4 +1,4 @@
-class CreateSource < Neo4j::Migrations::Base
+class CreateSource < ActiveGraph::Migrations::Base
   def up
     add_constraint :Source, :uuid
   end

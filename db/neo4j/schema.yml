@@ -12,8 +12,8 @@
 
 ---
 :constraints:
-- CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
-  ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
+- CONSTRAINT ON ( `ActiveGraph::migrations::schemamigration`:`ActiveGraph::Migrations::SchemaMigration`
+  ) ASSERT `ActiveGraph::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( blog:Blog ) ASSERT blog.uuid IS UNIQUE
 - CONSTRAINT ON ( country:Country ) ASSERT country.uuid IS UNIQUE
 - CONSTRAINT ON ( ingredient:Ingredient ) ASSERT ingredient.uuid IS UNIQUE

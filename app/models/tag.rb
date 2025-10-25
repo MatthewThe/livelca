@@ -1,5 +1,5 @@
 class Tag 
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :name, type: String
   property :color, type: String
   property :category, type: String

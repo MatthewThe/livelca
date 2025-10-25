@@ -1,4 +1,4 @@
-class CreateResource < Neo4j::Migrations::Base
+class CreateResource < ActiveGraph::Migrations::Base
   def up
     add_constraint :Resource, :uuid
   end

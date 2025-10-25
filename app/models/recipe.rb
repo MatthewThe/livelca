@@ -1,6 +1,6 @@
 class Recipe 
-  include Neo4j::ActiveNode
-  include Neo4j::Timestamps # will give model created_at and updated_at timestamps
+  include ActiveGraph::Node
+  include ActiveGraph::Timestamps # will give model created_at and updated_at timestamps
   
   before_save :update_instructions, :set_co2_equiv
   

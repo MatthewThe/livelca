@@ -1,4 +1,4 @@
-class CreateRecipe < Neo4j::Migrations::Base
+class CreateRecipe < ActiveGraph::Migrations::Base
   def up
     add_constraint :Recipe, :uuid
   end

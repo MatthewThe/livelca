@@ -1,4 +1,4 @@
-class CreatePurchase < Neo4j::Migrations::Base
+class CreatePurchase < ActiveGraph::Migrations::Base
   def up
     add_constraint :Purchase, :uuid
   end

@@ -1,5 +1,5 @@
 class Ingredient 
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   
   after_update :update_recipe_co2_equiv
   

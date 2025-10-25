@@ -1,4 +1,4 @@
-class CreateProduct < Neo4j::Migrations::Base
+class CreateProduct < ActiveGraph::Migrations::Base
   def up
     add_constraint :Product, :uuid
   end

@@ -1,4 +1,4 @@
-class CreateCountry < Neo4j::Migrations::Base
+class CreateCountry < ActiveGraph::Migrations::Base
   def up
     add_constraint :Country, :uuid
   end

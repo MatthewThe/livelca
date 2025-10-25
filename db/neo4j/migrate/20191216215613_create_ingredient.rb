@@ -1,4 +1,4 @@
-class CreateIngredient < Neo4j::Migrations::Base
+class CreateIngredient < ActiveGraph::Migrations::Base
   def up
     add_constraint :Ingredient, :uuid
   end

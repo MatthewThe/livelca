@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.0.3.5'
+gem 'rails', '~> 7.2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -49,9 +49,12 @@ group :development do
 end
 
 
-gem 'neo4j', '~> 9.6.0'
-gem "devise-neo4j"
+# gem 'neo4j', '~> 9.6.0'
+# gem "devise-neo4j"
 
+gem 'activegraph', '11.5.0.beta.2'
+gem 'neo4j-ruby-driver', '~> 4.4.5'
+gem "devise-activegraph"
 
 gem 'jquery-ui-rails'
 
@@ -76,4 +79,3 @@ gem 'exception_handler'
 gem 'chosen-rails'
 
 gem 'sorted_set'
-gem 'set', '1.0.1'

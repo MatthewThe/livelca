@@ -8,7 +8,7 @@
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
   <link rel="icon" href="https://livelca.com/favicon.ico">
-  <link rel="canonical" href="<%=url_for(:only_path => false, :protocol => 'https', :host => 'livelca.com')%>" />
+  <link rel="canonical" href="<%= request.original_url.sub(request.host, 'livelca.com') %>" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Montserrat&display=swap" rel="stylesheet">

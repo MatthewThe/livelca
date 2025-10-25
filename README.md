@@ -6,7 +6,7 @@ This README documents the necessary steps to get the application up and running.
 
 ## Ruby version
 
-ruby 2.7.0
+ruby 3.1.7
 
 ## System dependencies
 
@@ -124,6 +124,29 @@ Setting up a neo4j server in the Google Cloud Platform:
 gcloud compute instances create neo4j-livelca --image neo4j-community-1-3-5-1-apoc --tags neo4j --image-project launcher-public --machine-type f1-micro
 ```
 
+
+## Debugging
+
+Check if connection to Neo4j is working:
+
+```
+rails console
+
+driver = ActiveGraph::Base.driver
+
+# open a session
+session = driver.session
+
+# run a simple query
+result = session.run("RETURN 1 AS number")
+
+# check output
+result.each { |record| puts record["number"] }
+
+# close the session
+session.close
+```
+
 ## Useful Cypher queries
 
 ### Updating study weights for a resource
@@ -178,11 +201,12 @@ gem update --system
 
 ```
 git -C ~/.rbenv/plugins/ruby-build pull
-rbenv install 3.0.0
-rbenv global 3.0.0
+rbenv install 3.1.7
+rbenv global 3.1.7
 
 gem install rails
 rbenv rehash
+bundle install
 ```
 
 ```

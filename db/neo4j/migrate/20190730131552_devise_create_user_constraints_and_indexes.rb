@@ -1,4 +1,4 @@
-class DeviseCreateUserConstraintsAndIndexes < Neo4j::Migrations::Base
+class DeviseCreateUserConstraintsAndIndexes < ActiveGraph::Migrations::Base
   def up
     add_index :User, :email, force: true
     add_index :User, :remember_token, force: true

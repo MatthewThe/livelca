@@ -5,7 +5,7 @@ require "rails"
 require "active_model/railtie"
 require "active_job/railtie"
 # require "active_record/railtie"
-require 'neo4j/railtie'
+require 'active_graph/railtie'
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
@@ -20,7 +20,7 @@ module Livelca
   class Application < Rails::Application
     
     config.generators do |g|
-      g.orm             :neo4j
+      g.orm             :active_graph
     end
     
     config.exception_handler = { dev: true,

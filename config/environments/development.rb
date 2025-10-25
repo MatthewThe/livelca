@@ -42,8 +42,4 @@ Rails.application.configure do
   #config.public_file_server.headers = {
   #  'Cache-Control' => "must-revalidate, private, max-age=#{2.days.seconds.to_i}",
   #}
-  
-  config.neo4j.session.type = :http
-  #config.neo4j.session.url = 'http://' + Rails.application.credentials.neo4j[:user] + ':' + Rails.application.credentials.neo4j[:pass] + '@78.47.169.186:7474'
-  config.neo4j.session.url = 'http://localhost:7474'
 end

@@ -79,6 +79,8 @@ Rails.application.configure do
   
   config.require_master_key = true
   
-  config.neo4j.session.type = :http
-  config.neo4j.session.url = 'http://' + Rails.application.credentials.neo4j[:user] + ':' + Rails.application.credentials.neo4j[:pass] + '@database:7474'
+  # config.neo4j.session.type = :http
+  # config.neo4j.session.url = 'http://' + Rails.application.credentials.neo4j[:user] + ':' + Rails.application.credentials.neo4j[:pass] + '@database:7474'
+  config.neo4j.driver.username = Rails.application.credentials.neo4j[:user]
+  config.neo4j.driver.password = Rails.application.credentials.neo4j[:pass]
 end

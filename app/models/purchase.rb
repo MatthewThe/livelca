@@ -1,5 +1,5 @@
 class Purchase 
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :weight, type: Float
 
   has_one :out, :product, type: :IS_PRODUCT, model_class: :Product

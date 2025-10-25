@@ -1,4 +1,4 @@
-class CreateReceipt < Neo4j::Migrations::Base
+class CreateReceipt < ActiveGraph::Migrations::Base
   def up
     add_constraint :Receipt, :uuid
   end

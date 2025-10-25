@@ -1,4 +1,4 @@
-class CreateBlog < Neo4j::Migrations::Base
+class CreateBlog < ActiveGraph::Migrations::Base
   def up
     add_constraint :Blog, :uuid
   end

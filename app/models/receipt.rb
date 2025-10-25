@@ -1,5 +1,5 @@
 class Receipt 
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :date, type: DateTime
   property :store, type: String
 

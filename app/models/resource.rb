@@ -1,5 +1,5 @@
 class Resource 
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   
   enum peer_reviewed: {
     no: 0,
