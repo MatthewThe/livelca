@@ -96,12 +96,8 @@ class ReceiptsController < ApplicationController
     
     results = Product.run_products_query(queries)
     purchase_table.zip(results).each_with_index do |z, i|
-      row, result = z
-      product_name = ""
-      if result.count > 0
-        product_name = result.first['p.name']
-      end
-      purchase_table[i][:product_name] = product_name
+      row, result = zip
+      purchase_table[i][:product_name] = result
     end
     purchase_table
   end

@@ -85,8 +85,10 @@ class ResourcesController < ApplicationController
   def save_table
     if table_params[:table]
       @csv_table = upload
+
+      session = ActiveGraph::Base.driver.session
       
-      ActiveGraph::Base.current_session.transaction do |tx|
+      session.write_transaction do |tx|
         @csv_table.each_with_index do |row, i|
           if row[:co2_emission].present?
             @source = Source.new
@@ -144,7 +146,7 @@ class ResourcesController < ApplicationController
     if [".csv", ".tsv"].include? ext
       require 'csv'
       queries = []
-      CSV.foreach(file,{:headers=>:first_row, :col_sep => "\t"}) do |row|
+      CSV.foreach(file, :headers=> true, :col_sep => "\t") do |row|
         product_table.push({ product_name: row[0], 
                              co2_emission: row[1], 
                              notes: row[2], 

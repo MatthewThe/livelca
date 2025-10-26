@@ -239,11 +239,7 @@ class RecipesController < ApplicationController
       results = Product.run_products_query(queries)
       ingredients_table.zip(results).each_with_index do |z, i|
         row, result = z
-        product_name = ""
-        if result.count > 0
-          product_name = result.first['p.name']
-        end
-        ingredients_table[i][:product_name] = product_name
+        ingredients_table[i][:product_name] = result
       end
       
       if ingredients_table.length == 0

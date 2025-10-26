@@ -203,23 +203,39 @@ class Product
   end
   
   def self.run_products_query(queries)
-    results = ActiveGraph::Base.current_session.queries do
-      queries.each do |query|
-        append "CALL db.index.fulltext.queryNodes('productNames', {item})
+    session = ActiveGraph::Base.driver.session
+    results = queries.map do |query|
+      result = session.run(
+        <<~CYPHER,
+          CALL db.index.fulltext.queryNodes('productNames', $item)
           YIELD node AS productAlias
-          MATCH (p)
-          WHERE (productAlias)-[:IS_ALIAS]->(p:Product)
-          RETURN p.name
-          LIMIT {limit}", item: query, limit: 1
-      end
+          MATCH (productAlias)-[:IS_ALIAS]->(p:Product)
+          RETURN p.name as name
+          LIMIT $limit
+        CYPHER
+        item: query,
+        limit: 1
+      )
+
+      result.map { |record| record[:name] }
     end
+
+    results
   end
   
   def merge_with(other_product_name)
-    ActiveGraph::Base.current_session.query("MATCH (p1:Product), (p2:Product)
-      WHERE p1.name = {p1_name} AND p2.name = {p2_name}
-      call apoc.refactor.mergeNodes([p2,p1]) YIELD node
-      RETURN node", p1_name: name, p2_name: other_product_name)
+    session = ActiveGraph::Base.driver.session
+
+    session.run(
+      <<~CYPHER,
+        MATCH (p1:Product), (p2:Product)
+        WHERE p1.name = $p1_name AND p2.name = $p2_name
+        CALL apoc.refactor.mergeNodes([p2, p1]) YIELD node
+        RETURN node
+      CYPHER
+      p1_name: name,
+      p2_name: other_product_name
+    )
   end
   
   def self.get_product_tree(root)
