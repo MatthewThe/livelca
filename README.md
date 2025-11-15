@@ -213,3 +213,12 @@ bundle install
 sudo apt install openjdk-8-jre-headless
 sudo update-alternatives --config java # select Java 8
 ```
+
+### Migrating from neo4j to activegraph gem
+
+Update migration types
+
+```
+MATCH (n:`Neo4j::Migrations::SchemaMigration`)
+SET n:`ActiveGraph::Migrations::SchemaMigration`
+```
