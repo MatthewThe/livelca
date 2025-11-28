@@ -7,7 +7,11 @@
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
-  <link rel="icon" href="https://livelca.com/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="https://livelca.com/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://livelca.com/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://livelca.com/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://livelca.com/favicon-16x16.png">
+  <link rel="manifest" href="https://livelca.com/site.webmanifest">
   <link rel="canonical" href="<%= request.original_url.sub(request.host, 'livelca.com') %>" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.gstatic.com">
