@@ -73,14 +73,14 @@ class Resource
   
   def calculate_default_weight
     default_weight = 10
-    
-    default_weight -= PEER_REVIEWED_PENALTY[self.peer_reviewed]
-    default_weight -= NUM_PRODUCTS_PENALTY[self.num_products]
-    default_weight -= META_STUDY_PENALTY[self.meta_study]
-    default_weight -= COMMISSIONED_PENALTY[self.commissioned]
-    default_weight -= YEAR_OF_STUDY_PENALTY[self.year_of_study]
-    default_weight -= METHODOLOGY_DESCRIBED_PENALTY[self.methodology_described]
-    default_weight -= SOURCE_REPUTATION_PENALTY[self.source_reputation]
+
+    default_weight -= PEER_REVIEWED_PENALTY[self.peer_reviewed.to_s]
+    default_weight -= NUM_PRODUCTS_PENALTY[self.num_products.to_s]
+    default_weight -= META_STUDY_PENALTY[self.meta_study.to_s]
+    default_weight -= COMMISSIONED_PENALTY[self.commissioned.to_s]
+    default_weight -= YEAR_OF_STUDY_PENALTY[self.year_of_study.to_s]
+    default_weight -= METHODOLOGY_DESCRIBED_PENALTY[self.methodology_described.to_s]
+    default_weight -= SOURCE_REPUTATION_PENALTY[self.source_reputation.to_s]
     
     old_default_weight = self.default_weight
     self.default_weight = [default_weight, 0].max

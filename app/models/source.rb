@@ -11,7 +11,7 @@ class Source
   property :n2o_emission, type: Float
   property :co2_equiv, type: Float
   property :notes, type: String, default: ""
-  property :weight, type: Integer
+  property :weight, type: Integer, default: 0
 
   has_one :out, :country_origin, type: :PRODUCED_IN, model_class: :Country
   has_one :out, :country_consumption, type: :CONSUMED_IN, model_class: :Country

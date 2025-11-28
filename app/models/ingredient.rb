@@ -15,7 +15,7 @@ class Ingredient
   end
   
   def update_recipe_co2_equiv
-    recipe.update({}) # triggers recalculation of recipe's cached co2_equiv
+    recipe ? recipe.update({}) : "" # triggers recalculation of recipe's cached co2_equiv
   end
   
   def country_origin_name
