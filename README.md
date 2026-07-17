@@ -77,23 +77,18 @@ and restart the server
 
 ## Update instructions server
 
-1. Update the docker
+1. Update the docker (this automatically pushes a new image to dockerhub)
 ```
 build.sh
 ```
 
-2. Push the docker to DockerHub
-```
-docker push matthewthe/livelca:latest
-```
-
-3. SSH into the server and deploy the new docker
+2. SSH into the server and deploy the new docker
 ```
 docker pull matthewthe/livelca
 docker-compose up -d --no-deps --build web
 ```
 
-4. If there was a change to the database (e.g. a migration after adding a new model), find the docker container id for matthewthe/livelca and run
+3. If there was a change to the database (e.g. a migration after adding a new model), find the docker container id for matthewthe/livelca and run
 ```
 docker exec -it <livelca_docker_container_id> /bin/bash
 $ bin/rake db:migrate RAILS_ENV=production
@@ -212,6 +207,12 @@ bundle install
 ```
 sudo apt install openjdk-8-jre-headless
 sudo update-alternatives --config java # select Java 8
+```
+
+### Upgrading all packages
+
+```
+bundle update --all
 ```
 
 ### Migrating from neo4j to activegraph gem
