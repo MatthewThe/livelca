@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="https://livelca.com/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="https://livelca.com/favicon-16x16.png">
   <link rel="manifest" href="https://livelca.com/site.webmanifest">
-  <link rel="canonical" href="<%= request.original_url.sub(request.host, 'livelca.com') %>" />
+  <link rel="canonical" href="<%= request.original_url.sub(request.host, 'livelca.com').sub('http://', 'https://') %>" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Montserrat&display=swap" rel="stylesheet">
