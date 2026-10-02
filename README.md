@@ -100,8 +100,13 @@ docker-compose up -d --no-deps --force-recreate --build web
 
 ## Deployment instructions local
 
+Make sure Java 8 is active:
 ```
-rake neo4j:start
+sudo update-alternatives --config java
+```
+
+```
+bundle exec rake neo4j:start
 rails server -u webrick
 ```
 
@@ -112,12 +117,7 @@ rake neo4j:start
 rails server -b 0.0.0.0 -u webrick
 ```
 
-then use ip addr show to find your local ip address
-
-Setting up a neo4j server in the Google Cloud Platform:
-```
-gcloud compute instances create neo4j-livelca --image neo4j-community-1-3-5-1-apoc --tags neo4j --image-project launcher-public --machine-type f1-micro
-```
+use `ip addr show` to find your local ip address.
 
 
 ## Debugging
@@ -140,6 +140,14 @@ result.each { |record| puts record["number"] }
 
 # close the session
 session.close
+```
+
+## Trigger recalculation of CO2equiv for products:
+
+```
+rails console
+
+Product.find_each(&:save)
 ```
 
 ## Useful Cypher queries

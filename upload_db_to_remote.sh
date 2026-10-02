@@ -3,5 +3,5 @@ remote=hetzner
 
 cd db/neo4j/development/data/databases/
 zip -r graph_db graph.db
-scp graph_db.zip ${remote}:~/
+scp graph_db.zip ${remote}:/home/matthewt/
 ssh ${remote} ~/livelca/unpack_graph_db.sh
