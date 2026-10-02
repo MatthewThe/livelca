@@ -83,49 +83,38 @@ class ResourcesController < ApplicationController
   end
   
   def save_table
-    if table_params[:table]
-      @csv_table = upload
+    return unless table_params[:table]
+    @csv_table = upload
 
-      session = ActiveGraph::Base.driver.session
-      
-      session.write_transaction do |tx|
-        @csv_table.each_with_index do |row, i|
-          if row[:co2_emission].present?
-            @source = Source.new
-            @source.resource = @resource
-            @source.co2_equiv = row[:co2_emission]
-            @source.notes = row[:notes]
-            @source.product = Product.find_or_create(row[:product_name])
-            if row[:product_category].present? && @source.product.category.blank?
-              @source.product.category = Product.find_or_create(row[:product_category])
-            end
-            if row[:country_origin].present?
-              @source.country_origin_id = Country.find_or_create(row[:country_origin])
-            else
-              @source.country_origin_id = Country.find_or_create("Unknown")
-            end
-            if row[:country_consumption].present?
-              @source.country_consumption_id = Country.find_or_create(row[:country_consumption])
-            else
-              @source.country_consumption_id = Country.find_or_create("Unknown")
-            end
-            if row[:weight].present?
-              @source.weight = row[:weight]
-            else
-              @source.weight = @resource.default_weight
-            end
-            @source.save
-          else
-            # lines without co2 emissions to just insert new categories; 
-            product = Product.find_or_create(row[:product_name])
-            if row[:product_category].present? && product.category.blank?
-              product.category = Product.find_or_create(row[:product_category])
-            end
-            if row[:proxy].present? && product.proxy.blank?
-              product.proxy = Product.find_or_create(row[:proxy])
-            end
-            product.save
+    # Each name is looked up at most once for the whole import
+    products  = Hash.new { |h, name| h[name] = Product.find_or_create(name) }
+    countries = Hash.new { |h, name| h[name] = Country.find_or_create(name) }
+
+    @csv_table.each_slice(200) do |rows|
+      ActiveGraph::Base.transaction do
+        rows.each do |row|
+          product = products[row[:product_name]]
+
+          if row[:product_category].present? && product.category.blank?
+            product.category = products[row[:product_category]]
           end
+
+          if row[:co2_emission].present?
+            source = Source.new
+            source.resource  = @resource
+            source.co2_equiv = row[:co2_emission]
+            source.notes     = row[:notes]
+            source.product   = product
+            source.country_origin_id      = countries[row[:country_origin].presence || "Unknown"].id
+            source.country_consumption_id = countries[row[:country_consumption].presence || "Unknown"].id
+            source.weight = row[:weight].presence || @resource.default_weight
+            source.save
+          else
+            if row[:proxy].present? && product.proxy.blank?
+              product.proxy = products[row[:proxy]]
+            end
+          end
+          product.save
         end
       end
     end
