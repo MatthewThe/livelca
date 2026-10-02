@@ -306,59 +306,53 @@ function displayProductGraph(tree, products, minWidth, maxWidth = 1200) {
     .style("visibility", "hidden");
 
   function highlightNodeText(node) {
-    var label = d3.select("#label-node-text-" + node.idx)
-      .selectAll("tspan")
+    var group = d3.select("#label-node-" + node.idx);
+    var text  = d3.select("#label-node-text-" + node.idx);
+
+    text.selectAll("tspan")
       .attr("font-weight", "bold")
       .style("font-size", 16)
       .style("opacity", 1.0);
 
     d3.select("#label-node-emissions-" + node.idx).style("visibility", "visible");
 
-    var bbox = d3.select("#label-node-text-" + node.idx).node().getBBox();
-    d3.select("#label-node-" + node.idx)
-      .append("rect")
-      .lower()
-      .attr("id", function (d) { return "label-node-rect-" + d.idx; })
-      .attr('fill', function (d) { return getNodeColor(d) })
-      .attr('stroke', 'white')
+    // never stack more than one highlight rect
+    group.selectAll("rect.highlight-rect").remove();
+
+    var bbox = text.node().getBBox();
+    group.append("rect")
+      .attr("class", "highlight-rect")
+      .attr("fill", getNodeColor)
+      .attr("stroke", "rgba(20, 20, 20, 0.3)")
+      .attr("stroke-width", 1)
       .attr("rx", 6)
       .attr("ry", 6)
-      .attr("x", -1 * bbox.width / 2 - 7)
-      .attr("y", -1 * bbox.height / 2 - 5)
-      .attr('stroke-width', 1)
-      .attr("stroke", "rgba(20, 20, 20, 0.3)")
-      .style("width", bbox.width + 14)
-      .style("height", bbox.height + 10)
+      .attr("x", -bbox.width / 2 - 7)
+      .attr("y", -bbox.height / 2 - 5)
+      .attr("width", bbox.width + 14)
+      .attr("height", bbox.height + 10)
       .style("cursor", "pointer")
       .on("click", function (d) {
-        var url = "/products?utf8=✓&search=" + d.id;
-        window.location = url;
+        window.location = "/products?utf8=✓&search=" + encodeURIComponent(d.id);
       });
 
-    d3.select("#label-node-text-" + node.idx).select("tspan").attr('y', -4);
+    text.select("tspan").attr("y", -4);
 
-    d3.select("#label-node-" + node.idx).raise();
-    d3.select("#label-node-rect-" + node.idx).raise();
-    d3.select("#label-node-text-" + node.idx).raise();
-
+    group.raise();   // bring node to front
+    text.raise();    // text above the rect (rect is now above the circle)
   }
 
   function unhighlightNodeText(node) {
     d3.select("#label-node-text-" + node.idx)
       .selectAll("tspan")
       .attr("font-weight", "normal")
-      .attr('stroke-width', 0)
       .style("font-size", 12);
 
-    d3.select("#label-node-text-" + node.idx)
-      .select("tspan")
-      .attr('y', 4)
+    d3.select("#label-node-text-" + node.idx).select("tspan").attr("y", 4);
+    d3.select("#label-node-emissions-" + node.idx).style("visibility", "hidden");
 
-    d3.select("#label-node-emissions-" + node.idx)
-      .style("visibility", "hidden");
-
-    d3.select("#label-node-rect-" + node.idx)
-      .remove()
+    // remove every highlight rect in this node, not just the first match
+    d3.select("#label-node-" + node.idx).selectAll("rect.highlight-rect").remove();
   }
 
   svg.call(
