@@ -128,252 +128,358 @@ function fixna(x) {
   return 0;
 }
 
+/**
+ * Product graph: force-directed D3 (v5) graph of products and their subcategories.
+ *
+ * External dependencies (expected to be defined globally, as before):
+ *   - d3 (v5, uses d3.event)
+ *   - getNodeColor(node)
+ *   - updateNode(selection), updateLink(selection)
+ */
+
+const GRAPH_CONFIG = {
+  svgSelector: '#product_graph',
+  containerId: 'product_graph_container',
+  headerFooterHeight: 150,      // 85px header + 65px footer
+  widthPerNodeColumn: 60,
+
+  node: {
+    radius: 30,
+    collisionRadius: 35,
+    labelWidth: 60,
+    labelY: 4,
+    labelYHighlighted: -4,
+    fontFamily: 'Arial',
+    fontSize: 12,
+    fontSizeHighlighted: 16,
+    lineHeight: 16,
+    emissionsOffset: 20,
+  },
+
+  highlight: {
+    paddingX: 7,
+    paddingY: 5,
+    cornerRadius: 6,
+    stroke: 'rgba(20, 20, 20, 0.3)',
+  },
+
+  link: {
+    stroke: 'rgba(50, 50, 50, 0.2)',
+    strokeWidth: 2,
+  },
+
+  forces: {
+    charge: -90,
+    centerStrength: 0.01,
+    linkDistance: 5,
+    linkStrength: 0.1,
+  },
+
+  simulation: {
+    warmupTicks: 400,
+    dragAlphaTarget: 0.7,
+    finalAlphaDecay: 1 - Math.pow(0.001, 1 / 100),
+  },
+
+  zoomExtent: [0.1, 4],
+};
+
+// ---------------------------------------------------------------------------
+// Entry point
+// ---------------------------------------------------------------------------
+
 function displayProductGraph(tree, products, minWidth, maxWidth = 1200) {
-  var nodes = [], rels = [], names = [];
-  products.forEach(function (res, idx) {
-    var pr = {
-      id: res.product.name,
+  const nodes = buildNodes(products);
+  const links = buildLinks(tree, nodes);
+  const { width, height } = computeDimensions(nodes.length, minWidth, maxWidth);
+
+  const svg = d3.select(GRAPH_CONFIG.svgSelector)
+    .attr('width', width)
+    .attr('height', height);
+
+  const container = svg.append('g').attr('id', GRAPH_CONFIG.containerId);
+
+  const simulation = createSimulation(nodes, links, width, height);
+
+  const linkElements = renderLinks(container, links);
+  const nodeElements = renderNodes(container, nodes, createDragBehavior(simulation));
+
+  simulation.on('tick', function () {
+    positionElements(nodeElements, linkElements);
+  });
+
+  enableZoom(svg, container);
+  warmUpSimulation(simulation, nodeElements, linkElements);
+}
+
+// ---------------------------------------------------------------------------
+// Data
+// ---------------------------------------------------------------------------
+
+function buildNodes(products) {
+  return products.map(function (res, idx) {
+    const product = res.product;
+    return {
+      id: product.name,
       idx: idx,
       label: 'product',
       size: 10,
-      co2_equiv_color: res.product.co2_equiv_color,
-      co2_equiv: res.product.co2_equiv,
-      link: "/products/" + res.product.to_param
+      co2_equiv_color: product.co2_equiv_color,
+      co2_equiv: product.co2_equiv,
+      link: '/products/' + product.to_param,
     };
-    var target = _.findIndex(names, { id: res.product.name });
-    nodes.push(pr);
-    names.push({ id: res.product.name });
   });
+}
+
+function buildLinks(tree, nodes) {
+  const nodesById = new Map(nodes.map(function (n) { return [n.id, n]; }));
+  const links = [];
 
   Array.from(tree).forEach(function (res) {
-    var target = _.findIndex(names, { id: res.product.name });
-    target = nodes[target];
+    const target = nodesById.get(res.product.name);
+    if (!target) return;
 
     res.product.subcategories.forEach(function (subcategory) {
-      var source = _.findIndex(names, { id: subcategory.name });
-      source = nodes[source];
-
-      //console.log(source, target);
-      rels.push({ source: source, target: target })
-    })
+      const source = nodesById.get(subcategory.name);
+      if (source) links.push({ source: source, target: target });
+    });
   });
 
-  //console.log("#graph nodes: " + nodes.length);
-  //console.log("#graph rels: " + rels.length);
+  return links;
+}
 
-  const widthEstimate = Math.ceil(Math.sqrt(nodes.length)) * 60;
+function computeDimensions(nodeCount, minWidth, maxWidth) {
+  const widthEstimate = Math.ceil(Math.sqrt(nodeCount)) * GRAPH_CONFIG.widthPerNodeColumn;
   const width = Math.min(maxWidth, Math.max(minWidth, widthEstimate));
-  const height = Math.min(width, window.innerHeight - 150); // 85 height of the header + 65 height of footer
+  const height = Math.min(width, window.innerHeight - GRAPH_CONFIG.headerFooterHeight);
+  return { width: width, height: height };
+}
 
-  const svg = d3.select('#product_graph')
-    .attr('width', width)
-    .attr('height', height)
+// ---------------------------------------------------------------------------
+// Simulation
+// ---------------------------------------------------------------------------
 
-  var label = {
-    'nodes': [],
-    'links': []
-  };
+function createSimulation(nodes, links, width, height) {
+  const f = GRAPH_CONFIG.forces;
+  return d3.forceSimulation(nodes)
+    .force('charge', d3.forceManyBody().strength(f.charge))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('x', d3.forceX(width / 2).strength(f.centerStrength))
+    .force('y', d3.forceY(height / 2).strength(f.centerStrength * width / height))
+    .force('link', d3.forceLink(links).distance(f.linkDistance).strength(f.linkStrength))
+    .force('collision', d3.forceCollide().radius(GRAPH_CONFIG.node.collisionRadius));
+}
 
-  nodes.forEach(function (d, i) {
-    label.nodes.push({ node: d });
-  });
+/** Runs the layout synchronously so the graph appears settled, then lets it cool down. */
+function warmUpSimulation(simulation, nodeElements, linkElements) {
+  simulation.alphaDecay(0);
+  simulation.tick(GRAPH_CONFIG.simulation.warmupTicks);
+  positionElements(nodeElements, linkElements);
+  simulation.alphaDecay(GRAPH_CONFIG.simulation.finalAlphaDecay);
+}
 
-  const simulation = d3.forceSimulation(nodes)
-    .force("charge", d3.forceManyBody().strength(-90))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("x", d3.forceX(width / 2).strength(0.01))
-    .force("y", d3.forceY(height / 2).strength(0.01 * width / height))
-    .force("link", d3.forceLink(rels).distance(5).strength(0.1))
-    .force('collision', d3.forceCollide().radius(35))
-    .on("tick", ticked);
+function positionElements(nodeElements, linkElements) {
+  nodeElements.call(updateNode);
+  linkElements.call(updateLink);
+}
 
-  const dragDrop = d3.drag()
+function createDragBehavior(simulation) {
+  return d3.drag()
     .on('start', function (node) {
-      node.fx = node.x
-      node.fy = node.y
+      node.fx = node.x;
+      node.fy = node.y;
     })
     .on('drag', function (node) {
-      simulation.alphaTarget(0.7).restart()
-      node.fx = d3.event.x
-      node.fy = d3.event.y
+      simulation.alphaTarget(GRAPH_CONFIG.simulation.dragAlphaTarget).restart();
+      node.fx = d3.event.x;
+      node.fy = d3.event.y;
     })
     .on('end', function (node) {
-      if (!d3.event.active) {
-        simulation.alphaTarget(0)
-      }
-      node.fx = null
-      node.fy = null
-    })
+      if (!d3.event.active) simulation.alphaTarget(0);
+      node.fx = null;
+      node.fy = null;
+    });
+}
 
-  var container = svg.append("g").attr("id", "product_graph_container");
+function enableZoom(svg, container) {
+  svg.call(
+    d3.zoom()
+      .scaleExtent(GRAPH_CONFIG.zoomExtent)
+      .on('zoom', function () { container.attr('transform', d3.event.transform); })
+  );
+}
 
-  var linkElements = container.append("g")
-    .attr("class", "links")
-    .selectAll("line")
-    .data(rels)
-    .enter().append("line")
-    .attr("stroke-width", 2)
-    .attr("stroke", "rgba(50, 50, 50, 0.2)")
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
 
-  var nodeElements = container.append('g')
-    .selectAll('circle')
+function renderLinks(container, links) {
+  return container.append('g')
+    .attr('class', 'links')
+    .selectAll('line')
+    .data(links)
+    .enter()
+    .append('line')
+    .attr('stroke-width', GRAPH_CONFIG.link.strokeWidth)
+    .attr('stroke', GRAPH_CONFIG.link.stroke);
+}
+
+function renderNodes(container, nodes, dragBehavior) {
+  const nodeElements = container.append('g')
+    .attr('class', 'nodes')
+    .selectAll('g')
     .data(nodes)
     .enter()
     .append('g')
-    .attr("id", function (d) { return "label-node-" + d.idx; })
-    .style("cursor", "move")
-    .call(dragDrop)
-    .on("mouseenter", function (d) {
-      highlightNodeText(d);
-    })
-    .on("mouseleave", function (d) {
-      unhighlightNodeText(d);
-    })
+    .attr('id', function (d) { return nodeGroupId(d); })
+    .style('cursor', 'move')
+    .call(dragBehavior)
+    .on('mouseenter', highlightNode)
+    .on('mouseleave', unhighlightNode);
 
   nodeElements.append('circle')
-    .attr('r', 30)
-    .attr('fill', getNodeColor)
+    .attr('r', GRAPH_CONFIG.node.radius)
+    .attr('fill', getNodeColor);
 
-
-  var labelTextNode = nodeElements
-    .append("text")
-    .text(function (d) { return d.id; })
-    .attr("class", "wrapme")
-    .attr("x", 0)
-    .attr("y", 4)
-    .attr("width", 60)
-    .attr("id", function (d) { return "label-node-text-" + d.idx; })
-    .style("font-family", "Arial")
-    .style("font-size", 12)
-    .style("fill", "#fff")
-    .attr("text-anchor", "middle")
-    .style("cursor", "pointer")
-    .on("click", function (d) {
-      var url = "/products?utf8=✓&search=" + d.id;
-      window.location = url;
-    });
-
-  function wrap(text) {
-    text.each(function () {
-      var text = d3.select(this);
-      var words = text.text().split(/\s+/).reverse();
-      var lineHeight = 16;
-      var width = parseFloat(text.attr('width'));
-      var y = parseFloat(text.attr('y'));
-      var x = text.attr('x');
-      var anchor = text.attr('text-anchor');
-
-      var tspan = text.text(null)
-        .append('tspan')
-        .attr('x', x)
-        .attr('y', y)
-        .attr('text-anchor', anchor);
-      var lineNumber = 0;
-      var lineOffset = 0;
-      var line = [];
-      var word = words.pop();
-
-      while (word) {
-        line.push(word);
-        tspan.text(line.join(' '));
-        if (tspan.node().getComputedTextLength() > width && line.length > 1) {
-          lineNumber += 1;
-          lineOffset = 1
-          line.pop();
-          tspan.text(line.join(' '));
-          line = [word];
-          tspan = text.append('tspan')
-            .attr('x', x)
-            .attr('dy', y + lineOffset * lineHeight)
-            .attr('text-anchor', anchor)
-            .text(word);
-        }
-        word = words.pop();
-      }
-      text.attr('dy', fixna(-0.5 * lineNumber * lineHeight));
-    });
-  }
-  d3.selectAll('.wrapme').call(wrap)
-
-  labelTextNode.append("tspan")
-    .attr("id", function (d) { return "label-node-emissions-" + d.idx; })
-    .text(function (d) { return d3.format(".1f")(d.co2_equiv) + " CO2e/kg"; })
-    .attr("x", 0)
-    .attr("dx", 0)
-    .attr("dy", function (d) { return 20 + d3.select("#label-node-" + d.idx).attr('dy'); })
-    .attr("font-weight", "normal")
-    .style("font-size", 12)
-    .style("visibility", "hidden");
-
-  function highlightNodeText(node) {
-    var group = d3.select("#label-node-" + node.idx);
-    var text  = d3.select("#label-node-text-" + node.idx);
-
-    text.selectAll("tspan")
-      .attr("font-weight", "bold")
-      .style("font-size", 16)
-      .style("opacity", 1.0);
-
-    d3.select("#label-node-emissions-" + node.idx).style("visibility", "visible");
-
-    // never stack more than one highlight rect
-    group.selectAll("rect.highlight-rect").remove();
-
-    var bbox = text.node().getBBox();
-    group.append("rect")
-      .attr("class", "highlight-rect")
-      .attr("fill", getNodeColor)
-      .attr("stroke", "rgba(20, 20, 20, 0.3)")
-      .attr("stroke-width", 1)
-      .attr("rx", 6)
-      .attr("ry", 6)
-      .attr("x", -bbox.width / 2 - 7)
-      .attr("y", -bbox.height / 2 - 5)
-      .attr("width", bbox.width + 14)
-      .attr("height", bbox.height + 10)
-      .style("cursor", "pointer")
-      .on("click", function (d) {
-        window.location = "/products?utf8=✓&search=" + encodeURIComponent(d.id);
-      });
-
-    text.select("tspan").attr("y", -4);
-
-    group.raise();   // bring node to front
-    text.raise();    // text above the rect (rect is now above the circle)
-  }
-
-  function unhighlightNodeText(node) {
-    d3.select("#label-node-text-" + node.idx)
-      .selectAll("tspan")
-      .attr("font-weight", "normal")
-      .style("font-size", 12);
-
-    d3.select("#label-node-text-" + node.idx).select("tspan").attr("y", 4);
-    d3.select("#label-node-emissions-" + node.idx).style("visibility", "hidden");
-
-    // remove every highlight rect in this node, not just the first match
-    d3.select("#label-node-" + node.idx).selectAll("rect.highlight-rect").remove();
-  }
-
-  svg.call(
-    d3.zoom()
-      .scaleExtent([.1, 4])
-      .on("zoom", function () { container.attr("transform", d3.event.transform); })
-  );
-
-  function ticked() {
-    nodeElements.call(updateNode);
-    linkElements.call(updateLink);
-  }
-
-  var decay = 0;
-  simulation.alphaDecay(decay);
-  simulation.tick(400);
-
-  nodeElements.call(updateNode);
-  linkElements.call(updateLink);
-
-  decay = 1 - Math.pow(0.001, 1 / 100);
-
-  simulation.alphaDecay(decay);
+  renderNodeLabels(nodeElements);
+  return nodeElements;
 }
+
+function renderNodeLabels(nodeElements) {
+  const cfg = GRAPH_CONFIG.node;
+
+  const labels = nodeElements.append('text')
+    .attr('id', function (d) { return nodeTextId(d); })
+    .attr('x', 0)
+    .attr('y', cfg.labelY)
+    .attr('text-anchor', 'middle')
+    .style('font-family', cfg.fontFamily)
+    .style('font-size', cfg.fontSize)
+    .style('fill', '#fff')
+    .style('cursor', 'pointer')
+    .text(function (d) { return d.id; })
+    .on('click', navigateToProductSearch);
+
+  labels.each(function () {
+    wrapText(d3.select(this), cfg.labelWidth, cfg.lineHeight);
+  });
+
+  appendEmissionsLabel(labels);
+}
+
+/** Splits the text of an SVG <text> element into centred <tspan> lines. */
+function wrapText(textSelection, maxWidth, lineHeight) {
+  const words = textSelection.text().split(/\s+/).filter(Boolean);
+  const x = textSelection.attr('x');
+  const y = textSelection.attr('y');
+
+  textSelection.text(null);
+
+  let tspan = textSelection.append('tspan').attr('x', x).attr('y', y);
+  let line = [];
+  let lineCount = 1;
+
+  words.forEach(function (word) {
+    line.push(word);
+    tspan.text(line.join(' '));
+
+    if (tspan.node().getComputedTextLength() > maxWidth && line.length > 1) {
+      line.pop();
+      tspan.text(line.join(' '));
+      line = [word];
+      tspan = textSelection.append('tspan')
+        .attr('x', x)
+        .attr('dy', lineHeight)
+        .text(word);
+      lineCount += 1;
+    }
+  });
+
+  // Shift the block up so multi-line labels stay vertically centred.
+  textSelection.select('tspan').attr('dy', -0.5 * (lineCount - 1) * lineHeight);
+}
+
+function appendEmissionsLabel(labels) {
+  labels.append('tspan')
+    .attr('id', function (d) { return nodeEmissionsId(d); })
+    .attr('class', 'emissions')
+    .attr('x', 0)
+    .attr('dy', GRAPH_CONFIG.node.emissionsOffset)
+    .attr('font-weight', 'normal')
+    .style('font-size', GRAPH_CONFIG.node.fontSize)
+    .style('visibility', 'hidden')
+    .text(function (d) { return d3.format('.1f')(d.co2_equiv) + ' CO2e/kg'; });
+}
+
+// ---------------------------------------------------------------------------
+// Hover highlighting
+// ---------------------------------------------------------------------------
+
+function highlightNode(node) {
+  const cfg = GRAPH_CONFIG.node;
+  const group = d3.select('#' + nodeGroupId(node));
+  const text = d3.select('#' + nodeTextId(node));
+
+  setLabelStyle(text, 'bold', cfg.fontSizeHighlighted, cfg.labelYHighlighted);
+  setEmissionsVisible(node, true);
+
+  removeHighlightRect(group);           // never stack more than one rect
+  appendHighlightRect(group, text.node().getBBox());
+
+  group.raise();                        // node above its neighbours
+  text.raise();                         // label above the highlight rect
+}
+
+function unhighlightNode(node) {
+  const cfg = GRAPH_CONFIG.node;
+  const text = d3.select('#' + nodeTextId(node));
+
+  setLabelStyle(text, 'normal', cfg.fontSize, cfg.labelY);
+  setEmissionsVisible(node, false);
+  removeHighlightRect(d3.select('#' + nodeGroupId(node)));
+}
+
+function setLabelStyle(text, fontWeight, fontSize, firstLineY) {
+  text.selectAll('tspan')
+    .attr('font-weight', fontWeight)
+    .style('font-size', fontSize);
+  text.select('tspan').attr('y', firstLineY);
+}
+
+function setEmissionsVisible(node, visible) {
+  d3.select('#' + nodeEmissionsId(node))
+    .style('visibility', visible ? 'visible' : 'hidden');
+}
+
+function appendHighlightRect(group, bbox) {
+  const h = GRAPH_CONFIG.highlight;
+  group.append('rect')
+    .attr('class', 'highlight-rect')
+    .attr('fill', getNodeColor)
+    .attr('stroke', h.stroke)
+    .attr('stroke-width', 1)
+    .attr('rx', h.cornerRadius)
+    .attr('ry', h.cornerRadius)
+    .attr('x', -bbox.width / 2 - h.paddingX)
+    .attr('y', -bbox.height / 2 - h.paddingY)
+    .attr('width', bbox.width + 2 * h.paddingX)
+    .attr('height', bbox.height + 2 * h.paddingY)
+    .style('cursor', 'pointer')
+    .on('click', navigateToProductSearch);
+}
+
+function removeHighlightRect(group) {
+  group.selectAll('rect.highlight-rect').remove();
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function navigateToProductSearch(node) {
+  window.location = '/products?utf8=✓&search=' + encodeURIComponent(node.id);
+}
+
+function nodeGroupId(node) { return 'label-node-' + node.idx; }
+function nodeTextId(node) { return 'label-node-text-' + node.idx; }
+function nodeEmissionsId(node) { return 'label-node-emissions-' + node.idx; }
