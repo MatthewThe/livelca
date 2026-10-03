@@ -9,5 +9,13 @@
     ]
 <% end %>
 <% end %>
+<% @redirect_aliases.each_with_index do |product_alias, i| %>
+<% product = product_alias.product %>
+    <%= "," if i > 0 || @products.any? %>
+    [  "<%= (link_to product_alias.name, product, class: product.reliability_class, remote: true).gsub('"', '\"').html_safe %> (alias: <%= (link_to product.name, product).gsub('"', '\"').html_safe %>)",
+       "<div class='co2_cell' style='background-color:<%= product.co2_equiv_color %>;float:right;'><%= product.co2_equiv %></div>",
+       "<%= product.study_count %>"
+    ]
+<% end %>
   ]
 }

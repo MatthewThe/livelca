@@ -1,6 +1,7 @@
 class ProductAlias 
   include ActiveGraph::Node
   property :name, type: String
+  property :redirect, type: Boolean, default: false
 
   has_one :out, :country, type: :PURCHASED_IN, model_class: :Country
   has_one :out, :product, type: :IS_ALIAS, model_class: :Product
@@ -13,6 +14,14 @@ class ProductAlias
     country ? country.name : "Unknown"
   end
   
+  def self.find_redirect(term)
+    where(redirect: true, name: /^#{Regexp.escape(term.strip)}$/i).find { |a| a.product }
+  end
+
+  def self.search_redirects(term)
+    where(redirect: true, name: /#{Regexp.escape(term)}.*/i).select { |a| a.product }
+  end
+
   def self.find_or_create(alias_name)
     if alias_name.length > 0
       product_alias = find_by(name: alias_name)

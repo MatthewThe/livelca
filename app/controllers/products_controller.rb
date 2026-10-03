@@ -9,7 +9,12 @@ class ProductsController < ApplicationController
   # GET /products.json
   def index
     if params[:search]
-      p params[:search]
+      product_alias = ProductAlias.find_redirect(params[:search])
+      if product_alias
+        redirect_to product_alias.product
+        return
+      end
+
       @products = Product.search(params[:search])
       if @products.empty?
         flash.now[:alert] = "Could not find a product matching \"#{params[:search]}\""
@@ -40,6 +45,7 @@ class ProductsController < ApplicationController
   
   def table
     @products = Product.all
+    @redirect_aliases = ProductAlias.where(redirect: true).with_associations(:product).select(&:product)
     respond_to do |format|
      format.json
     end
@@ -65,7 +71,13 @@ class ProductsController < ApplicationController
   
   def autocomplete
     @products = Product.search(params[:term])
-    render json: @products.map{|p| {:label => p.name, :value => p.id}}
+    results = @products.map{|p| {:label => p.name, :value => p.id}}
+    names = results.map { |r| r[:label].downcase }
+    ProductAlias.search_redirects(params[:term]).each do |product_alias|
+      next if names.include?(product_alias.name.downcase)
+      results << {:label => product_alias.name, :value => product_alias.product.id}
+    end
+    render json: results
   end
   
   def autocomplete_name

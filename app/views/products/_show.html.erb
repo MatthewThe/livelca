@@ -11,6 +11,21 @@
 
 <%= render partial: 'info_chart', locals: { product: @product } %>
 
+<% redirect_aliases = @product.redirect_aliases %>
+<% if redirect_aliases.any? %>
+<p>
+  Also known as:
+  <% redirect_aliases.uniq(&:name).each_with_index do |product_alias, i| %>
+    <% if i > 0 %>|<% end %>
+    <% if user_signed_in? && current_user.admin? %>
+      <%= link_to product_alias.name, edit_product_alias_path(product_alias) %>
+    <% else %>
+      <%= product_alias.name %>
+    <% end %>
+  <% end %>
+</p>
+<% end %>
+
 <% if @supercategories.count > 0 %>
 <p>
   Categories:

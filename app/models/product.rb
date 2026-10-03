@@ -16,6 +16,7 @@ class Product
   
   has_many :in, :proxy_for, type: :USE_AS_PROXY, model_class: :Product
   has_many :in, :ingredients, type: :IS_PRODUCT, model_class: :Ingredient
+  has_many :in, :aliases, type: :IS_ALIAS, model_class: :ProductAlias
   
   def self.from_param(param)
     param[-36...]
@@ -126,6 +127,10 @@ class Product
         .pluck(:supercategories)
   end
   
+  def redirect_aliases
+    aliases.where(redirect: true).order(:name).to_a
+  end
+
   def self.search(term)
     where(name: /#{Regexp.escape(term)}.*/i)
   end
@@ -224,18 +229,34 @@ class Product
   end
   
   def merge_with(other_product_name)
+    other_product = Product.find_by(name: other_product_name)
+    return false if other_product_name == name || !other_product
+
+    # Avoid two parent categories (or a self-loop) on the merged node: drop any
+    # link between the two products and keep self's category if it has one
+    self.category = nil if category == other_product
+    other_product.category = nil if category || other_product.category == self
+
     session = ActiveGraph::Base.driver.session
 
-    session.run(
+    result = session.run(
       <<~CYPHER,
         MATCH (p1:Product), (p2:Product)
         WHERE p1.name = $p1_name AND p2.name = $p2_name
         CALL apoc.refactor.mergeNodes([p2, p1]) YIELD node
-        RETURN node
+        RETURN node.uuid AS uuid
       CYPHER
       p1_name: name,
       p2_name: other_product_name
-    )
+    ).single
+
+    # mergeNodes keeps the p2 node and deletes p1, so self now refers to a
+    # deleted node; reload the surviving node before linking the alias to it.
+    merged_product = Product.find(result[:uuid])
+    product_alias = ProductAlias.find_or_create(other_product_name)
+    product_alias.update(redirect: true)
+    product_alias.product = merged_product
+    true
   end
   
   def self.get_product_tree(root)
