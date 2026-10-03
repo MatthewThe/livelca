@@ -15,7 +15,7 @@ class ProductAlias
   end
   
   def self.find_redirect(term)
-    where(redirect: true, name: /^#{Regexp.escape(term.strip)}$/i).find { |a| a.product }
+    where(redirect: true, name: /^#{Regexp.escape(term.strip)}$/i).to_a.find { |a| a.product }
   end
 
   def self.search_redirects(term)
