@@ -15,5 +15,10 @@
   <%= @product_alias.product_name %>
 </p>
 
+<p>
+  <strong>Redirect:</strong>
+  <%= @product_alias.redirect ? "Yes" : "No" %>
+</p>
+
 <%= link_to 'Edit', edit_product_alias_path(@product_alias) %> |
 <%= link_to 'Back', product_aliases_path %>

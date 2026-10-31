@@ -1,6 +1,7 @@
 class ProductAliasesController < ApplicationController
   before_action :authenticate_user!, :is_admin, only: [:show, :edit, :update, :destroy]
   before_action :set_product_alias, only: [:show, :edit, :update, :destroy]
+  after_action :expire_products_table_cache, only: [:create, :update, :destroy]
 
   # GET /product_aliases
   # GET /product_aliases.json
@@ -78,7 +79,7 @@ class ProductAliasesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_alias_params
-      params.require(:product_alias).permit(:name)
+      params.require(:product_alias).permit(:name, :redirect)
     end
     
     def product_alias_name_params
