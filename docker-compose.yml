@@ -76,7 +76,7 @@ services:
         max-size: "10m"
         max-file: "3"  
   matomo:
-    image: matomo:5.5.0
+    image: matomo:5.14.2
     restart: always
     environment:
       - MATOMO_DATABASE_HOST=mariadb-matomo
@@ -86,6 +86,8 @@ services:
       - ${PWD}/matomo_config/mpm_prefork.conf:/etc/apache2/mods-enabled/mpm_prefork.conf
     ports:
       - 8080:80
+    security_opt:
+      - seccomp=unconfined
     logging:
       driver: "local"
       options:
