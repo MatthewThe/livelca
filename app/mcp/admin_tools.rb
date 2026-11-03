@@ -13,8 +13,12 @@ module AdminTools
   }
 
   DRY_RUN_PROPERTY = {
-    dry_run: { type: "boolean", default: false, description: "Return the result without saving anything, e.g. to show it to the user for approval" },
+    dry_run: { type: "boolean", default: false, description: "Return the result without saving anything, to show it to the user " \
+                                                             "for approval. Always dry-run first; call without dry_run only in a " \
+                                                             "later turn, after the user explicitly approved the change" },
   }
+  DRY_RUN_NOTE = "Nothing was saved; ids in the result will not exist. Show this result to the user and end your turn. " \
+                 "Do not repeat this call without dry_run until the user has explicitly approved this change in their reply."
 
   # Defines an MCP tool whose block receives the symbolized arguments and the admin user.
   # Write tools get a dry_run argument and run in a transaction, so a failing lookup or validation
@@ -41,7 +45,7 @@ module AdminTools
       result = yield
       raise ActiveGraph::Rollback if dry_run
     end
-    return { dry_run: true, note: "Nothing was saved; ids in the result will not exist", result: result } if dry_run
+    return { dry_run: true, note: DRY_RUN_NOTE, result: result } if dry_run
     expire_caches
     result
   end

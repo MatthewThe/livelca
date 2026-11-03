@@ -5,13 +5,17 @@ module AdminPrompts
 
     1. Extract every row of the table: the cited study (resource), product, CO2e value in kg CO2e per kg
        of product, and countries of origin and consumption if given. Convert other units to kg CO2e per kg.
-    2. Call match_names once with all resources, products and countries.
+       Look up each cited study in the reference list: its resource name is the title of the article,
+       report or database, not the authors, and its url is the DOI or link.
+    2. Call match_names once with all resources (by title, and by DOI as a fallback), products and countries.
     3. List which resources are already included (compare their sources with the table) and which are missing.
        For products or countries without a match, propose the closest candidate or a new product.
     4. For the first missing resource, call create_resource with all its sources and dry_run: true, set the
        quality ratings from what the paper says about the study, and show me the result, including the
        product CO2e changes.
-    5. Wait for my approval. Then repeat the same call without dry_run and continue with the next resource.
+    5. End your turn and wait for my reply; this request is not approval of any entries. Only when I explicitly
+       approve the shown entries, repeat the same call without dry_run, then continue with the next resource
+       starting again at step 4. If I ask for changes, show a new dry run first.
   TEXT
 
   def self.all

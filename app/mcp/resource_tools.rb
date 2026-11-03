@@ -14,8 +14,8 @@ module ResourceTools
   QUALITY_DEFAULTS = QUALITY_ATTRIBUTES.to_h { |attr, values| [attr, values.key(Resource.new.public_send(attr)).to_s] }
 
   PROPERTIES = {
-    name: { type: "string" },
-    url: { type: "string" },
+    name: { type: "string", description: "Title of the article, report or database, not its authors or DOI" },
+    url: { type: "string", description: "Link to the resource, e.g. its DOI URL" },
     notes: { type: "string", description: "Markdown" },
   }.merge(QUALITY_ATTRIBUTES.transform_values { |values| { type: "string", enum: values.keys.map(&:to_s) } })
 
@@ -55,7 +55,8 @@ module ResourceTools
       name: "create_resource",
       description: "Create a resource together with its sources (studies) in one call; its default source weight is derived " \
                    "from the quality ratings. Use dry_run first to show the user the resource, sources and resulting " \
-                   "product CO2e changes for approval, then repeat the call without dry_run",
+                   "product CO2e changes, then end your turn; repeat the call without dry_run only after the user " \
+                   "explicitly approved these entries in a later reply",
       properties: PROPERTIES.merge(
         sources: { type: "array", items: { type: "object", properties: SourceTools::PROPERTIES, required: ["product_name", "co2_equiv"] } }
       ),

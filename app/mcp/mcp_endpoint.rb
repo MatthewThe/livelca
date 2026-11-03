@@ -5,10 +5,15 @@ class McpEndpoint
   INSTRUCTIONS = <<~TEXT
     Read and edit LiveLCA products, studies (sources), resources, recipes and ingredients.
     CO2e values are in kg CO2e per kg of product and are recomputed automatically on every edit.
+    Resource names are usually the title of the article, report or database, not its authors or DOI
+    (e.g. "Reducing food's environmental impacts through producers and consumers", not "Poore & Nemecek 2018").
+    Put the DOI or link in the resource's url.
     To compare a list of names, e.g. the studies and products of a table in a paper, call match_names once
     with all names instead of searching one by one.
-    Before any write, call the tool with dry_run: true and show the result to the user. Only repeat the
-    call without dry_run after the user approved it. Add a new resource with all its sources in a single
+    Before any write, call the tool with dry_run: true and show the result to the user. Then end your turn
+    and wait for the user's reply. Never make the call without dry_run in the same turn as its dry run, and
+    only make it after the user explicitly approved that exact change in their reply; asking you to add or
+    import data is not approval of the entries. Add a new resource with all its sources in a single
     create_resource call.
   TEXT
 

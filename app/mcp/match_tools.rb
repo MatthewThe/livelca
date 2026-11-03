@@ -55,7 +55,8 @@ module MatchTools
                    "their sources, unmatched names include candidates with similar names",
       properties: {
         products: NAMES_PROPERTY.merge(description: "Product names"),
-        resources: NAMES_PROPERTY.merge(description: "Resource names (e.g. \"Poore & Nemecek 2018\"), URLs or DOIs"),
+        resources: NAMES_PROPERTY.merge(description: "Resource names, i.e. the titles of the articles, reports or databases " \
+                                                     "(not the authors), or their URLs or DOIs"),
         countries: NAMES_PROPERTY.merge(description: "Country names"),
       },
       read_only: true
