@@ -38,7 +38,7 @@ module ProductTools
   ALL = [
     AdminTools.tool(
       name: "search_products",
-      description: "Find products whose name starts with the query (case-insensitive), including redirect aliases",
+      description: "Find products whose name starts with the query (case-insensitive), including redirect aliases. For several names use match_names",
       properties: AdminTools::SEARCH_PROPERTIES,
       required: ["query"],
       read_only: true

@@ -25,9 +25,19 @@ module SourceTools
 
   ATTRIBUTES = [:co2_equiv, :co2_emission, :ch4_emission, :n2o_emission, :weight, :notes]
 
+  # Creates a study and recomputes its product's CO2e
+  def self.create(args, resource: nil)
+    source = Source.new(args.slice(*ATTRIBUTES))
+    source.resource = resource if resource
+    assign_relations(source, { country_origin_name: "", country_consumption_name: "" }.merge(args))
+    source.weight = source.resource.default_weight unless args.key?(:weight)
+    AdminTools.save!(source)
+    source.product.save # after_save ran before the new study was linked to the product
+    source
+  end
+
   PROPERTIES = {
     product_name: { type: "string", description: "Name of an existing product" },
-    resource_id: { type: "string", description: "UUID or URL slug of an existing resource" },
     co2_equiv: { type: "number", description: "kg CO2e per kg of product" },
     co2_emission: { type: "number" },
     ch4_emission: { type: "number" },
@@ -37,26 +47,22 @@ module SourceTools
     country_origin_name: { type: "string", description: "Name of an existing country, defaults to Unknown" },
     country_consumption_name: { type: "string", description: "Name of an existing country, defaults to Unknown" },
   }
+  RESOURCE_PROPERTY = { resource_id: { type: "string", description: "UUID or URL slug of an existing resource" } }
 
   ALL = [
     AdminTools.tool(
       name: "create_source",
       description: "Add a study (CO2e data point) for a product from a resource; recomputes the product's CO2e",
-      properties: PROPERTIES,
+      properties: RESOURCE_PROPERTY.merge(PROPERTIES),
       required: ["product_name", "resource_id", "co2_equiv"]
     ) do |args, _user|
-      source = Source.new(args.slice(*ATTRIBUTES))
-      assign_relations(source, { country_origin_name: "", country_consumption_name: "" }.merge(args))
-      source.weight = source.resource.default_weight unless args.key?(:weight)
-      AdminTools.save!(source)
-      source.product.save # after_save ran before the new study was linked to the product
-      details(source)
+      details(create(args))
     end,
 
     AdminTools.tool(
       name: "update_source",
       description: "Update a study; only the given fields are changed. Recomputes the product's CO2e",
-      properties: { id: { type: "string" } }.merge(PROPERTIES),
+      properties: { id: { type: "string" } }.merge(RESOURCE_PROPERTY, PROPERTIES),
       required: ["id"]
     ) do |args, _user|
       source = Source.find(args[:id])

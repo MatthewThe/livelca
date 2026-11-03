@@ -33,7 +33,7 @@ module ResourceTools
   ALL = [
     AdminTools.tool(
       name: "search_resources",
-      description: "Find resources whose name contains the query (case-insensitive)",
+      description: "Find resources whose name contains the query (case-insensitive). For several names use match_names",
       properties: AdminTools::SEARCH_PROPERTIES,
       required: ["query"],
       read_only: true
@@ -53,11 +53,29 @@ module ResourceTools
 
     AdminTools.tool(
       name: "create_resource",
-      description: "Create a resource; its default source weight is derived from the quality ratings",
-      properties: PROPERTIES,
+      description: "Create a resource together with its sources (studies) in one call; its default source weight is derived " \
+                   "from the quality ratings. Use dry_run first to show the user the resource, sources and resulting " \
+                   "product CO2e changes for approval, then repeat the call without dry_run",
+      properties: PROPERTIES.merge(
+        sources: { type: "array", items: { type: "object", properties: SourceTools::PROPERTIES, required: ["product_name", "co2_equiv"] } }
+      ),
       required: ["name"]
     ) do |args, _user|
-      details(AdminTools.save!(Resource.new(QUALITY_DEFAULTS.merge(args.slice(*ATTRIBUTES)))))
+      if Resource.where(name: /^#{Regexp.escape(args[:name])}$/i).exists?
+        raise AdminTools::Error, "Resource \"#{args[:name]}\" already exists, add sources to it with create_source"
+      end
+      sources = args.fetch(:sources, [])
+      AdminTools.check_names_exist!(
+        Product => sources.map { |s| s[:product_name] },
+        Country => sources.flat_map { |s| [s[:country_origin_name], s[:country_consumption_name]] }.select(&:present?)
+      )
+
+      products = sources.map { |s| s[:product_name] }.uniq.map { |name| Product.find_by(name: name) }
+      co2_before = products.to_h { |p| [p.name, p.co2_equiv] }
+      resource = AdminTools.save!(Resource.new(QUALITY_DEFAULTS.merge(args.slice(*ATTRIBUTES))))
+      sources.each { |source_args| SourceTools.create(source_args, resource: resource) }
+      co2_changes = products.map { |p| { product: p.name, co2_equiv_before: co2_before[p.name], co2_equiv_after: Product.find(p.id).co2_equiv } }
+      details(resource).merge(product_co2_changes: co2_changes)
     end,
 
     AdminTools.tool(
