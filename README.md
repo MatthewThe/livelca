@@ -150,6 +150,14 @@ rails console
 Product.find_each(&:save)
 ```
 
+## MCP server for admins
+
+The app serves an MCP endpoint at `/mcp` with tools to search, read, create and update products, sources, resources, recipes and ingredients (see `app/mcp`). Requests need a bearer token of an admin user, which admins can generate or revoke under "Edit profile". Generating a new token replaces the previous one. Connect e.g. Claude Code with:
+
+```
+claude mcp add --transport http livelca https://livelca.com/mcp --header "Authorization: Bearer <token>"
+```
+
 ## Useful Cypher queries
 
 ### Updating study weights for a resource

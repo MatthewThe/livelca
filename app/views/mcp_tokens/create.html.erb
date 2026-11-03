@@ -1,0 +1,13 @@
+<% content_for(:html_title) { 'MCP token' } %>
+
+<h1>MCP token</h1>
+
+<p>Copy your new token now, it will not be shown again. Any previous token no longer works.</p>
+
+<pre><%= @token %></pre>
+
+<p>Connect e.g. Claude Code with:</p>
+
+<pre>claude mcp add --transport http livelca <%= request.base_url %>/mcp --header "Authorization: Bearer <%= @token %>"</pre>
+
+<p><%= link_to 'Back to profile', edit_user_registration_path %></p>

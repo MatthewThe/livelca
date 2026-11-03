@@ -92,3 +92,4 @@ env_variables.yaml
 import/
 
 public/*.json
+.mcp.json

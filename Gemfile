@@ -81,3 +81,6 @@ end
 gem 'chosen-rails'
 
 gem 'sorted_set'
+
+# Model Context Protocol server for admin tooling (see app/mcp)
+gem 'mcp', '~> 1.6.1'

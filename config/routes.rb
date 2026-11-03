@@ -26,6 +26,9 @@ Rails.application.routes.draw do
     resources :users
   end
   
+  match 'mcp', to: McpEndpoint, via: [:get, :post, :delete]
+  resource :mcp_token, only: [:create, :destroy]
+  
   get 'country_autocomplete' => 'countries#autocomplete'
   get 'product_autocomplete' => 'products#autocomplete'
   get 'product_autocomplete_name' => 'products#autocomplete_name'

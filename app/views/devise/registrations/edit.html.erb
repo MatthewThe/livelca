@@ -56,7 +56,18 @@
   <div class="table_button"><%= link_to 'Recalculate CO2e for all recipes', recipes_update_all_path, class: "blue button", method: :patch, data: { confirm: 'Are you sure?' } %></div>
   
   <p><%= link_to 'Administrate users', users_path %></p>
-  
+
+  <h3>MCP token</h3>
+
+  <% if current_user.api_token_digest %>
+    <p>Your token was generated on <%= current_user.api_token_created_at&.strftime('%Y-%m-%d %H:%M UTC') %>.</p>
+    <div class="table_button"><%= button_to 'Generate new MCP token', mcp_token_path, class: "blue button", data: { confirm: 'This replaces your current token. Are you sure?' } %></div>
+    <div class="table_button"><%= button_to 'Revoke MCP token', mcp_token_path, method: :delete, class: "blue button", data: { confirm: 'Are you sure?' } %></div>
+  <% else %>
+    <p>Generate a token to edit the database through the MCP endpoint at <%= request.base_url %>/mcp.</p>
+    <div class="table_button"><%= button_to 'Generate MCP token', mcp_token_path, class: "blue button" %></div>
+  <% end %>
+
 <% end %>
 
 <h3>Cancel my account</h3>

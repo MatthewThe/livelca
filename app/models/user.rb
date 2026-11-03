@@ -60,5 +60,23 @@ class User
   
   property :admin, type: Boolean, default: false
 
+  ## MCP API token, only the SHA-256 digest is stored
+  property :api_token_digest, type: String
+  property :api_token_created_at, type: DateTime
+
+  def self.find_by_api_token(token)
+    token.present? ? find_by(api_token_digest: Digest::SHA256.hexdigest(token)) : nil
+  end
+
+  # Returns the new token, replacing any previous one
+  def regenerate_api_token
+    token = SecureRandom.hex(32)
+    update!(api_token_digest: Digest::SHA256.hexdigest(token), api_token_created_at: DateTime.now)
+    token
+  end
+
+  def revoke_api_token
+    update!(api_token_digest: nil, api_token_created_at: nil)
+  end
 
 end
