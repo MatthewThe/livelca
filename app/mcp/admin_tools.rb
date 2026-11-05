@@ -4,7 +4,7 @@ module AdminTools
   class Error < StandardError; end
 
   def self.all
-    MatchTools::ALL + ProductTools::ALL + SourceTools::ALL + ResourceTools::ALL + RecipeTools::ALL + IngredientTools::ALL
+    WorkflowTools::ALL + MatchTools::ALL + ProductTools::ALL + SourceTools::ALL + ResourceTools::ALL + RecipeTools::ALL + IngredientTools::ALL
   end
 
   SEARCH_PROPERTIES = {

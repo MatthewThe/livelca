@@ -40,6 +40,16 @@ module AdminPrompts
        show a new dry run first.
   TEXT
 
+  # The same workflows for agents, which cannot fetch prompts themselves (see WorkflowTools)
+  WORKFLOWS = {
+    "import_resource" => IMPORT_RESOURCE,
+    "list_new_resources" => LIST_NEW_RESOURCES,
+  }
+
+  def self.workflow(name, paper)
+    format(WORKFLOWS.fetch(name), paper: paper)
+  end
+
   def self.define(name, description, template, paper_description)
     MCP::Prompt.define(
       name: name,

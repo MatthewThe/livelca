@@ -15,6 +15,7 @@ class McpEndpoint
     only make it after the user explicitly approved that exact change in their reply; asking you to add or
     import data is not approval of the entries. Add a new resource with all its sources in a single
     create_resource call.
+    For the steps to import a paper or list the studies it cites, call get_workflow.
   TEXT
 
   def self.call(env)
