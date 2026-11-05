@@ -9,8 +9,10 @@ module AdminPrompts
     List the studies cited in %{paper} that are not yet in LiveLCA. Do not create or change anything.
     #{FULL_TEXT}
 
-    1. Extract every row of the table: the cited study and its product. Look up each cited study in the
-       reference list for its title and its DOI or link.
+    1. Extract every row of tables containing other studies: the cited study and its product. Then read the
+       main body of text for other studies it cites with emission factors or CO2e values (e.g. "beef emits 
+       60 kg CO2e/kg (Smith et al. 2019)"), and add those with their products too. Look up each cited study 
+       in the reference list for its title and its DOI or link.
     2. Call match_names once with all studies (by title, and by DOI as a fallback) and all products.
     3. Show me a table of the studies without a matching resource, with the columns: study (its title,
        linked to its DOI or link), number of products, and products (by their LiveLCA name, marking those
@@ -66,7 +68,7 @@ module AdminPrompts
   def self.all
     [
       define("list_new_resources",
-             "List the studies cited in a paper's table that are not yet in LiveLCA, with their products",
+             "List the studies cited in a paper's table and text that are not yet in LiveLCA, with their products",
              LIST_NEW_RESOURCES, "The paper and table, e.g. \"Table 3 of the attached paper\""),
       define("import_resource",
              "Add a paper that reports its own CO2e data as a single resource with its sources after approval",

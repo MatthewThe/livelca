@@ -6,7 +6,7 @@ module WorkflowTools
       name: "get_workflow",
       description: "Get the steps for a LiveLCA workflow, the same text as the prompt of the same name: import_resource " \
                    "(add a paper's own CO2e data as one resource) or list_new_resources (list the studies cited in a " \
-                   "paper's table that are not yet in LiveLCA). Changes nothing; follow the returned steps with the other tools",
+                   "paper's table and text that are not yet in LiveLCA). Changes nothing; follow the returned steps with the other tools",
       properties: {
         name: { type: "string", enum: AdminPrompts::WORKFLOWS.keys },
         paper: { type: "string", description: "The paper (and table), e.g. \"Table 3 of the attached paper\"; defaults to \"the paper\"" },
