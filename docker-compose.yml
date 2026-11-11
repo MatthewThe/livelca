@@ -6,7 +6,7 @@ services:
   database:
     image: neo4j:3.5.14
     env_file: .env
-    restart: always
+    restart: unless-stopped
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -26,14 +26,14 @@ services:
   web:
     image: matthewthe/livelca:latest
     env_file: .env
-    restart: always
+    restart: unless-stopped
 
     # The command to be run when we run "docker-compose up".
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
 
     security_opt:
       - seccomp=unconfined
-    
+
     # Expose port 3000.
     ports:
       - "3000:3000"
@@ -42,17 +42,17 @@ services:
     # container which we've called "database".
     depends_on:
       - database
-    
+
     environment:
       RAILS_ENV: production
     logging:
       driver: "local"
       options:
         max-size: "10m"
-        max-file: "3"  
+        max-file: "3"
   recipe-scraper:
     image: matthewthe/recipe-scrapers-rest-api:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - "5000:5000"
     logging:
@@ -63,7 +63,7 @@ services:
   mariadb-matomo:
     image: mariadb:10.6.4
     command: --max-allowed-packet=64MB
-    restart: always
+    restart: unless-stopped
     env_file: .env
     volumes:
       - /var/lib/mysql:/var/lib/mysql
@@ -77,7 +77,7 @@ services:
         max-file: "3"  
   matomo:
     image: matomo:5.14.2
-    restart: always
+    restart: unless-stopped
     environment:
       - MATOMO_DATABASE_HOST=mariadb-matomo
       - PHP_MEMORY_LIMIT=16M
