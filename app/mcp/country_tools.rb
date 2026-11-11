@@ -14,6 +14,19 @@ module CountryTools
     raise AdminTools::Error, "Country \"#{name}\" already exists" if existing && existing != country
   end
 
+  # Number of relationships to other nodes, by their label, e.g. { "Recipe" => 2 }
+  def self.links(country)
+    country.query_as(:c).match("(c)-[r]-(n)").pluck("labels(n)[0]", "count(r)").to_h
+  end
+
+  # Finds every country given by id or name, raising one error listing all that do not exist
+  def self.find_all!(ids, names)
+    found = ids.map { |id| [id, Country.find_by(id: id)] } + names.map { |name| [name, Country.find_by(name: name)] }
+    missing = found.reject(&:last).map(&:first)
+    raise AdminTools::Error, "Countries not found: #{missing.join(', ')}" if missing.any?
+    found.map(&:last).uniq
+  end
+
   ATTRIBUTES = [:name, :wiki]
   PROPERTIES = { name: { type: "string" }, wiki: { type: "string", description: "Markdown" } }
 
@@ -58,6 +71,25 @@ module CountryTools
       check_name_available(args[:name], country) if args.key?(:name)
       country.assign_attributes(args.slice(*ATTRIBUTES))
       details(AdminTools.save!(country))
+    end,
+
+    AdminTools.tool(
+      name: "delete_countries",
+      description: "Delete countries, e.g. spam entries. Studies, ingredients, recipes and other nodes that referenced " \
+                   "a deleted country lose that reference and show Unknown. The result lists each country's links by label",
+      properties: {
+        ids: { type: "array", items: { type: "string" }, description: "Country UUIDs" },
+        names: { type: "array", items: { type: "string" }, description: "Exact country names" },
+      },
+      destructive: true
+    ) do |args, _user|
+      countries = find_all!(args.fetch(:ids, []), args.fetch(:names, []))
+      raise AdminTools::Error, "Unknown is the default country and cannot be deleted" if countries.any? { |c| c.name == "Unknown" }
+      countries.map do |country|
+        result = summary(country).merge(links: links(country))
+        country.destroy
+        result
+      end
     end,
   ]
 end
