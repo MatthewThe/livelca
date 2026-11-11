@@ -3,7 +3,7 @@
 # CSRF protection, sessions and params parsing of the Rails controllers.
 class McpEndpoint
   INSTRUCTIONS = <<~TEXT
-    Read and edit LiveLCA products, studies (sources), resources, recipes and ingredients.
+    Read and edit LiveLCA products, countries, studies (sources), resources, recipes and ingredients.
     CO2e values are in kg CO2e per kg of product and are recomputed automatically on every edit.
     Resource names are usually the title of the article, report or database, not its authors or DOI
     (e.g. "Reducing food's environmental impacts through producers and consumers", not "Poore & Nemecek 2018").
