@@ -36,19 +36,24 @@ class Product
   end
   
   def set_co2_equiv
-    self.co2_equiv = compute_co2_equiv
+    new_co2_equiv = compute_co2_equiv
+    # only cascade to proxies and recipes if the value changed, this also stops proxy cycles
+    @co2_equiv_changed = new_co2_equiv != co2_equiv
+    self.co2_equiv = new_co2_equiv
   end
   
   def update_proxies_co2_equiv
+    return unless @co2_equiv_changed
     proxy_for.each do |p|
       p.update({})
     end
   end
   
   def update_recipes_co2_equiv
-    ingredients.each do |i|
-      i.update({}) # this will trigger the recipe.save method
-    end
+    return unless @co2_equiv_changed
+    # load each recipe on its own: recipes loaded as one collection get their ingredients
+    # batch-loaded for the whole collection on every save, which is quadratic for common products
+    ingredients.recipe.pluck(:uuid).uniq.each { |uuid| Recipe.find(uuid).save }
   end
   
   def description
