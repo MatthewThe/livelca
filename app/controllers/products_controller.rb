@@ -58,15 +58,23 @@ class ProductsController < ApplicationController
   end
   
   def graph_json
-    @product_tree = Product.get_product_tree("Food")
-    
-    root = Product.find_by(name: "Food")
-    products_in_graph = Product.traverse_tree(root, 2)
-    @products = root.get_graph_nodes(products_in_graph)
-    
-    respond_to do |format|
-     format.json
-    end
+    roots = Product.as(:p).where("NOT (p)-[:IS_SUBCATEGORY_OF]->()")
+                   .with_associations(subcategories: {subcategories: :subcategories}).sort_by(&:name)
+    # Not a product: the centre of the graph, joining the root categories (Food, Beverages).
+    render json: { name: "Products", to_param: "products", virtual: true, children_count: roots.size,
+                   children: roots.map { |r| r.graph_tree(2) } }
+  end
+
+  # to_params from the product's root category down to the product, to reveal it in the product graph.
+  def path
+    product = Product.find(Product.from_param(params[:id]))
+    render json: (product.get_super_categories.reverse + [product]).map(&:to_param)
+  end
+
+  # Direct subcategories of a product, to expand its node in the product graph.
+  def subcategories
+    product = Product.find(Product.from_param(params[:id]))
+    render json: product.subcategories.with_associations(:subcategories).map(&:graph_tree)
   end
   
   def autocomplete
@@ -91,9 +99,8 @@ class ProductsController < ApplicationController
     @supercategories = @product.get_super_categories
     @wiki = markdown(@product.wiki)
     
-    products_in_graph = [@product] + @product.subcategories + @supercategories
-    @products = @product.get_graph_nodes(products_in_graph)
-    @product_tree = @product.get_graph_tree(@supercategories)
+    @graph_tree = Product.where(id: @product.id).with_associations(subcategories: :subcategories).first
+                         .graph_tree_with_supercategories(@supercategories)
     
     respond_to_format
   end

@@ -3,7 +3,7 @@ $('#notice').hide();
 
 $('html,body').animate({ scrollTop: $("#current_product").offset().top }, 'slow');
 
-$("#current_product").html("<%= escape_javascript(render partial: 'products/show', locals: { product: @product, supercategories: @supercategories, wiki: @wiki, products: @products, product_tree: @product_tree } ) %>");
+$("#current_product").html("<%= escape_javascript(render partial: 'products/show', locals: { product: @product, supercategories: @supercategories, wiki: @wiki, graph_tree: @graph_tree } ) %>");
 
 document.title = '<%=content_for?(:html_title) ? yield(:html_title) + " | LiveLCA" : "LiveLCA"%>'
 document.querySelector('meta[name="description"]').setAttribute("content", '<%= content_for?(:meta_description) ? j(yield(:meta_description)) : default_meta_description %>');

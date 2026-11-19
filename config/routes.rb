@@ -10,7 +10,10 @@ Rails.application.routes.draw do
   resources :recipes
   resources :resources
   resources :product_aliases  
-  resources :products
+  resources :products do
+    get 'subcategories', on: :member
+    get 'path', on: :member
+  end
   resources :countries
   resources :sources
   resources :receipts

@@ -34,7 +34,7 @@ $(document).ready(function () {
         success: function (data) {
           d3.select('svg').select("#product_graph_loader").remove();
 
-          displayProductGraph(data.tree, data.products, $("#content").width(), $("#content").width());
+          initProductGraphSearch(displayProductGraph(data));
         }
       });
     }
@@ -97,389 +97,411 @@ function initRecipesTable() {
   }
 }
 
-function getNodeColor(node) {
-  return node.co2_equiv_color
-}
-
-function updateLink(link) {
-  link.attr("x1", function (d) { return fixna(d.source.x); })
-    .attr("y1", function (d) { return fixna(d.source.y); })
-    .attr("x2", function (d) { return fixna(d.target.x); })
-    .attr("y2", function (d) { return fixna(d.target.y); });
-}
-
-function updateNode(node) {
-  node.attr("transform", function (d) {
-    return "translate(" + fixna(d.x) + "," + fixna(d.y) + ")";
-  })
-    .attr("text-anchor", function (d) {
-      if (d.node) {
-        if (d.x > d.node.x) {
-          return "start"
-        } else {
-          return "end"
-        }
-      }
-    });
-}
-
-function fixna(x) {
-  if (isFinite(x)) return x;
-  return 0;
-}
-
 /**
- * Product graph: force-directed D3 (v5) graph of products and their subcategories.
+ * Product graph: collapsible tidy tree (d3 v5) of products and their
+ * subcategories, coloured by CO2e. Clicking a node with hidden subcategories
+ * loads and shows all of them, clicking it again hides them.
  *
- * External dependencies (expected to be defined globally, as before):
- *   - d3 (v5, uses d3.event)
- *   - getNodeColor(node)
- *   - updateNode(selection), updateLink(selection)
+ * The products graph page shows a radial tree. A product page (data with a
+ * `current` node) shows a horizontal tree: its supercategories on the left,
+ * its subcategories on the right.
+ *
+ * data: nested { name, co2_equiv, co2_equiv_color, to_param, children_count,
+ * children?, current? } as built by Product#graph_tree. The radial tree's
+ * centre is { virtual: true }, joining the root categories.
+ *
+ * Returns { reveal(productId) }, which opens the path to a product and
+ * highlights it, as the current product of a product page is.
  */
-
-const GRAPH_CONFIG = {
-  svgSelector: '#product_graph',
-  containerId: 'product_graph_container',
-  headerFooterHeight: 150,      // 85px header + 65px footer
-  widthPerNodeColumn: 60,
-
-  node: {
-    radius: 30,
-    collisionRadius: 35,
-    labelWidth: 60,
-    labelY: 4,
-    labelYHighlighted: -4,
-    fontFamily: 'Arial',
-    fontSize: 12,
-    fontSizeHighlighted: 16,
-    lineHeight: 16,
-    emissionsOffset: 20,
-  },
-
-  highlight: {
-    paddingX: 7,
-    paddingY: 5,
-    cornerRadius: 6,
-    stroke: 'rgba(20, 20, 20, 0.3)',
-  },
-
-  link: {
-    stroke: 'rgba(50, 50, 50, 0.2)',
-    strokeWidth: 2,
-  },
-
-  forces: {
-    charge: -90,
-    centerStrength: 0.01,
-    linkDistance: 5,
-    linkStrength: 0.1,
-  },
-
-  simulation: {
-    warmupTicks: 400,
-    dragAlphaTarget: 0.7,
-    finalAlphaDecay: 1 - Math.pow(0.001, 1 / 100),
-  },
-
-  zoomExtent: [0.1, 4],
+const GRAPH = {
+  ringDistance: 110,  // radial: radius per tree level
+  leafSpacing: 14,    // radial: minimum arc length between neighbouring leaves
+  rowHeight: 18,      // horizontal: height per leaf
+  levelWidth: [60, 200], // horizontal: min and max distance between levels
+  nodeRadius: 4.5,
+  currentNodeRadius: 7,
+  labelOffset: 8,
+  fontSize: 11,
+  padding: 10,
+  duration: 300,
 };
 
-// ---------------------------------------------------------------------------
-// Entry point
-// ---------------------------------------------------------------------------
+function displayProductGraph(data) {
+  const root = d3.hierarchy(data);
+  const current = root.descendants().find(function (d) { return d.data.current; });
+  let highlighted = current;
+  let highlightedPath = new Set(current ? current.ancestors() : []);
+  const formatCo2 = d3.format('.2f');
 
-function displayProductGraph(tree, products, minWidth, maxWidth = 1200) {
-  const nodes = buildNodes(products);
-  const links = buildLinks(tree, nodes);
-  const { width, height } = computeDimensions(nodes.length, minWidth, maxWidth);
+  const svg = d3.select('#product_graph')
+    .attr('width', '100%')
+    .attr('font-family', 'sans-serif')
+    .attr('font-size', GRAPH.fontSize);
+  const container = svg.append('g').attr('id', 'product_graph_container');
+  const gLink = container.append('g').attr('fill', 'none');
+  const gNode = container.append('g');
+  const tooltip = d3.select('body').selectAll('div.product-graph-tooltip').data([null])
+    .join('div').attr('class', 'product-graph-tooltip');
+  const shape = current ? horizontalTree(root, svgWidth) : radialTree(root);
 
-  const svg = d3.select(GRAPH_CONFIG.svgSelector)
-    .attr('width', width)
-    .attr('height', height);
-
-  const container = svg.append('g').attr('id', GRAPH_CONFIG.containerId);
-
-  const simulation = createSimulation(nodes, links, width, height);
-
-  const linkElements = renderLinks(container, links);
-  const nodeElements = renderNodes(container, nodes, createDragBehavior(simulation));
-
-  simulation.on('tick', function () {
-    positionElements(nodeElements, linkElements);
+  const zoom = d3.zoom().scaleExtent([0.2, 8]).on('zoom', function () {
+    container.attr('transform', d3.event.transform);
   });
+  // The wheel scrolls a product page's graph, so it zooms only with ctrl there.
+  if (current) zoom.filter(function () { return d3.event.type === 'wheel' ? d3.event.ctrlKey : !d3.event.button; });
+  svg.call(zoom).on('dblclick.zoom', null);
 
-  enableZoom(svg, container);
-  warmUpSimulation(simulation, nodeElements, linkElements);
-}
+  root.x0 = 0;
+  root.y0 = 0;
+  const initialView = update(root, 0);
 
-// ---------------------------------------------------------------------------
-// Data
-// ---------------------------------------------------------------------------
+  // Bring the product into view when its graph scrolls.
+  if (current) {
+    const box = svg.node().parentNode;
+    box.scrollTop = (current.x - initialView.y0) * initialView.scale - box.clientHeight / 2;
+  }
 
-function buildNodes(products) {
-  return products.map(function (res, idx) {
-    const product = res.product;
-    return {
-      id: product.name,
-      idx: idx,
-      label: 'product',
-      size: 10,
-      co2_equiv_color: product.co2_equiv_color,
-      co2_equiv: product.co2_equiv,
-      link: '/products/' + product.to_param,
+  return { reveal: reveal };
+
+  function update(source, duration) {
+    const t = svg.transition().duration(duration);
+
+    const node = gNode.selectAll('g').data(root.descendants(), function (d) { return d.data.to_param; });
+
+    const nodeEnter = node.enter().append('g')
+      .attr('transform', function (d) { return shape.transform(source.x0, source.y0, d); })
+      .attr('opacity', 0)
+      .on('mouseenter', showTooltip)
+      .on('mousemove', moveTooltip)
+      .on('mouseleave', hideTooltip);
+
+    nodeEnter.append('circle')
+      .attr('r', nodeRadius)
+      .attr('fill', function (d) { return d.data.virtual ? '#bbb' : d.data.co2_equiv_color; })
+      .attr('stroke-width', 1.5)
+      .attr('aria-label', function (d) { return d.data.virtual ? null : d.data.name + ', ' + formatCo2(d.data.co2_equiv) + ' kg CO2e/kg'; })
+      .on('click', toggle)
+      .on('keydown', function (d) {
+        if (d3.event.key !== 'Enter' && d3.event.key !== ' ') return;
+        d3.event.preventDefault();
+        toggle(d);
+      });
+
+    nodeEnter.append('a')
+      .attr('href', function (d) { return d.data.virtual ? null : '/products/' + d.data.to_param; })
+      .append('text')
+      .attr('dy', '0.31em')
+      .attr('fill', '#333')
+      .attr('stroke', 'white')
+      .attr('stroke-width', 3)
+      .attr('paint-order', 'stroke')
+      .text(function (d) { return d.data.virtual ? '' : d.data.name; });
+
+    const nodeUpdate = node.merge(nodeEnter);
+
+    // Labels are measured before the layout, which needs their widths.
+    nodeUpdate.select('text')
+      .attr('font-weight', function (d) { return d === highlighted ? 'bold' : null; })
+      .each(function (d) { d.labelWidth = this.getComputedTextLength(); });
+
+    shape.layout();
+    nodeUpdate.transition(t)
+      .attr('transform', function (d) { return shape.transform(d.x, d.y, d); })
+      .attr('opacity', 1);
+
+    nodeUpdate.select('circle')
+      .attr('r', nodeRadius)
+      .attr('stroke', function (d) { return hasHidden(d) ? '#333' : 'white'; })
+      .attr('cursor', function (d) { return canToggle(d) ? 'pointer' : null; })
+      .attr('tabindex', function (d) { return canToggle(d) ? 0 : null; })
+      .attr('role', function (d) { return canToggle(d) ? 'button' : null; })
+      .attr('aria-expanded', function (d) { return canToggle(d) ? !hasHidden(d) : null; });
+
+    shape.positionLabels(nodeUpdate.select('text'));
+
+    node.exit().transition(t).remove()
+      .attr('transform', function (d) { return shape.transform(source.x, source.y, d); })
+      .attr('opacity', 0);
+
+    const link = gLink.selectAll('path').data(root.links(), function (d) { return d.target.data.to_param; });
+
+    const linkEnter = link.enter().append('path')
+      .attr('d', collapsedLink(source.x0, source.y0));
+
+    link.merge(linkEnter)
+      .attr('stroke', function (d) { return highlightedPath.has(d.target) ? '#555' : '#999'; })
+      .attr('stroke-opacity', function (d) { return highlightedPath.has(d.target) ? 0.9 : 0.5; })
+      .attr('stroke-width', function (d) { return highlightedPath.has(d.target) ? 2.5 : 1.2; })
+      .transition(t)
+      .attr('d', shape.link);
+
+    link.exit().transition(t).remove()
+      .attr('d', collapsedLink(source.x, source.y));
+
+    const view = fitView();
+    (duration ? svg.transition(t) : svg).attr('height', view.height).attr('viewBox', view.viewBox);
+
+    root.eachBefore(function (d) {
+      d.x0 = d.x;
+      d.y0 = d.y;
+    });
+    return view;
+  }
+
+  // Fits the nodes and their labels into the SVG width, without enlarging them.
+  function fitView() {
+    const boxes = root.descendants().map(function (d) { return shape.bounds(d, nodeRadius(d)); });
+    const x0 = d3.min(boxes, function (b) { return b[0]; }) - GRAPH.padding;
+    const y0 = d3.min(boxes, function (b) { return b[1]; }) - GRAPH.padding;
+    const w = d3.max(boxes, function (b) { return b[2]; }) + GRAPH.padding - x0;
+    const h = d3.max(boxes, function (b) { return b[3]; }) + GRAPH.padding - y0;
+    const width = svgWidth();
+    const scale = Math.min(1, width / w, shape.maxHeight() / h);
+    const viewWidth = width / scale;
+    const box = [x0 - (viewWidth - w) / 2, y0, viewWidth, h];
+    return { height: h * scale, y0: y0, scale: scale, box: box, viewBox: box.join(' ') };
+  }
+
+  function svgWidth() {
+    return svg.node().getBoundingClientRect().width;
+  }
+
+  function nodeRadius(d) {
+    if (d.data.virtual) return GRAPH.nodeRadius / 2;
+    return d === highlighted ? GRAPH.currentNodeRadius : GRAPH.nodeRadius;
+  }
+
+  function canToggle(d) {
+    return d.data.children_count > 0 && !d.data.virtual;
+  }
+
+  function addChild(parent, data) {
+    const child = d3.hierarchy(data);
+    child.parent = parent;
+    child.depth = parent.depth + 1;
+    return child;
+  }
+
+  // Opens the path from the centre to the product, adding only the nodes on it.
+  function reveal(productId) {
+    $.getJSON('/products/' + encodeURIComponent(productId) + '/path.json', function (path) {
+      let source = null;
+
+      function step(node, i) {
+        if (i === path.length) return show(node, source || node);
+        const onPath = function (c) { return c.data.to_param === path[i]; };
+        const shown = (node.children || []).find(onPath);
+        if (shown) return step(shown, i + 1);
+
+        source = source || node;
+        // Kept in _children (collapsed), which a click then shows in full.
+        const loaded = (node._children || []).find(onPath);
+        if (loaded) {
+          node.children = (node.children || []).concat(loaded);
+          return step(loaded, i + 1);
+        }
+        $.getJSON('/products/' + node.data.to_param + '/subcategories.json', function (subcategories) {
+          const data = subcategories.find(function (c) { return c.to_param === path[i]; });
+          if (!data) return;
+          node.data.children_count = subcategories.length;
+          const child = addChild(node, data);
+          node.children = (node.children || []).concat(child);
+          step(child, i + 1);
+        });
+      }
+
+      step(root, root.data.virtual ? 0 : 1);
+    });
+  }
+
+  function show(d, source) {
+    highlighted = d;
+    highlightedPath = new Set(d.ancestors());
+    const view = update(source, GRAPH.duration);
+
+    // Centre the product, at the scale where labels have their font size on screen.
+    const p = shape.point(d);
+    const k = 1 / view.scale;
+    const cx = view.box[0] + view.box[2] / 2;
+    const cy = view.box[1] + view.box[3] / 2;
+    svg.transition().duration(750)
+      .call(zoom.transform, d3.zoomIdentity.translate(cx - k * p[0], cy - k * p[1]).scale(k));
+  }
+
+  function toggle(d) {
+    if (!canToggle(d)) return;
+    hideTooltip();
+
+    if (!hasHidden(d)) {
+      d._children = d.children;
+      d.children = null;
+      return update(d, GRAPH.duration);
+    }
+    if (d._children && d._children.length === d.data.children_count) {
+      d.children = d._children;
+      d._children = null;
+      return update(d, GRAPH.duration);
+    }
+
+    // Not loaded yet, or only partly (supercategories of a product page).
+    $.getJSON('/products/' + d.data.to_param + '/subcategories.json', function (subcategories) {
+      const loaded = new Map((d.children || []).concat(d._children || []).map(function (c) { return [c.data.to_param, c]; }));
+      d.children = subcategories.map(function (data) {
+        return loaded.get(data.to_param) || addChild(d, data);
+      });
+      d._children = null;
+      d.data.children_count = subcategories.length;
+      update(d, GRAPH.duration);
+    });
+  }
+
+  function showTooltip(d) {
+    if (d.data.virtual) return;
+    tooltip.html('').style('display', 'block');
+    tooltip.append('strong').text(d.data.name);
+    tooltip.append('div').text(formatCo2(d.data.co2_equiv) + ' kg CO2e/kg');
+    moveTooltip();
+  }
+
+  function moveTooltip() {
+    tooltip.style('left', (d3.event.pageX + 12) + 'px').style('top', (d3.event.pageY + 12) + 'px');
+  }
+
+  function hideTooltip() {
+    tooltip.style('display', 'none');
+  }
+
+  function collapsedLink(x, y) {
+    return function () {
+      const o = { x: x, y: y };
+      return shape.link({ source: o, target: o });
     };
-  });
+  }
 }
 
-function buildLinks(tree, nodes) {
-  const nodesById = new Map(nodes.map(function (n) { return [n.id, n]; }));
-  const links = [];
-
-  Array.from(tree).forEach(function (res) {
-    const target = nodesById.get(res.product.name);
-    if (!target) return;
-
-    res.product.subcategories.forEach(function (subcategory) {
-      const source = nodesById.get(subcategory.name);
-      if (source) links.push({ source: source, target: target });
-    });
-  });
-
-  return links;
-}
-
-function computeDimensions(nodeCount, minWidth, maxWidth) {
-  const widthEstimate = Math.ceil(Math.sqrt(nodeCount)) * GRAPH_CONFIG.widthPerNodeColumn;
-  const width = Math.min(maxWidth, Math.max(minWidth, widthEstimate));
-  const height = Math.min(width, window.innerHeight - GRAPH_CONFIG.headerFooterHeight);
-  return { width: width, height: height };
-}
-
-// ---------------------------------------------------------------------------
-// Simulation
-// ---------------------------------------------------------------------------
-
-function createSimulation(nodes, links, width, height) {
-  const f = GRAPH_CONFIG.forces;
-  return d3.forceSimulation(nodes)
-    .force('charge', d3.forceManyBody().strength(f.charge))
-    .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('x', d3.forceX(width / 2).strength(f.centerStrength))
-    .force('y', d3.forceY(height / 2).strength(f.centerStrength * width / height))
-    .force('link', d3.forceLink(links).distance(f.linkDistance).strength(f.linkStrength))
-    .force('collision', d3.forceCollide().radius(GRAPH_CONFIG.node.collisionRadius));
-}
-
-/** Runs the layout synchronously so the graph appears settled, then lets it cool down. */
-function warmUpSimulation(simulation, nodeElements, linkElements) {
-  simulation.alphaDecay(0);
-  simulation.tick(GRAPH_CONFIG.simulation.warmupTicks);
-  positionElements(nodeElements, linkElements);
-  simulation.alphaDecay(GRAPH_CONFIG.simulation.finalAlphaDecay);
-}
-
-function positionElements(nodeElements, linkElements) {
-  nodeElements.call(updateNode);
-  linkElements.call(updateLink);
-}
-
-function createDragBehavior(simulation) {
-  return d3.drag()
-    .on('start', function (node) {
-      node.fx = node.x;
-      node.fy = node.y;
-    })
-    .on('drag', function (node) {
-      simulation.alphaTarget(GRAPH_CONFIG.simulation.dragAlphaTarget).restart();
-      node.fx = d3.event.x;
-      node.fy = d3.event.y;
-    })
-    .on('end', function (node) {
-      if (!d3.event.active) simulation.alphaTarget(0);
-      node.fx = null;
-      node.fy = null;
-    });
-}
-
-function enableZoom(svg, container) {
-  svg.call(
-    d3.zoom()
-      .scaleExtent(GRAPH_CONFIG.zoomExtent)
-      .on('zoom', function () { container.attr('transform', d3.event.transform); })
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Rendering
-// ---------------------------------------------------------------------------
-
-function renderLinks(container, links) {
-  return container.append('g')
-    .attr('class', 'links')
-    .selectAll('line')
-    .data(links)
-    .enter()
-    .append('line')
-    .attr('stroke-width', GRAPH_CONFIG.link.strokeWidth)
-    .attr('stroke', GRAPH_CONFIG.link.stroke);
-}
-
-function renderNodes(container, nodes, dragBehavior) {
-  const nodeElements = container.append('g')
-    .attr('class', 'nodes')
-    .selectAll('g')
-    .data(nodes)
-    .enter()
-    .append('g')
-    .attr('id', function (d) { return nodeGroupId(d); })
-    .style('cursor', 'move')
-    .call(dragBehavior)
-    .on('mouseenter', highlightNode)
-    .on('mouseleave', unhighlightNode);
-
-  nodeElements.append('circle')
-    .attr('r', GRAPH_CONFIG.node.radius)
-    .attr('fill', getNodeColor);
-
-  renderNodeLabels(nodeElements);
-  return nodeElements;
-}
-
-function renderNodeLabels(nodeElements) {
-  const cfg = GRAPH_CONFIG.node;
-
-  const labels = nodeElements.append('text')
-    .attr('id', function (d) { return nodeTextId(d); })
-    .attr('x', 0)
-    .attr('y', cfg.labelY)
-    .attr('text-anchor', 'middle')
-    .style('font-family', cfg.fontFamily)
-    .style('font-size', cfg.fontSize)
-    .style('fill', '#fff')
-    .style('cursor', 'pointer')
-    .text(function (d) { return d.id; })
-    .on('click', navigateToProductSearch);
-
-  labels.each(function () {
-    wrapText(d3.select(this), cfg.labelWidth, cfg.lineHeight);
-  });
-
-  appendEmissionsLabel(labels);
-}
-
-/** Splits the text of an SVG <text> element into centred <tspan> lines. */
-function wrapText(textSelection, maxWidth, lineHeight) {
-  const words = textSelection.text().split(/\s+/).filter(Boolean);
-  const x = textSelection.attr('x');
-  const y = textSelection.attr('y');
-
-  textSelection.text(null);
-
-  let tspan = textSelection.append('tspan').attr('x', x).attr('y', y);
-  let line = [];
-  let lineCount = 1;
-
-  words.forEach(function (word) {
-    line.push(word);
-    tspan.text(line.join(' '));
-
-    if (tspan.node().getComputedTextLength() > maxWidth && line.length > 1) {
-      line.pop();
-      tspan.text(line.join(' '));
-      line = [word];
-      tspan = textSelection.append('tspan')
-        .attr('x', x)
-        .attr('dy', lineHeight)
-        .text(word);
-      lineCount += 1;
+// Search box of the products graph page: picking a product reveals it in the graph.
+function initProductGraphSearch(graph) {
+  $('#product-graph-search').autocomplete({
+    source: '/product_autocomplete',
+    autoFocus: true,
+    response: function (event, ui) {
+      if (ui.content.length === 0) ui.content.push({ label: 'No products found', value: '' });
+    },
+    focus: function () { return false; },
+    select: function (event, ui) {
+      if (ui.item.value) {
+        this.value = ui.item.label;
+        graph.reveal(ui.item.value);
+      }
+      return false;
     }
   });
-
-  // Shift the block up so multi-line labels stay vertically centred.
-  textSelection.select('tspan').attr('dy', -0.5 * (lineCount - 1) * lineHeight);
 }
 
-function appendEmissionsLabel(labels) {
-  labels.append('tspan')
-    .attr('id', function (d) { return nodeEmissionsId(d); })
-    .attr('class', 'emissions')
-    .attr('x', 0)
-    .attr('dy', GRAPH_CONFIG.node.emissionsOffset)
-    .attr('font-weight', 'normal')
-    .style('font-size', GRAPH_CONFIG.node.fontSize)
-    .style('visibility', 'hidden')
-    .text(function (d) { return d3.format('.1f')(d.co2_equiv) + ' CO2e/kg'; });
+function hasHidden(d) {
+  return (d.children ? d.children.length : 0) < d.data.children_count;
 }
 
-// ---------------------------------------------------------------------------
-// Hover highlighting
-// ---------------------------------------------------------------------------
+/*
+ * Tree shapes. In both, d.x is the position across the levels (angle or row)
+ * and d.y the distance from the root, as d3.tree lays them out.
+ * bounds(d, r) is the box [x0, y0, x1, y1] covering a node of radius r and its label.
+ */
 
-function highlightNode(node) {
-  const cfg = GRAPH_CONFIG.node;
-  const group = d3.select('#' + nodeGroupId(node));
-  const text = d3.select('#' + nodeTextId(node));
+function radialTree(root) {
+  // Labels of nodes with visible children point inwards, the others outwards.
+  function outward(d) { return !d.children; }
+  function onLeft(d) {
+    const angle = ((d.x % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    return angle > Math.PI;
+  }
 
-  setLabelStyle(text, 'bold', cfg.fontSizeHighlighted, cfg.labelYHighlighted);
-  setEmissionsVisible(node, true);
+  return {
+    link: d3.linkRadial().angle(function (d) { return d.x; }).radius(function (d) { return d.y; }),
 
-  removeHighlightRect(group);           // never stack more than one rect
-  appendHighlightRect(group, text.node().getBBox());
+    maxHeight: function () { return window.innerHeight - 150; },
 
-  group.raise();                        // node above its neighbours
-  text.raise();                         // label above the highlight rect
+    point: function (d) { return d.depth === 0 ? [0, 0] : d3.pointRadial(d.x, d.y); },
+
+    // Leaves get leafSpacing on the outer ring, so a narrow tree is a fan
+    // pointing up instead of a full circle.
+    layout: function () {
+      const maxDepth = d3.max(root.descendants(), function (d) { return d.depth; }) || 1;
+      const leaves = root.leaves().length;
+      const radius = Math.max(maxDepth * GRAPH.ringDistance, leaves * GRAPH.leafSpacing / (2 * Math.PI));
+      const span = Math.min(2 * Math.PI, leaves * GRAPH.leafSpacing / radius);
+
+      d3.tree()
+        .size([span, radius])
+        .separation(function (a, b) { return (a.parent === b.parent ? 1 : 2) / a.depth; })(root);
+      root.each(function (d) { d.x -= span / 2; });
+    },
+
+    transform: function (x, y, d) {
+      return d.depth === 0 ? null : 'rotate(' + (x * 180 / Math.PI - 90) + ') translate(' + y + ',0)';
+    },
+
+    positionLabels: function (text) {
+      text
+        .attr('x', function (d) { return d.depth === 0 ? 0 : (outward(d) === onLeft(d) ? -1 : 1) * GRAPH.labelOffset; })
+        .attr('y', function (d) { return d.depth === 0 ? 2 * GRAPH.labelOffset : 0; })
+        .attr('text-anchor', function (d) {
+          if (d.depth === 0) return 'middle';
+          return outward(d) === onLeft(d) ? 'end' : 'start';
+        })
+        .attr('transform', function (d) { return d.depth > 0 && onLeft(d) ? 'rotate(180)' : null; });
+    },
+
+    bounds: function (d) {
+      if (d.depth === 0) return [-d.labelWidth / 2, 0, d.labelWidth / 2, 3 * GRAPH.labelOffset];
+      const p = d3.pointRadial(d.x, d.y);
+      const q = d3.pointRadial(d.x, d.y + (outward(d) ? GRAPH.labelOffset + d.labelWidth : 0));
+      return [Math.min(p[0], q[0]), Math.min(p[1], q[1]), Math.max(p[0], q[0]), Math.max(p[1], q[1])];
+    },
+  };
 }
 
-function unhighlightNode(node) {
-  const cfg = GRAPH_CONFIG.node;
-  const text = d3.select('#' + nodeTextId(node));
+function horizontalTree(root, width) {
+  // Labels of nodes with visible children sit above them, clear of their links.
+  function above(d) { return !!d.children; }
 
-  setLabelStyle(text, 'normal', cfg.fontSize, cfg.labelY);
-  setEmissionsVisible(node, false);
-  removeHighlightRect(d3.select('#' + nodeGroupId(node)));
+  return {
+    link: d3.linkHorizontal().x(function (d) { return d.y; }).y(function (d) { return d.x; }),
+
+    maxHeight: function () { return Infinity; }, // scrolls instead, see .product-graph-scroll
+
+    point: function (d) { return [d.y, d.x]; },
+
+    // The levels share the width left after the root's and the leaves' labels.
+    layout: function () {
+      const nodes = root.descendants();
+      const maxDepth = d3.max(nodes, function (d) { return d.depth; }) || 1;
+      const leafLabel = d3.max(nodes, function (d) { return above(d) ? 0 : GRAPH.labelOffset + d.labelWidth; });
+      const free = width() - 2 * GRAPH.padding - root.labelWidth / 2 - leafLabel;
+      const levelWidth = Math.max(GRAPH.levelWidth[0], Math.min(GRAPH.levelWidth[1], free / maxDepth));
+
+      // An extra row next to nodes with a label above them.
+      d3.tree()
+        .nodeSize([GRAPH.rowHeight, levelWidth])
+        .separation(function (a, b) { return above(a) || above(b) ? 2 : 1; })(root);
+    },
+
+    transform: function (x, y) {
+      return 'translate(' + y + ',' + x + ')';
+    },
+
+    positionLabels: function (text) {
+      text
+        .attr('x', function (d) { return above(d) ? 0 : GRAPH.labelOffset; })
+        .attr('y', function (d) { return above(d) ? -(GRAPH.currentNodeRadius + GRAPH.labelOffset) : 0; })
+        .attr('text-anchor', function (d) { return above(d) ? 'middle' : 'start'; })
+        .attr('transform', null);
+    },
+
+    bounds: function (d, r) {
+      const h = GRAPH.rowHeight / 2;
+      if (above(d)) return [d.y - d.labelWidth / 2, d.x - GRAPH.currentNodeRadius - GRAPH.labelOffset - h, d.y + d.labelWidth / 2, d.x + r];
+      return [d.y - r, d.x - h, d.y + GRAPH.labelOffset + d.labelWidth, d.x + h];
+    },
+  };
 }
-
-function setLabelStyle(text, fontWeight, fontSize, firstLineY) {
-  text.selectAll('tspan')
-    .attr('font-weight', fontWeight)
-    .style('font-size', fontSize);
-  text.select('tspan').attr('y', firstLineY);
-}
-
-function setEmissionsVisible(node, visible) {
-  d3.select('#' + nodeEmissionsId(node))
-    .style('visibility', visible ? 'visible' : 'hidden');
-}
-
-function appendHighlightRect(group, bbox) {
-  const h = GRAPH_CONFIG.highlight;
-  group.append('rect')
-    .attr('class', 'highlight-rect')
-    .attr('fill', getNodeColor)
-    .attr('stroke', h.stroke)
-    .attr('stroke-width', 1)
-    .attr('rx', h.cornerRadius)
-    .attr('ry', h.cornerRadius)
-    .attr('x', -bbox.width / 2 - h.paddingX)
-    .attr('y', -bbox.height / 2 - h.paddingY)
-    .attr('width', bbox.width + 2 * h.paddingX)
-    .attr('height', bbox.height + 2 * h.paddingY)
-    .style('cursor', 'pointer')
-    .on('click', navigateToProductSearch);
-}
-
-function removeHighlightRect(group) {
-  group.selectAll('rect.highlight-rect').remove();
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function navigateToProductSearch(node) {
-  window.location = '/products?utf8=✓&search=' + encodeURIComponent(node.id);
-}
-
-function nodeGroupId(node) { return 'label-node-' + node.idx; }
-function nodeTextId(node) { return 'label-node-text-' + node.idx; }
-function nodeEmissionsId(node) { return 'label-node-emissions-' + node.idx; }

@@ -8,6 +8,7 @@
 }
 
 #product_graph {
+  box-sizing: border-box;
   border: 3px solid #27AD05;
   border-radius: 20px;
 }
@@ -160,4 +161,55 @@
   #product_recipes_table .card {
     width: 100%;
   }
+}
+
+.product-graph-tooltip {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  z-index: 1000;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+// Product pages: tall trees scroll instead of shrinking.
+.product-graph-scroll {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable; // the SVG is sized before the scrollbar appears
+  border: 3px solid #27AD05;
+  border-radius: 20px;
+
+  #product_graph {
+    display: block;
+    border: none;
+  }
+}
+
+// Products graph page: search box floating over the graph's top left corner.
+.product-graph-frame {
+  position: relative;
+
+  #product_graph {
+    display: block;
+  }
+}
+
+#product-graph-search {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 250px;
+  max-width: calc(100% - 24px);
+  box-sizing: border-box;
+  padding: 6px 10px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
