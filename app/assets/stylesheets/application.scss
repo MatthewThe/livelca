@@ -156,6 +156,12 @@ table.dataTable tbody:before {
   text-indent:-99999px;
 }
 
+/* Keep the server-side "processing" overlay above the responsive
+   control cells, which are position: relative and would otherwise cover it */
+.dataTables_wrapper .dataTables_processing {
+  z-index: 10;
+}
+
 table.dataTable thead .sorting .DataTables_sort_icon {
   background-position: 0;
   margin-right: 4px;

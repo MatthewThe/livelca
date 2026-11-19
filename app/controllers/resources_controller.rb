@@ -15,7 +15,52 @@ class ResourcesController < ApplicationController
     end
   end
   
+  # Server-side processing endpoint for the DataTables product table on the
+  # resource page: only the requested page of sources is loaded.
+  PRODUCT_TABLE_ORDER_COLUMNS = %w[product_name notes origin consumption].freeze
+  PRODUCT_TABLE_MAX_LENGTH = 100
+
   def product_table
+    start  = [params[:start].to_i, 0].max
+    length = params[:length].to_i
+    length = 25 if length <= 0
+    length = [length, PRODUCT_TABLE_MAX_LENGTH].min
+
+    search = params.dig(:search, :value).to_s.strip.downcase
+
+    order_param  = params.dig(:order, "0") || {}
+    order_column = PRODUCT_TABLE_ORDER_COLUMNS[order_param[:column].to_i] || PRODUCT_TABLE_ORDER_COLUMNS.first
+    order_dir    = order_param[:dir].to_s.downcase == "desc" ? "DESC" : "ASC"
+
+    # Start from the association query (and break) so the resource ID filter
+    # stays on the first MATCH instead of being attached to an OPTIONAL MATCH.
+    base = @resource.sources(:s).query.break
+      .optional_match("(s)-[:STUDY_FOR]->(p:Product)")
+      .optional_match("(s)-[:PRODUCED_IN]->(co:Country)")
+      .optional_match("(s)-[:CONSUMED_IN]->(cc:Country)")
+      .with("s, p, coalesce(p.name, '') AS product_name, coalesce(s.notes, '') AS notes, " \
+            "coalesce(co.name, 'Unknown') AS origin, coalesce(cc.name, 'Unknown') AS consumption")
+
+    @records_total = base.pluck("count(s)").first.to_i
+
+    filtered = base
+    if search.present?
+      filtered = base
+        .where("toLower(product_name) CONTAINS $search OR toLower(notes) CONTAINS $search " \
+               "OR toLower(origin) CONTAINS $search OR toLower(consumption) CONTAINS $search")
+        .params(search: search)
+      @records_filtered = filtered.pluck("count(s)").first.to_i
+    else
+      @records_filtered = @records_total
+    end
+
+    @rows = filtered
+      .order("#{order_column} #{order_dir}", "s.uuid")
+      .skip(start)
+      .limit(length)
+      .pluck(:s, :p, :origin, :consumption)
+    @draw = params[:draw].to_i
+
     respond_to do |format|
       format.json
     end

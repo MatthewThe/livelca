@@ -26,6 +26,9 @@ function initSourcesTable() {
     $('#sources_product_table').DataTable({
       "pageLength": 25,
       "responsive": true,
+      "processing": true,
+      "serverSide": true,
+      "searchDelay": 400,
       "oLanguage": {
          "sSearch": "Filter:"
       },
@@ -36,7 +39,8 @@ function initSourcesTable() {
         }
       },
       "language": {
-         "loadingRecords": "Please wait - loading products..."
+         "loadingRecords": "Please wait - loading products...",
+         "processing": "Loading products..."
       },
       "columnDefs": [
         { "targets": 1, "className" : "none" }
