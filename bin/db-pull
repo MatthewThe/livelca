@@ -1,9 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Download the server's graph.db and replace the local dev database with it.
+cd "$(dirname "$0")/.."
+
 remote=hetzner
-#remote=neo4j-livelca.us-east1-b.vibrant-tree-238320
 
 bundle exec rake neo4j:stop
 cd db/neo4j/development/data/databases/
-ssh ${remote} ~/livelca/pack_graph_db.sh
+ssh ${remote} /home/matthewt/livelca/bin/server/pack-graph-db
 scp ${remote}:~/graph_db.zip ./
 cp graph_db.zip ~/Dropbox/databases/livelca/
 sudo rm -rf graph.db.bak

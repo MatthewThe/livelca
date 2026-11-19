@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Build the web image and push it to Docker Hub.
+cd "$(dirname "$0")/.."
+
 bundle exec rake assets:clean
 RAILS_ENV=production bundle exec rails assets:precompile
 git_rev=$(git log -1 --pretty=%h)

@@ -21,7 +21,7 @@ EDITOR="nano" rails credentials:edit
 ## Database creation
 
 ```
-setup_vm.sh
+bin/server/setup-vm
 ```
 
 ## Database initialization
@@ -29,7 +29,7 @@ setup_vm.sh
 Change password in the neo4j browser
 
 ```
-unpack_graph_db.sh
+bin/server/unpack-graph-db
 ```
 
 ## Migration
@@ -44,7 +44,7 @@ and restart the server
 
 1. Create a zip file from the neo4j database you want to use as a base:
    ```
-   pack_graph_db.sh
+   bin/server/pack-graph-db
    ```
 
 2. Copy the `.env` and `docker-compose.yml` files to the server
@@ -54,13 +54,12 @@ and restart the server
 
 3. SSH into the server and execute the setup bash script. This installs git, docker and docker-compose and sets up the folder structure for neo4j:
    ```
-   setup_vm.sh
+   bin/server/setup-vm
    ```
    
-4. Transfer the zipped neo4j database to the server and unzip in the neo4j folder:
+4. From your machine, transfer the local neo4j database to the server and unzip it in the neo4j folder:
    ```
-   scp_dev_db.sh
-   unpack_graph_db.sh
+   bin/db-push
    ```
 
 5. Start up the docker
@@ -77,15 +76,15 @@ and restart the server
 
 ## Update instructions server
 
-1. Update the docker (this automatically pushes a new image to dockerhub)
+1. Build and push a new image to Docker Hub, then pull and restart it on the server:
 ```
-build.sh
+bin/deploy
 ```
+(`bin/build` only builds and pushes the image.)
 
-2. SSH into the server and deploy the new docker
+2. To pull the server database into your local dev database:
 ```
-docker pull matthewthe/livelca
-docker-compose up -d --no-deps --build web
+bin/db-pull
 ```
 
 3. If there was a change to the database (e.g. a migration after adding a new model), find the docker container id for matthewthe/livelca and run

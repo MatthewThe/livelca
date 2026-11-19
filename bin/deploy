@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Build + push the web image (bin/build), then pull and restart it on the server.
+cd "$(dirname "$0")/.."
+
+remote=hetzner
+
+bin/build
+ssh "$remote" 'cd /home/matthewt/livelca && docker pull matthewthe/livelca:latest && docker-compose up -d --no-deps --force-recreate web'

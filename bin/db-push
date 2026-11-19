@@ -1,7 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Upload the local dev graph.db to the server and swap it in.
+cd "$(dirname "$0")/.."
+
 remote=hetzner
 #remote=neo4j-livelca.us-east1-b.vibrant-tree-238320
 
 cd db/neo4j/development/data/databases/
 zip -r graph_db graph.db
 scp graph_db.zip ${remote}:/home/matthewt/
-ssh ${remote} ~/livelca/unpack_graph_db.sh
+ssh ${remote} ~/livelca/bin/server/unpack-graph-db
