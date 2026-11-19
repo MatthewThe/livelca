@@ -28,8 +28,11 @@ class Product
   
   # class method
   def self.get_random
+    count = self.count
+    return nil if count.zero?
     self.as('r')
-        .order("(id(r) * (datetime.truncate('day', datetime()).epochMillis / 86400000)) % 1013")
+        .order('id(r)')
+        .skip(Random.new(Date.current.jd).rand(count))
         .with_associations(:proxy, :studies, :subcategories)
         .limit(1)
         .first
